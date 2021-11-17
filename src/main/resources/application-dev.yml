@@ -1,0 +1,83 @@
+server:
+  port: 18001
+spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+  datasource:
+    url: jdbc:mysql://47.100.162.114:13306/etds?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-timeout: 60000
+      minimum-idle: 5
+      maximum-pool-size: 100
+      idle-timeout: 300000
+      max-lifetime: 1200000
+      auto-commit: true
+      connection-test-query: SELECT 1
+      validation-timeout: 3000
+      read-only: false
+      login-timeout: 5
+
+
+mybatis-plus:
+  mapper-locations: classpath:/mappers/*Mapper.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+#日志相关配置
+logging:
+  level:
+    com.phadata.etdsplus.aspect: debug
+    com.phadata.etdsplus: info
+  file:
+    #总日志文件，生成位置当前目录下的logs里面
+    name: ./logs/chain.log
+  logback:
+    rollingpolicy:
+      #服务重启清除历史日志，默认false
+      clean-history-on-start: false
+      #文件名，滚动生成，生成位置当前目录下的logs里面
+      file-name-pattern: ./logs/chain.%d{yyyy-MM-dd}.%i.log
+      #默认是7天，保存近30天
+      max-history: 30
+      #滚动日志每个文件大小的上限
+      max-file-size: 6MB
+
+## swagger 文档配置
+knife4j:
+  enable: true
+  documents:
+    - group: 1.0
+      name: 错误码
+      locations: classpath:md/** # 自定义文档
+  setting:
+    enableSwaggerModels: false
+    enableDocumentManage: true
+    enableHost: false
+    enableRequestCache: true
+    enableFilterMultipartApis: false
+    enableFilterMultipartApiMethodType: POST
+    language: zh-CN
+    enableDebug: true
+    enableSearch: false
+    enableOpenApi: false
+    enableAfterScript: false
+    enableVersion: true
+    enableFooter: false
+    enableFooterCustom: true
+    footerCustomContent: Apache License 2.0 | Copyright@2021-天机
+  cors: false
+  production: false # 是否正式环境
+  basic:
+    enable: false
+    username: test
+    password: 123
+
+

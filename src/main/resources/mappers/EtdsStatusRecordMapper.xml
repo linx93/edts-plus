@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.phadata.etdsplus.mapper.EtdsStatusRecordMapper">
+
+    <!--获取最新的etds状态[0:正常  1:暂停]-->
+    <select id="findStatus" resultType="java.lang.String">
+        SELECT
+            `type`
+        FROM
+            etds_status_record
+        WHERE
+            id = (
+            SELECT
+                MAX( id )
+            FROM
+            etds_status_record)
+    </select>
+</mapper>
