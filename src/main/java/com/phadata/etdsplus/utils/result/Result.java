@@ -14,26 +14,26 @@ import lombok.Setter;
 public class Result<T> {
     private String code;
     private String message;
-    private T data;
+    private T payload;
 
     protected Result() {
 
     }
 
-    protected Result(String code, String message, T data) {
+    protected Result(String code, String message, T payload) {
         this.code = code;
         this.message = message;
-        this.data = data;
+        this.payload = payload;
     }
 
 
     /**
      * 成功返回结果
      *
-     * @param data 获取的数据
+     * @param payload 获取的数据
      */
-    public static <T> Result<T> success(T data) {
-        return success(ResultCodeMessage.SUCCESS, data);
+    public static <T> Result<T> success(T payload) {
+        return success(ResultCodeMessage.SUCCESS, payload);
     }
 
     /**
@@ -46,11 +46,11 @@ public class Result<T> {
     /**
      * 成功返回结果
      *
-     * @param data    获取的数据
+     * @param payload    获取的数据
      * @param message 提示信息
      */
-    public static <T> Result<T> success(T data, String message) {
-        return new Result(ResultCodeMessage.SUCCESS.getCode(), message, data);
+    public static <T> Result<T> success(T payload, String message) {
+        return new Result(ResultCodeMessage.SUCCESS.getCode(), message, payload);
     }
 
     /**
@@ -58,8 +58,8 @@ public class Result<T> {
      *
      * @param codeMessage 错误码
      */
-    public static <T> Result<T> success(ICodeMessage codeMessage, T data) {
-        return new Result(codeMessage.getCode(), codeMessage.getMessage(), data);
+    public static <T> Result<T> success(ICodeMessage codeMessage, T payload) {
+        return new Result(codeMessage.getCode(), codeMessage.getMessage(), payload);
     }
 
     /**
@@ -76,8 +76,8 @@ public class Result<T> {
      *
      * @param codeMessage 错误码
      */
-    public static <T> Result<T> failed(ICodeMessage codeMessage,T data) {
-        return new Result(codeMessage.getCode(), codeMessage.getMessage(), data);
+    public static <T> Result<T> failed(ICodeMessage codeMessage,T payload) {
+        return new Result(codeMessage.getCode(), codeMessage.getMessage(), payload);
     }
 
     /**
@@ -94,8 +94,8 @@ public class Result<T> {
      *
      * @param message 提示信息
      */
-    public static <T> Result<T> failed(String message, T data) {
-        return new Result(ResultCodeMessage.FAILED.getCode(), message, data);
+    public static <T> Result<T> failed(String message, T payload) {
+        return new Result(ResultCodeMessage.FAILED.getCode(), message, payload);
     }
 
     /**
@@ -110,15 +110,15 @@ public class Result<T> {
     /**
      * 未登录返回结果
      */
-    public static <T> Result<T> unauthorized(T data) {
-        return new Result(ResultCodeMessage.UNAUTHORIZED.getCode(), ResultCodeMessage.UNAUTHORIZED.getMessage(), data);
+    public static <T> Result<T> unauthorized(T payload) {
+        return new Result(ResultCodeMessage.UNAUTHORIZED.getCode(), ResultCodeMessage.UNAUTHORIZED.getMessage(), payload);
     }
 
     /**
      * 未授权返回结果
      */
-    public static <T> Result<T> forbidden(T data) {
-        return new Result(ResultCodeMessage.FORBIDDEN.getCode(), ResultCodeMessage.FORBIDDEN.getMessage(), data);
+    public static <T> Result<T> forbidden(T payload) {
+        return new Result(ResultCodeMessage.FORBIDDEN.getCode(), ResultCodeMessage.FORBIDDEN.getMessage(), payload);
     }
 
     /**
@@ -140,7 +140,7 @@ public class Result<T> {
         return "ResultVO{" +
                 "code=" + code +
                 ", message='" + message + '\'' +
-                ", data=" + data +
+                ", payload=" + payload +
                 '}';
     }
 
