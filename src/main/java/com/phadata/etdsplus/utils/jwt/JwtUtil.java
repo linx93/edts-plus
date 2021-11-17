@@ -171,7 +171,7 @@ public class JwtUtil {
             throw new JwtVerifyException("token中claim被修改，所以token认证失败");
         } catch (Exception e) {
             log.error("verifyToken  error >> ex = {}", ExceptionUtils.getStackTrace(e));
-            throw new JwtVerifyException("登录凭证无效（过期），请重新登录");
+            throw new JwtVerifyException("登录凭证无效");
         }
         return verify.getClaims();
 

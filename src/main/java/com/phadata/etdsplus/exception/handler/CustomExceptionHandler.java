@@ -53,7 +53,7 @@ public class CustomExceptionHandler {
         }
         log.error(" 参数异常: \n{}", JSON.toJSONString(map));
         log.error(getTrace(exception));
-        return Result.failed(ResultCodeMessage.VALIDATE_FAILED);
+        return Result.validateFailed(JSON.toJSONString(map));
     }
 
     @ExceptionHandler(value = Exception.class)

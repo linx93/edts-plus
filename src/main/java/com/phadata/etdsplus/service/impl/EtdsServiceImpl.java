@@ -30,11 +30,11 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
     private String port;
 
 
-    @Value("${auth-center.app-key}")
+    @Value("${auth-center.app-key:}")
     private String appKey;
 
 
-    @Value("${auth-center.secret}")
+    @Value("${auth-center.secret:}")
     private String secret;
 
     @Override

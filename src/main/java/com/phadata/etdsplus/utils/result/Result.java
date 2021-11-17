@@ -16,9 +16,10 @@ public class Result<T> {
     private String message;
     private T data;
 
-    protected Result(){
+    protected Result() {
 
     }
+
     protected Result(String code, String message, T data) {
         this.code = code;
         this.message = message;
@@ -37,7 +38,6 @@ public class Result<T> {
 
     /**
      * 成功返回结果
-     *
      */
     public static <T> Result<T> success() {
         return new Result(ResultCodeMessage.SUCCESS.getCode(), ResultCodeMessage.SUCCESS.getMessage(), null);
@@ -46,8 +46,8 @@ public class Result<T> {
     /**
      * 成功返回结果
      *
-     * @param data 获取的数据
-     * @param  message 提示信息
+     * @param data    获取的数据
+     * @param message 提示信息
      */
     public static <T> Result<T> success(T data, String message) {
         return new Result(ResultCodeMessage.SUCCESS.getCode(), message, data);
@@ -55,13 +55,16 @@ public class Result<T> {
 
     /**
      * 失败返回结果
+     *
      * @param codeMessage 错误码
      */
     public static <T> Result<T> success(ICodeMessage codeMessage, T data) {
         return new Result(codeMessage.getCode(), codeMessage.getMessage(), data);
     }
+
     /**
      * 失败返回结果
+     *
      * @param codeMessage 错误码
      */
     public static <T> Result<T> failed(ICodeMessage codeMessage) {
@@ -70,16 +73,34 @@ public class Result<T> {
 
     /**
      * 失败返回结果
+     *
+     * @param codeMessage 错误码
+     */
+    public static <T> Result<T> failed(ICodeMessage codeMessage,T data) {
+        return new Result(codeMessage.getCode(), codeMessage.getMessage(), data);
+    }
+
+    /**
+     * 失败返回结果
+     *
      * @param message 提示信息
      */
     public static <T> Result<T> failed(String message) {
         return new Result(ResultCodeMessage.FAILED.getCode(), message, null);
     }
 
-
+    /**
+     * 失败返回结果
+     *
+     * @param message 提示信息
+     */
+    public static <T> Result<T> failed(String message, T data) {
+        return new Result(ResultCodeMessage.FAILED.getCode(), message, data);
+    }
 
     /**
      * 参数验证失败返回结果
+     *
      * @param message 提示信息
      */
     public static <T> Result<T> validateFailed(String message) {

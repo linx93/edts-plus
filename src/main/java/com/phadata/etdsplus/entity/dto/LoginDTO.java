@@ -14,11 +14,11 @@ import javax.validation.constraints.NotBlank;
 @Data
 @ApiModel(value="登陆/修改密码的DTO对象", description="登陆/修改密码的DTO对象")
 public class LoginDTO {
-    @ApiModelProperty(value = "账户")
+    @ApiModelProperty(value = "账户",required = true)
     @NotBlank(message = "账户不能为空")
     private String account;
 
-    @ApiModelProperty(value = "密码")
+    @ApiModelProperty(value = "密码",required = true)
     @NotBlank(message = "密码不能为空")
     private String password;
 }

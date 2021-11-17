@@ -12,9 +12,10 @@ import lombok.Data;
 @Data
 public class HeartbeatResponse {
 
-    @ApiModelProperty(value = "etds的唯一吗")
-    private String EtdsCode;
 
     @ApiModelProperty(value = "tdaas管控etds的状态[0:正常  1:暂停]")
     private String status;
+
+    @ApiModelProperty(value = "etds的唯一码")
+    private String EtdsCode;
 }

@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="Etds对象", description="license激活码")
+@ApiModel(value="Etds对象", description="etds相关信息")
 public class Etds implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -61,7 +61,7 @@ public class Etds implements Serializable {
     private String appKey;
 
     @ApiModelProperty(value = "密钥")
-    private String secret;
+    private String appSecret;
 
 
 }

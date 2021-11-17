@@ -36,7 +36,7 @@ public class EtdsStatusRecordServiceImpl extends ServiceImpl<EtdsStatusRecordMap
 
         //5.保存暂停etds的操作记录
         EtdsStatusRecord etdsStatusRecord = new EtdsStatusRecord();
-        etdsStatusRecord.setCompanyDtid(operateETDSDTO.getCompanyDTID());
+        etdsStatusRecord.setCompanyDtid(operateETDSDTO.getCompanyDtid());
         etdsStatusRecord.setEtdsCode(operateETDSDTO.getEtdsCode());
         etdsStatusRecord.setType(1);
         etdsStatusRecord.setCreatedTime(new Date());
@@ -52,7 +52,7 @@ public class EtdsStatusRecordServiceImpl extends ServiceImpl<EtdsStatusRecordMap
         //TODO 3.将etds状态修改为正常
         //4.保存恢复etds的操作记录
         EtdsStatusRecord etdsStatusRecord = new EtdsStatusRecord();
-        etdsStatusRecord.setCompanyDtid(operateETDSDTO.getCompanyDTID());
+        etdsStatusRecord.setCompanyDtid(operateETDSDTO.getCompanyDtid());
         etdsStatusRecord.setEtdsCode(operateETDSDTO.getEtdsCode());
         etdsStatusRecord.setType(0);
         etdsStatusRecord.setCreatedTime(new Date());

@@ -12,12 +12,12 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 public class ETDSRegisterDTO {
-    @ApiModelProperty(value = "激活码")
+    @ApiModelProperty(value = "激活码", required = true)
     @NotBlank(message = "激活码不能为空")
     private String activationCode;
 
 
-    @ApiModelProperty(value = "etds的地址/可以是域名也可以是ip+port")
+    @ApiModelProperty(value = "etds的地址/可以是域名也可以是ip+port", required = true)
     @NotBlank(message = "etds的地址不能为空")
     private String etdsUrl;
 }

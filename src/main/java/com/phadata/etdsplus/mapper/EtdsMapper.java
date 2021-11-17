@@ -2,6 +2,7 @@ package com.phadata.etdsplus.mapper;
 
 import com.phadata.etdsplus.entity.po.Etds;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author linx
  * @since 2021-11-16
  */
+@Mapper
 public interface EtdsMapper extends BaseMapper<Etds> {
 
 }

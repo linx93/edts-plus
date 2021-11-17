@@ -10,7 +10,7 @@ spring:
     url: jdbc:mysql://47.100.162.114:13306/etds?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: 123456
+    password: root
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       connection-timeout: 60000
@@ -61,6 +61,7 @@ knife4j:
     enableSwaggerModels: false
     enableDocumentManage: true
     enableHost: false
+    enableHostText: http://192.168.0.254:8080
     enableRequestCache: true
     enableFilterMultipartApis: false
     enableFilterMultipartApiMethodType: POST
@@ -72,7 +73,7 @@ knife4j:
     enableVersion: true
     enableFooter: false
     enableFooterCustom: true
-    footerCustomContent: Apache License 2.0 | Copyright@2021-天机
+    footerCustomContent: Apache License 2.0 | Copyright@2021-天机科技
   cors: false
   production: false # 是否正式环境
   basic:

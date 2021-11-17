@@ -14,15 +14,15 @@ import javax.validation.constraints.NotBlank;
 @Data
 @ApiModel(value="操作etds的dto", description="操作etds的dto")
 public class OperateETDSDTO {
-    @ApiModelProperty(value = "公司数字身份")
+    @ApiModelProperty(value = "公司数字身份",required = true)
     @NotBlank(message = "公司数字身份不能为空")
-    private String companyDTID;
+    private String companyDtid;
 
-    @ApiModelProperty(value = "公司名称")
+    @ApiModelProperty(value = "公司名称",required = true)
     @NotBlank(message = "公司名称不能为空")
     private String companyName;
 
-    @ApiModelProperty(value = "etds的唯一code")
+    @ApiModelProperty(value = "etds的唯一code",required = true)
     @NotBlank(message = "etds的唯一code不能为空")
     private String etdsCode;
 }
