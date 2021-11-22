@@ -25,7 +25,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new JwtInterceptor())
-                .addPathPatterns("/**").excludePathPatterns("/api/v1/tdaas/**", "/api/v1/account/login","/doc.html", "/webjars/**", "/swagger-resources/**", "/web/**", "/error");
+                .addPathPatterns("/**").excludePathPatterns("/api/v1/etds/sync-etds-info","/api/v1/tdaas/**", "/api/v1/account/login","/doc.html", "/webjars/**", "/swagger-resources/**", "/web/**", "/error");
         registry.addInterceptor(new TdaasInterceptor(etdsService))
                 .addPathPatterns("/api/v1/tdaas/**");
     }

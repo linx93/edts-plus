@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 
 /**
  * @description: 确认激活etds的dto
- * @author: xionglin
+ * @author: linx
  * @create: 2021-11-17 17:43
  */
 @Data

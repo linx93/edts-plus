@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 
 /**
  * @description: 操作etds的dto
- * @author: xionglin
+ * @author: linx
  * @create: 2021-11-16 14:12
  */
 @Data
@@ -18,9 +18,6 @@ public class OperateETDSDTO {
     @NotBlank(message = "公司数字身份不能为空")
     private String companyDtid;
 
-    @ApiModelProperty(value = "公司名称",required = true)
-    @NotBlank(message = "公司名称不能为空")
-    private String companyName;
 
     @ApiModelProperty(value = "etds的唯一code",required = true)
     @NotBlank(message = "etds的唯一code不能为空")

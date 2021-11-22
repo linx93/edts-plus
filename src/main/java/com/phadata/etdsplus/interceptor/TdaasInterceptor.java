@@ -43,20 +43,20 @@ public class TdaasInterceptor implements HandlerInterceptor {
         }
 
         //从请求头中取出 appKey
-        String appKey = httpServletRequest.getHeader("appKey");
+        String appKey = httpServletRequest.getHeader("x-appKey");
         //从请求头中取出 sign
-        String sign = httpServletRequest.getHeader("sign");
+        String sign = httpServletRequest.getHeader("x-signature");
         //从请求头中取出 timestamp
-        String timestamp = httpServletRequest.getHeader("timestamp");
+        String timestamp = httpServletRequest.getHeader("x-timestamp");
 
         if (StringUtils.isBlank(appKey)) {
-            throw new BussinessException("appKey不能为空");
+            throw new BussinessException("x-appKey不能为空");
         }
         if (StringUtils.isBlank(sign)) {
-            throw new BussinessException("sign不能为空");
+            throw new BussinessException("x-signature不能为空");
         }
         if (StringUtils.isBlank(timestamp)) {
-            throw new BussinessException("timestamp不能为空");
+            throw new BussinessException("x-timestamp不能为空");
         }
 
         //1. 校验时间戳是不是前后5分钟
@@ -106,6 +106,8 @@ public class TdaasInterceptor implements HandlerInterceptor {
      * @return
      */
     private boolean checkAppKey(String appKey, Etds etds) {
+        log.info("tdaas请求携带的appKey:{}", appKey);
+        log.info("etds数据库中的appKey:{}", etds.getAppKey());
         return Objects.equals(appKey, etds.getAppKey());
     }
 

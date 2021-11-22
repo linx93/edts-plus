@@ -1,21 +1,16 @@
 server:
-  port: 8175
-  undertow:
-    threads:
-      worker: 256
+  port: 18001
 spring:
   mvc:
     throw-exception-if-no-handler-found: true
   web:
     resources:
       add-mappings: false
-  jackson:
-    time-zone: GMT+8
   datasource:
-    url: jdbc:mysql://192.168.1.100:3306/center_service?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://47.100.162.114:13306/etds?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: 123456
+    password: root
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       connection-timeout: 60000
@@ -28,57 +23,33 @@ spring:
       validation-timeout: 3000
       read-only: false
       login-timeout: 5
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database: mysql
-    show-sql: true
-  data:
-    mongodb:
-      #      uri: mongodb://did:123456@192.168.0.254:27018,192.168.0.254:27019,192.168.0.254:27020/did
-      uri: mongodb://did:123456@192.168.1.102:27017/did
-    redis:
-      repositories:
-        enabled: false
-  redis:
-    database: 0
-    host: 192.168.1.110
-    port: 6379
-    password:
-    jedis:
-      pool:
-        max-active: 16
-        max-wait: 30000ms
-        max-idle: 16
-        min-idle: 1
-    timeout: 60000ms
 
-dtid:
-  url: http://192.168.1.111:8145/api/v1/tdr/
 
-mq:
-  url: http://192.168.1.111:4636/
-
-#\u8DE8\u57DF\u914D\u7F6E
-cros:
-  allowed:
-    origins: http://localhost,http://192.168.0.205,http://192.168.0.254
-logging:
-  level:
-    net.phadata.center.aspect: debug
-    net.phadata.center: debug
-  file:
-    name: ./logs/center-service.log
-  logback:
-    rollingpolicy:
-      clean-history-on-start: true
-      max-history: 10
-      file-name-pattern: ./logs/center-service.%d{yyyy-MM-dd}.%i.log
-
-mybatis:
+mybatis-plus:
+  mapper-locations: classpath:/mappers/*Mapper.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  mapper-locations: classpath:/mappers/*Mapper.xml
+
+
+#日志相关配置
+logging:
+  level:
+    com.phadata.etdsplus.aspect: debug
+    com.phadata.etdsplus: info
+  file:
+    #总日志文件，生成位置当前目录下的logs里面
+    name: ./logs/chain.log
+  logback:
+    rollingpolicy:
+      #服务重启清除历史日志，默认false
+      clean-history-on-start: false
+      #文件名，滚动生成，生成位置当前目录下的logs里面
+      file-name-pattern: ./logs/chain.%d{yyyy-MM-dd}.%i.log
+      #默认是7天，保存近30天
+      max-history: 30
+      #滚动日志每个文件大小的上限
+      max-file-size: 6MB
+
 ## swagger 文档配置
 knife4j:
   enable: true
@@ -102,7 +73,7 @@ knife4j:
     enableVersion: true
     enableFooter: false
     enableFooterCustom: true
-    footerCustomContent: Apache License 2.0 | Copyright@2021-远东诚信
+    footerCustomContent: Apache License 2.0 | Copyright@2021-天机科技
   cors: false
   production: false # 是否正式环境
   basic:
@@ -110,39 +81,16 @@ knife4j:
     username: test
     password: 123
 
-#登录公私钥
-login:
-  publickey: 041a4915407c7468e71d8dcad20fdfb853679539d8e0ba31e37deae029899204ad197d3164dd6df6b989199bc89b29d09df373a556ec1282ce4625030a7ca463c5
-  privatekey: 00b1920d58fba6f2c3de486439f0db5185dcc9125d1fe9e4377f36396b804be53e
 
-#秘袋儿 节点默认路由key
-nodemq:
-  default:
-    routeKey: ane79oc9eyo0
+#关于鉴权中心配置
+auth-center:
+  #请求鉴权中心内置的key和secret
+  app-key: c6ae6i06n88im0kpc92g
+  secret: c6ae6i06n88im0kpc920
+  #请求鉴权中获取token的地址
+  get-token-url: 192.168.1.254:8080/api/v1/auth/token/create
+  #请求鉴权中获取etds相关信息的地址
+  get-etds-info-url: 192.168.1.254:8080/api/v1/auth/etds/activation-code
+  #通知鉴权中心etds激活成功的地址
+  notify-etds-activate-success: 192.168.1.254:8080/api/v1/auth/etds/activation-success
 
-# 市场监督管理局
-saic:
-  syscode: SAIC_YWXT_5200A5
-
-xxl:
-  job:
-    admin:
-      ### 调度中心部署跟地址 [选填]：如调度中心集群部署存在多个地址则用逗号分隔。执行器将会使用该地址进行"执行器心跳注册"和"任务结果回调"；为空则关闭自动注册；
-      addresses: http://192.168.1.109:8080/xxl-job-admin
-    ### 执行器通讯TOKEN [选填]
-    accessToken:
-    executor:
-      ### 执行器AppName [选填]：执行器心跳注册分组依据；为空则关闭自动注册
-      appname: center-service-xxl-job
-      ### 执行器注册 [选填]：优先使用该配置作为注册地址，为空时使用内嵌服务 ”IP:PORT“ 作为注册地址。从而更灵活的支持容器类型执行器动态IP和动态映射端口问题。
-      address: http://192.168.1.111:9902
-      ### 执行器IP [选填]：默认为空表示自动获取IP，多网卡时可手动设置指定IP，该IP不会绑定Host仅作为通讯实用；地址信息用于 "执行器注册" 和 "调度中心请求并触发任务"；
-      ip: 192.168.1.111
-      ### 执行器端口号 [选填]：小于等于0则自动获取；默认端口为9999，单机部署多个执行器时，注意要配置不同执行器端口；
-      port: 9902
-      ### 执行器运行日志文件存储磁盘路径 [选填] ：需要对该路径拥有读写权限；为空则使用默认路径；
-      logpath: ./data/xxl-job-logs
-      ### 执行器日志文件保存天数 [选填] ： 过期日志自动清理, 限制值大于等于3时生效; 否则, 如-1, 关闭自动清理功能；
-      logretentiondays: 3
-
-version: @project.version@

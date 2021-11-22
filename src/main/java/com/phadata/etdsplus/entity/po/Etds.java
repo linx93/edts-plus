@@ -6,8 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 /**
  * <p>
@@ -17,7 +16,11 @@ import lombok.EqualsAndHashCode;
  * @author linx
  * @since 2021-11-16
  */
+
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="Etds对象", description="etds相关信息")
 public class Etds implements Serializable {
@@ -31,10 +34,10 @@ public class Etds implements Serializable {
     private String license;
 
     @ApiModelProperty(value = "创建时间")
-    private Date createTime;
+    private Long createTime;
 
     @ApiModelProperty(value = "更新时间")
-    private Date updateTime;
+    private Long updateTime;
 
     @ApiModelProperty(value = "公司名称")
     private String companyName;
@@ -42,14 +45,14 @@ public class Etds implements Serializable {
     @ApiModelProperty(value = "企业dtid")
     private String companyDtid;
 
-    @ApiModelProperty(value = "状态[true : 正常  false:暂停]")
+    @ApiModelProperty(value = "状态[0 : 正常  1:暂停]")
     private Integer state;
 
     @ApiModelProperty(value = "etds url（ip+port）")
     private String etdsUrl;
 
     @ApiModelProperty(value = "描述")
-    private String descrition;
+    private String description;
 
     @ApiModelProperty(value = "激活码")
     private String activationCode;

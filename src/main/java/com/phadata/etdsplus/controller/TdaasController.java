@@ -121,7 +121,7 @@ public class TdaasController {
      *
      * @return
      */
-    @PostMapping(value = "/sync-pri-key")
+    @PostMapping(value = "/sync-private-key")
     @ApiOperation(value = "提供给tdaas同步pubKey和priKey到etds中的接口")
     public Result syncPrivateKey(@Valid @RequestBody SyncPrivateKeyDTO syncPrivateKeyDTO) {
         boolean save = tdaasPrivateKeyService.save(TdaasPrivateKey.builder()

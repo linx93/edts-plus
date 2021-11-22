@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 
 /**
  * @description: 同步私钥的dto
- * @author: xionglin
+ * @author: linx
  * @create: 2021-11-17 14:36
  */
 @Data

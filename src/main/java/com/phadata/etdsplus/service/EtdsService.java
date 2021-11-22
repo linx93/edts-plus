@@ -1,5 +1,6 @@
 package com.phadata.etdsplus.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.phadata.etdsplus.entity.dto.ETDSRegisterDTO;
 import com.phadata.etdsplus.entity.po.Etds;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -23,7 +24,7 @@ public interface EtdsService extends IService<Etds> {
      * @param etdsRegisterDTO
      * @throws UnknownHostException
      */
-    void register(ETDSRegisterDTO etdsRegisterDTO);
+    void activationEtds(ETDSRegisterDTO etdsRegisterDTO);
 
     /**
      * 提供给tdaas确认激活
@@ -32,4 +33,12 @@ public interface EtdsService extends IService<Etds> {
      * @return
      */
     Etds confirmActivate(String etdsCode);
+
+
+    /**
+     * 提供给鉴权中心同步etds信息到etds中
+     *
+     * @param etdsInfo
+     */
+    void syncEtdsInfo(JSONObject etdsInfo);
 }

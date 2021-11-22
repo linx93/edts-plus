@@ -1,6 +1,7 @@
 package com.phadata.etdsplus.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.phadata.etdsplus.entity.dto.ETDSRegisterDTO;
 import com.phadata.etdsplus.entity.dto.LoginDTO;
@@ -42,15 +43,29 @@ public class EtdsController {
     }
 
     /**
-     * etds注册
+     * 激活etds
      *
      * @param etdsRegisterDTO
      * @return
      */
-    @PostMapping(value = "/etds/register")
-    @ApiOperation(value = "etds注册")
-    public Result register(@Valid @RequestBody ETDSRegisterDTO etdsRegisterDTO) {
-        etdsService.register(etdsRegisterDTO);
+    @PostMapping(value = "/etds/activation-etds")
+    @ApiOperation(value = "激活etds")
+    public Result activationEtds(@Valid @RequestBody ETDSRegisterDTO etdsRegisterDTO) {
+        etdsService.activationEtds(etdsRegisterDTO);
+        return Result.success();
+    }
+
+
+    /**
+     * 提供给鉴权中心同步etds信息到etds中
+     *
+     * @param etdsInfo
+     * @return
+     */
+    @PostMapping(value = "/etds/sync-etds-info")
+    @ApiOperation(value = "提供给鉴权中心同步etds信息到etds中")
+    public Result syncEtdsInfo(@RequestBody JSONObject etdsInfo) {
+        etdsService.syncEtdsInfo(etdsInfo);
         return Result.success();
     }
 

@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class   SimpleCache {
+public class SimpleCache {
+    private SimpleCache() {
+    }
 
     /**
      * 先进先出的策略

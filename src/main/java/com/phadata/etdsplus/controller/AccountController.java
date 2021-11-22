@@ -10,11 +10,7 @@ import com.phadata.etdsplus.utils.jwt.JwtUtil;
 import com.phadata.etdsplus.utils.result.Result;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -30,6 +26,7 @@ import java.util.Map;
  * @since 2021-11-15
  */
 @Slf4j
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/account")
 public class AccountController {

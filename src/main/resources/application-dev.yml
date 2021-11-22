@@ -82,3 +82,15 @@ knife4j:
     password: 123
 
 
+#关于鉴权中心配置
+auth-center:
+  #请求鉴权中心内置的key和secret
+  app-key: c6ae6i06n88im0kpc92g
+  secret: c6ae6i06n88im0kpc920
+  #请求鉴权中获取token的地址
+  get-token-url: 192.168.1.254:8080/api/v1/auth/token/create
+  #请求鉴权中获取etds相关信息的地址
+  get-etds-info-url: 192.168.1.254:8080/api/v1/auth/etds/activation-code
+  #通知鉴权中心etds激活成功的地址
+  notify-etds-activate-success: 192.168.1.254:8080/api/v1/auth/etds/activation-success
+
