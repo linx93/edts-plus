@@ -23,8 +23,18 @@ spring:
       validation-timeout: 3000
       read-only: false
       login-timeout: 5
+  rabbitmq:
+    host: 192.168.1.107
+    password: 123456
+    username: fecred
+    port: 5672
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual
 
 
+#mybatis-plus相关配置
 mybatis-plus:
   mapper-locations: classpath:/mappers/*Mapper.xml
   configuration:

@@ -10,7 +10,10 @@ import com.phadata.etdsplus.entity.po.Etds;
 import com.phadata.etdsplus.exception.BussinessException;
 import com.phadata.etdsplus.localcache.CacheEnum;
 import com.phadata.etdsplus.localcache.SimpleCache;
+import com.phadata.etdsplus.mapper.DataSwitchMapper;
 import com.phadata.etdsplus.mapper.EtdsMapper;
+import com.phadata.etdsplus.mq.InitMQInfo;
+import com.phadata.etdsplus.service.DataSwitchService;
 import com.phadata.etdsplus.service.EtdsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.phadata.etdsplus.utils.AKUtil;
@@ -37,6 +40,9 @@ import java.util.Map;
 @Service
 public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements EtdsService {
 
+    private final InitMQInfo initMQInfo;
+    private final DataSwitchMapper dataSwitchMapper;
+    private final DataSwitchService dataSwitchService;
 
     @Value("${auth-center.app-key:}")
     private String appKey;
@@ -52,6 +58,12 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
 
     @Value("${auth-center.notify-etds-activate-success:}")
     private String activateSuccessUrl;
+
+    public EtdsServiceImpl(InitMQInfo initMQInfo, DataSwitchMapper dataSwitchMapper, DataSwitchService dataSwitchService) {
+        this.initMQInfo = initMQInfo;
+        this.dataSwitchMapper = dataSwitchMapper;
+        this.dataSwitchService = dataSwitchService;
+    }
 
     @Override
     public void activationEtds(ETDSRegisterDTO etdsRegisterDTO) {
@@ -70,8 +82,11 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
         JSONObject etdsInfo = resultEtdsData.getPayload();
         log.info("end->请求鉴权中心获取etds相关信息");
         log.info("请求鉴权中心获取etds相关信息:{}", JSON.toJSONString(etdsInfo, true));
+        // 4. 默认插入,存在就更新
+        dataSwitchService.updateDataSwitch(true);
 
-        //TODO 5. 注册保存成功后，生成MQ的队列以及监听信息
+        // 5. 注册保存成功后，生成MQ的队列以及binding信息
+        initMQInfo.initMQInfo(this);
     }
 
 

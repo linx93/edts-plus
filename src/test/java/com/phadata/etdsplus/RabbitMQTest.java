@@ -2,8 +2,12 @@ package com.phadata.etdsplus;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import com.phadata.etdsplus.mq.InitMQInfo;
+import com.phadata.etdsplus.service.EtdsService;
 import org.aspectj.apache.bcel.classfile.annotation.NameValuePair;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,14 +22,24 @@ import java.util.HashMap;
  * @author: linx
  * @create: 2021-11-22 17:22
  */
-
+@SpringBootTest
 public class RabbitMQTest {
+    @Autowired
+    private InitMQInfo initMQInfo;
+    @Autowired
+    private EtdsService etdsService;
 
+    /**
+     * 通过控制台提供的web api获取所以队列
+     *
+     * @throws IOException
+     */
     @Test
     void queuesTest() throws IOException {
         String apiMessage = getApiMessage();
         System.out.println(apiMessage);
     }
+
     public String getApiMessage() throws IOException {
         //发送一个GET请求
         HttpURLConnection httpConn = null;
@@ -58,5 +72,22 @@ public class RabbitMQTest {
             httpConn.disconnect();
             return "";
         }
+    }
+
+
+    /**
+     * 测试初始化队列和绑定关系
+     */
+    @Test
+    void initMQInfoTest() {
+        initMQInfo.initMQInfo(etdsService);
+    }
+
+    /**
+     * 测试移除队列和交换机的绑定关系
+     */
+    @Test
+    void removeBinding() {
+        initMQInfo.removeBinding(etdsService);
     }
 }

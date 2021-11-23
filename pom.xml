@@ -88,6 +88,11 @@
             <artifactId>hutool-http</artifactId>
             <version>5.5.8</version>
         </dependency>
+        <!-- amqp-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-cache</artifactId>

@@ -1,21 +1,19 @@
-package com.phadata.etdsplus.localcache;
+package com.phadata.etdsplus.mq;
 
 /**
- * @description: 缓存名
+ * @description: 交换机枚举
  * @author: linx
  * @create: 2021-11-17 11:17
  */
-public enum CacheEnum {
+public enum ExchangeEnum {
 
-    ETDS_STATUS("etdsStatus", "etds受tdaas管理的状态"),
-    ETDS("etds", "etds的整体信息"),
-    ETDS_CODE("etdsCode", "etds的唯一码");
+    AUTH_DATA_EXCHANGE("auth-data", "整个授权及数据交互的流程共用的交换机");
 
 
     private final String code;
     private final String remark;
 
-    CacheEnum(String code, String remark) {
+    ExchangeEnum(String code, String remark) {
         this.code = code;
         this.remark = remark;
     }

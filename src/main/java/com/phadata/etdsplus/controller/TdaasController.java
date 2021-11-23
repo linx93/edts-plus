@@ -1,27 +1,24 @@
 package com.phadata.etdsplus.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.phadata.etdsplus.entity.dto.ConfirmActivateEtdsDTO;
 import com.phadata.etdsplus.entity.dto.OperateETDSDTO;
 import com.phadata.etdsplus.entity.dto.SyncPrivateKeyDTO;
 import com.phadata.etdsplus.entity.po.Etds;
 import com.phadata.etdsplus.entity.po.TdaasPrivateKey;
 import com.phadata.etdsplus.entity.res.HeartbeatResponse;
-import com.phadata.etdsplus.exception.BussinessException;
 import com.phadata.etdsplus.localcache.CacheEnum;
 import com.phadata.etdsplus.localcache.SimpleCache;
 import com.phadata.etdsplus.service.EtdsService;
 import com.phadata.etdsplus.service.EtdsStatusRecordService;
 import com.phadata.etdsplus.service.TdaasPrivateKeyService;
+import com.phadata.etdsplus.utils.EtdsUtil;
 import com.phadata.etdsplus.utils.result.Result;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.List;
 
@@ -37,11 +34,13 @@ public class TdaasController {
     private final EtdsService etdsService;
     private final EtdsStatusRecordService etdsStatusRecordService;
     private final TdaasPrivateKeyService tdaasPrivateKeyService;
+    private final EtdsUtil etdsUtil;
 
-    public TdaasController(EtdsService etdsService, EtdsStatusRecordService etdsStatusRecordService, TdaasPrivateKeyService tdaasPrivateKeyService) {
+    public TdaasController(EtdsService etdsService, EtdsStatusRecordService etdsStatusRecordService, TdaasPrivateKeyService tdaasPrivateKeyService, EtdsUtil etdsUtil) {
         this.etdsService = etdsService;
         this.etdsStatusRecordService = etdsStatusRecordService;
         this.tdaasPrivateKeyService = tdaasPrivateKeyService;
+        this.etdsUtil = etdsUtil;
     }
 
 
@@ -87,24 +86,10 @@ public class TdaasController {
      *
      * @return
      */
-    @GetMapping(value = "/etds-heartbeat")
+    @PostMapping(value = "/etds-heartbeat")
     @ApiOperation(value = "提供给tdaas的心跳检测接口")
     public Result<HeartbeatResponse> heartbeat() {
-        String etdsStr = SimpleCache.getCache(CacheEnum.ETDS.getCode());
-        Etds etds = StringUtils.isBlank(etdsStr) ? null : JSON.parseObject(etdsStr, Etds.class);
-        //缓存不存在查库
-        if (etds == null) {
-            List<Etds> list = etdsService.list();
-            if (list.isEmpty()) {
-                throw new BussinessException("etds暂未注册");
-            }
-            if (list.size() > 1) {
-                throw new BussinessException("存在多个etds错误");
-            }
-            etds = list.get(0);
-            //放入缓存
-            SimpleCache.setCache(CacheEnum.ETDS.getCode(), JSON.toJSONString(etds), 24 * 30);
-        }
+        Etds etds = etdsUtil.EtdsInfo(etdsService);
         String etdsStatus = SimpleCache.getCache(CacheEnum.ETDS_STATUS.getCode());
         if (StringUtils.isBlank(etdsStatus)) {
             //缓存不存在查库
