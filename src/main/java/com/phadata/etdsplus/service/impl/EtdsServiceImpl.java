@@ -87,6 +87,8 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
 
         // 5. 注册保存成功后，生成MQ的队列以及binding信息
         initMQInfo.initMQInfo(this);
+        // 6. mq信息生成后，对队列信息监听
+        initMQInfo.executeListener(this);
     }
 
 

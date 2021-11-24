@@ -5,12 +5,14 @@ import com.phadata.etdsplus.service.EtdsService;
 import com.phadata.etdsplus.utils.EtdsUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,8 +27,17 @@ public class InitMQInfo {
     @Autowired
     private RabbitAdmin rabbitAdmin;
     @Autowired
+    private ConnectionFactory connectionFactory;
+    @Autowired
     private EtdsUtil etdsUtil;
-
+    @Autowired
+    private AuthResultApplyConsumer authResultApplyConsumer;
+    @Autowired
+    private AuthResultProvideConsumer authResultProvideConsumer;
+    @Autowired
+    private DataRequestProvideConsumer dataRequestProvideConsumer;
+    @Autowired
+    private DataResultApplyConsumer dataResultApplyConsumer;
     /**
      * 全局交换机名称
      */
@@ -57,6 +68,46 @@ public class InitMQInfo {
             rabbitAdmin.declareBinding(binding);
         }
         log.info("初始化MQ和bind关系结束：------------------------------------");
+    }
+
+
+    /**
+     * 初始化监听
+     *
+     * @param etdsService
+     */
+    public void executeListener(EtdsService etdsService) {
+        Etds etdsInfo = etdsUtil.EtdsInfo(etdsService);
+        //("4", "6", "9", "11")
+        log.info("初始化MQ的consumer，注册消费监听逻辑到SimpleMessageListenerContainer监听容器中开始：------------------------------------");
+        registerConsumerToContainer(etdsInfo, authResultApplyConsumer, "4");
+        registerConsumerToContainer(etdsInfo, authResultProvideConsumer, "6");
+        registerConsumerToContainer(etdsInfo, dataRequestProvideConsumer, "9");
+        registerConsumerToContainer(etdsInfo, dataResultApplyConsumer, "11");
+        log.info("初始化MQ的consumer，注册消费监听逻辑到SimpleMessageListenerContainer监听容器中结束：------------------------------------");
+    }
+
+    /**
+     * 初始化MQ的consumer，注册消费监听逻辑到SimpleMessageListenerContainer监听容器中
+     *
+     * @param value 需要初始化的枚举code值，对应MessageConsumerEnum枚举中的code("4", "6", "9", "11")
+     */
+    private void registerConsumerToContainer(Etds etdsInfo, ChannelAwareMessageListener messageListener, String value) {
+        String companyDtid = etdsInfo.getCompanyDtid();
+        String etdsCode = etdsInfo.getEtdsCode();
+        String queueName = buildQueueName(companyDtid, etdsCode, value);
+        log.info("开始监听队列：{}", queueName);
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
+        container.setQueueNames(queueName);
+        container.setExposeListenerChannel(true);
+        //设置每个消费者获取的最大的消息数量
+        container.setPrefetchCount(1);
+        //消费者个数
+        container.setConcurrentConsumers(1);
+        //设置确认模式为手工确认
+        container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+        container.setMessageListener(messageListener);
+        container.start();
     }
 
     /**

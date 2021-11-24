@@ -2,6 +2,9 @@ package com.phadata.etdsplus;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import com.alibaba.fastjson.JSON;
+import com.phadata.etdsplus.mq.BizMessage;
+import com.phadata.etdsplus.mq.ExchangeEnum;
 import com.phadata.etdsplus.mq.InitMQInfo;
 import com.phadata.etdsplus.service.EtdsService;
 import org.aspectj.apache.bcel.classfile.annotation.NameValuePair;
@@ -89,5 +92,24 @@ public class RabbitMQTest {
     @Test
     void removeBinding() {
         initMQInfo.removeBinding(etdsService);
+    }
+
+    /**
+     * 测试mq发送消息
+     */
+    @Test
+    void sendMsg() {
+        BizMessage bizMessage = new BizMessage()
+                .setDtid("123")
+                .setMachineId("123")
+                .setTitle("测试")
+                .setBaseMqInfo(new BizMessage.BaseMqInfo()
+                        .setContent("msg is test info")
+                        .setExchange(ExchangeEnum.AUTH_DATA_EXCHANGE.getCode())
+                        .setExchangeType("DIRECT")
+                        .setQueue("dtid:dtca:sdfsdfdsfsdfsdf_c6bmo306n88ldpmt4r3g_9")
+                        .setRoutingKey("dtid:dtca:sdfsdfdsfsdfsdf_c6bmo306n88ldpmt4r3g_9"));
+        HttpResponse execute = HttpRequest.post("http://192.168.1.111:4636/api/producer/send").body(JSON.toJSONString(bizMessage)).execute();
+        System.out.println(execute);
     }
 }
