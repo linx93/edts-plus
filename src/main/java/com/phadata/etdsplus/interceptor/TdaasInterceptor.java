@@ -59,7 +59,7 @@ public class TdaasInterceptor implements HandlerInterceptor {
             throw new BussinessException("x-timestamp不能为空");
         }
 
-        //1. 校验时间戳是不是前后5分钟
+        //1. 校验时间戳是不是前后5分钟  TODO 后续把这个注解打开
        /* if (!AKUtil.checkTimestamp(Long.valueOf(timestamp))) {
             throw new BussinessException("sign已过期");
         }*/

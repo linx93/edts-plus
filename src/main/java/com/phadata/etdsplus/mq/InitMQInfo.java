@@ -135,7 +135,7 @@ public class InitMQInfo {
      * @param code        枚举code，标记了流程的唯一，对应一直存储表
      * @return
      */
-    private String buildRoutingKey(String companyDtid, String etdsCode, String code) {
+    public static String buildRoutingKey(String companyDtid, String etdsCode, String code) {
         return new StringBuilder(companyDtid).append("_").append(etdsCode).append("_").append(code).toString();
     }
 
@@ -147,7 +147,7 @@ public class InitMQInfo {
      * @param code        枚举code，标记了流程的唯一，对应一直存储表
      * @return
      */
-    private String buildQueueName(String companyDtid, String etdsCode, String code) {
+    public static String buildQueueName(String companyDtid, String etdsCode, String code) {
         return new StringBuilder(companyDtid).append("_").append(etdsCode).append("_").append(code).toString();
     }
 

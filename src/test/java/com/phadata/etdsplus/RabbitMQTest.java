@@ -6,8 +6,9 @@ import com.alibaba.fastjson.JSON;
 import com.phadata.etdsplus.mq.BizMessage;
 import com.phadata.etdsplus.mq.ExchangeEnum;
 import com.phadata.etdsplus.mq.InitMQInfo;
+import com.phadata.etdsplus.mq.MessageConsumerEnum;
 import com.phadata.etdsplus.service.EtdsService;
-import org.aspectj.apache.bcel.classfile.annotation.NameValuePair;
+import com.phadata.etdsplus.utils.MQSendUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +19,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
-import java.util.HashMap;
 
 /**
  * @description: 通过rabbitMQ的管理界面获取队列测试
@@ -104,12 +104,21 @@ public class RabbitMQTest {
                 .setMachineId("123")
                 .setTitle("测试")
                 .setBaseMqInfo(new BizMessage.BaseMqInfo()
-                        .setContent("msg is test info")
+                        .setContent("kb msg is test info")
                         .setExchange(ExchangeEnum.AUTH_DATA_EXCHANGE.getCode())
                         .setExchangeType("DIRECT")
                         .setQueue("dtid:dtca:sdfsdfdsfsdfsdf_c6bmo306n88ldpmt4r3g_9")
                         .setRoutingKey("dtid:dtca:sdfsdfdsfsdfsdf_c6bmo306n88ldpmt4r3g_9"));
         HttpResponse execute = HttpRequest.post("http://192.168.1.111:4636/api/producer/send").body(JSON.toJSONString(bizMessage)).execute();
         System.out.println(execute);
+    }
+
+
+    @Autowired
+    private MQSendUtil mqSendUtil;
+    @Test
+    void sendMsgTest(){
+        mqSendUtil.sendToETDS("dtid:dtca:sdfsdfdsfsdfsdf","111","title","msg info","c6bmo306n88ldpmt4r3g", MessageConsumerEnum.re_etds_to_pr_etds_data);
+        mqSendUtil.sendToTDaaS("dtid:dtca:dQAhX8P8MfYbyTtsAnxcDuHri1g","111","title","叫老刘一起吧", MessageConsumerEnum.gr_tdaas_to_pr_tdaas);
     }
 }
