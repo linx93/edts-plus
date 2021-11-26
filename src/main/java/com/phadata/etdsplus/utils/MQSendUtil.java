@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @description: mq的发送工具
- * @author: xionglin
+ * @author: linx
  * @create: 2021-11-25 17:05
  */
 @Slf4j
@@ -23,6 +23,8 @@ public class MQSendUtil {
     private String sendMQ;
 
     public void sendToETDS(String dtid, String machineId, String title, String content, String etdsCode, MessageConsumerEnum messageConsumerEnum) {
+        String queueName = InitMQInfo.buildQueueName(dtid, etdsCode, String.valueOf(messageConsumerEnum.getCode()));
+        String routingKey = InitMQInfo.buildRoutingKey(dtid, etdsCode, String.valueOf(messageConsumerEnum.getCode()));
         BizMessage bizMessage = new BizMessage()
                 .setDtid(dtid)
                 .setMachineId(machineId)
@@ -31,13 +33,16 @@ public class MQSendUtil {
                         .setContent(content)
                         .setExchange(ExchangeEnum.AUTH_DATA_EXCHANGE.getCode())
                         .setExchangeType("DIRECT")
-                        .setQueue(InitMQInfo.buildQueueName(dtid, etdsCode, String.valueOf(messageConsumerEnum.getCode())))
-                        .setRoutingKey(InitMQInfo.buildQueueName(dtid, etdsCode, String.valueOf(messageConsumerEnum.getCode()))));
+                        .setQueue(queueName)
+                        .setRoutingKey(routingKey));
         HttpResponse execute = HttpRequest.post(sendMQ).body(JSON.toJSONString(bizMessage)).execute();
+        log.info("【发给tdaas消费的】发送mq   queue:{}  routingKey:{}", queueName, routingKey);
         log.info("【发给etds消费的】发送mq的请求返回:{}", execute.body());
     }
 
     public void sendToTDaaS(String dtid, String machineId, String title, String content, MessageConsumerEnum messageConsumerEnum) {
+        String queueName = dtid + "_" + messageConsumerEnum.getCode();
+        String routingKey = dtid + "_" + messageConsumerEnum.getCode();
         BizMessage bizMessage = new BizMessage()
                 .setDtid(dtid)
                 .setMachineId(machineId)
@@ -46,9 +51,10 @@ public class MQSendUtil {
                         .setContent(content)
                         .setExchange(ExchangeEnum.AUTH_DATA_EXCHANGE.getCode())
                         .setExchangeType("DIRECT")
-                        .setQueue(dtid + "_" + messageConsumerEnum.getCode())
-                        .setRoutingKey(dtid + "_" + messageConsumerEnum.getCode()));
+                        .setQueue(queueName)
+                        .setRoutingKey(routingKey));
         HttpResponse execute = HttpRequest.post(sendMQ).body(JSON.toJSONString(bizMessage)).execute();
+        log.info("【发给tdaas消费的】发送mq   queue:{}  routingKey:{}", queueName, routingKey);
         log.info("【发给tdaas消费的】发送mq的请求返回:{}", execute.body());
     }
 }

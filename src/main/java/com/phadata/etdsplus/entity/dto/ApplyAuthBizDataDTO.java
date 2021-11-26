@@ -3,6 +3,7 @@ package com.phadata.etdsplus.entity.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -15,15 +16,27 @@ import java.util.List;
  * @create: 2021-11-25 09:38
  */
 @Data
-@ApiModel(value = "申请授权的dto/定制层传给etds的", description = "申请授权的dto/定制层传给etds的")
-public class ApplyAuthDTO {
+@Accessors(chain = true)
+@ApiModel(value = "申请授权的dto/etds通过mq传给授权方tdaas", description = "申请授权的dto/etds通过mq传给授权方tdaas")
+public class ApplyAuthBizDataDTO {
+
+    @ApiModelProperty(value = "数据请求方", required = true)
+    @Valid
+    @NotNull
+    private Address from;
 
     @ApiModelProperty(value = "授权方", required = true)
     @Valid
     @NotNull
     private Address to;
 
-    @ApiModelProperty(value = "数据供应方的list",required = true)
+    @ApiModelProperty(value = "授权类型（0:请求 1:响应）", required = true)
+    @Valid
+    @NotNull
+    private Integer authType;
+
+    @ApiModelProperty(value = "数据供应方的list", required = true)
+    //@Size(min = 1,message = "cc数组不能为空")
     private List<Address> cc;
 
     @ApiModelProperty(value = "描述信息", required = true)

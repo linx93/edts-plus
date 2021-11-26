@@ -1,15 +1,20 @@
 package com.phadata.etdsplus.controller;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.phadata.etdsplus.entity.dto.AuthDtcDTO;
 import com.phadata.etdsplus.entity.dto.ConfirmActivateEtdsDTO;
 import com.phadata.etdsplus.entity.dto.OperateETDSDTO;
 import com.phadata.etdsplus.entity.dto.SyncPrivateKeyDTO;
 import com.phadata.etdsplus.entity.po.Etds;
+import com.phadata.etdsplus.entity.po.GrantResultProvide6;
 import com.phadata.etdsplus.entity.po.TdaasPrivateKey;
 import com.phadata.etdsplus.entity.res.HeartbeatResponse;
+import com.phadata.etdsplus.exception.BussinessException;
 import com.phadata.etdsplus.localcache.CacheEnum;
 import com.phadata.etdsplus.localcache.SimpleCache;
 import com.phadata.etdsplus.service.EtdsService;
 import com.phadata.etdsplus.service.EtdsStatusRecordService;
+import com.phadata.etdsplus.service.GrantResultProvide6Service;
 import com.phadata.etdsplus.service.TdaasPrivateKeyService;
 import com.phadata.etdsplus.utils.EtdsUtil;
 import com.phadata.etdsplus.utils.result.Result;
@@ -19,8 +24,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @description: 提供给tdaas调用的接口
@@ -35,12 +40,14 @@ public class TdaasController {
     private final EtdsStatusRecordService etdsStatusRecordService;
     private final TdaasPrivateKeyService tdaasPrivateKeyService;
     private final EtdsUtil etdsUtil;
+    private final GrantResultProvide6Service grantResultProvide6Service;
 
-    public TdaasController(EtdsService etdsService, EtdsStatusRecordService etdsStatusRecordService, TdaasPrivateKeyService tdaasPrivateKeyService, EtdsUtil etdsUtil) {
+    public TdaasController(EtdsService etdsService, EtdsStatusRecordService etdsStatusRecordService, TdaasPrivateKeyService tdaasPrivateKeyService, EtdsUtil etdsUtil, GrantResultProvide6Service grantResultProvide6Service) {
         this.etdsService = etdsService;
         this.etdsStatusRecordService = etdsStatusRecordService;
         this.tdaasPrivateKeyService = tdaasPrivateKeyService;
         this.etdsUtil = etdsUtil;
+        this.grantResultProvide6Service = grantResultProvide6Service;
     }
 
 
@@ -120,5 +127,39 @@ public class TdaasController {
         return Result.success();
     }
 
+
+    /**
+     * 提供给tdaas暂停某个授权凭证的接口
+     *
+     * @return
+     */
+    @PostMapping(value = "/stop-auth-dtc")
+    @ApiOperation(value = "提供给tdaas暂停某个授权凭证的接口")
+    public Result stopAuthDtc(@Valid @RequestBody AuthDtcDTO authDtcDTO) {
+        GrantResultProvide6 grantResultProvide6 = new GrantResultProvide6();
+        grantResultProvide6.setUseStatus(1);
+        boolean update = grantResultProvide6Service.update(grantResultProvide6, new UpdateWrapper<GrantResultProvide6>().lambda().eq(GrantResultProvide6::getClaimId, authDtcDTO.getClaimId()));
+        if (!update) {
+            throw new BussinessException("操作失败!");
+        }
+        return Result.success();
+    }
+
+    /**
+     * 提供给tdaas恢复某个授权凭证的接口
+     *
+     * @return
+     */
+    @PostMapping(value = "/recover-auth-dtc")
+    @ApiOperation(value = "提供给tdaas恢复某个授权凭证的接口")
+    public Result recoverAuthDtc(@Valid @RequestBody AuthDtcDTO authDtcDTO) {
+        GrantResultProvide6 grantResultProvide6 = new GrantResultProvide6();
+        grantResultProvide6.setUseStatus(0);
+        boolean update = grantResultProvide6Service.update(grantResultProvide6, new UpdateWrapper<GrantResultProvide6>().lambda().eq(GrantResultProvide6::getClaimId, authDtcDTO.getClaimId()));
+        if (!update) {
+            throw new BussinessException("操作失败!");
+        }
+        return Result.success();
+    }
 
 }

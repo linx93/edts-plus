@@ -4,6 +4,8 @@ package com.phadata.etdsplus.service;
 import com.phadata.etdsplus.entity.dto.ClaimReqBizPackage;
 import com.phadata.etdsplus.entity.dto.DTCResponse;
 
+import java.util.Map;
+
 /**
  * 凭证相关服务
  *
@@ -28,4 +30,13 @@ public interface DTCComponent {
      * @throws Exception
      */
     DTCResponse createDtc(ClaimReqBizPackage claimReqBizPackage) throws Exception;
+
+
+    /**
+     * 通过创建凭证响应结果，获取出其中的凭证
+     *
+     * @param dtcResponse
+     * @return
+     */
+    Map<String, Object> parse(DTCResponse dtcResponse);
 }

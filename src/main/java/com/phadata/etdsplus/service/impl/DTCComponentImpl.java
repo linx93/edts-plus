@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -84,6 +85,26 @@ public class DTCComponentImpl implements DTCComponent {
             throw new BussinessException("创建凭证返回为空");
         }
         return dtcResponse;
+    }
+
+    @Override
+    public Map<String, Object> parse(DTCResponse dtcResponse) {
+        if (dtcResponse == null) {
+            throw new BussinessException("DTCResponse为空");
+        }
+        List<DTCResponse.ClaimResInfo> claims = dtcResponse.getClaims();
+        if (claims.isEmpty()) {
+            throw new BussinessException("DTCResponse中的claims为空");
+        }
+        DTCResponse.ClaimResInfo claimResInfo = claims.get(0);
+        if (claimResInfo == null) {
+            throw new BussinessException("DTCResponse中的claims.get(0)为空");
+        }
+        Map<String, Object> claim = claimResInfo.getClaim();
+        if (claim == null) {
+            throw new BussinessException("DTCResponse中的claims的claim为空");
+        }
+        return claim;
     }
 
 }

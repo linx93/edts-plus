@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import org.junit.jupiter.api.Test;
 
 
-
 public class CodeGenerator {
 
     @Test
@@ -62,7 +61,20 @@ public class CodeGenerator {
 
         // 5、策略配置
         StrategyConfig strategy = new StrategyConfig();
-        String[] tables = {"data_switch"};
+        /*String[] tables = {"re_auth_notice_apply_1"
+                , "re_auth_notice_apply_2"
+                , "grant_result_apply_4"
+                , "grant_result_provide_6"
+                , "re_data_notice_apply_7"
+                , "re_data_notice_apply_8"
+                , "re_data_notice_apply_9"
+                , "re_data_notice_provide_9"
+                , "data_statistics_provide_10"
+                , "data_statistics_apply_11"
+                , "data_statistics_provide_11"
+                , "data_statistics_provide_12"
+                , "data_statistics_provide_13"};*/
+        String[] tables = {"grant_result_provide_6"};
         strategy.setInclude(tables);
 
         strategy.setNaming(NamingStrategy.underline_to_camel);//数据库表映射到实体的命名策略
@@ -78,7 +90,7 @@ public class CodeGenerator {
 
 
         // 6、执行
-        //mpg.execute();
+        mpg.execute();
     }
 
 

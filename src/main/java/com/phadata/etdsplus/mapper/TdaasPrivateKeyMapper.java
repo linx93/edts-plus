@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
  * @author linx
  * @since 2021-11-17
  */
+@Component
 @Mapper
 public interface TdaasPrivateKeyMapper extends BaseMapper<TdaasPrivateKey> {
     /**
