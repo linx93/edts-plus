@@ -122,3 +122,10 @@ dtc-server:
 #rabbitMQ发送配置
 mq:
   send: http://192.168.1.111:4636/api/producer/send
+
+#定制层的配置
+custom:
+  #推授权凭证给定制层的地址
+  auth-push: http://192.168.1.52:8080/v1/response/auth
+  #推数据凭证给定制层的地址
+  data-push: http://192.168.1.52:8080/v1/response/data
