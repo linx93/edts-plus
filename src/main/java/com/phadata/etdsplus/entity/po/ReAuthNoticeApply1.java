@@ -1,12 +1,17 @@
 package com.phadata.etdsplus.entity.po;
 
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * <p>
@@ -19,16 +24,21 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="ReAuthNoticeApply1对象", description="请求授权通知(请求方)<1>")
+@TableName("re_auth_notice_apply_1")
+@Accessors(chain = true)
 public class ReAuthNoticeApply1 implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "主键")
-      @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
     @ApiModelProperty(value = "发起etds唯一编码")
     private String applyEtdsUuid;
+
+    @ApiModelProperty(value = "发起etds所属的tdaas的数字身份")
+    private String applyDtid;
 
     @ApiModelProperty(value = "数据提供方企业dtid")
     private String toDtid;
