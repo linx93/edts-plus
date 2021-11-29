@@ -1,12 +1,19 @@
 package com.phadata.etdsplus.mq;
 
+import com.alibaba.fastjson.JSON;
+import com.phadata.etdsplus.entity.po.GrantResultProvide6;
+import com.phadata.etdsplus.service.GrantResultProvide6Service;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
+import net.phadata.identity.dtc.entity.VerifiableClaim;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.util.Map;
 
 
 /**
@@ -17,31 +24,35 @@ import java.io.IOException;
 @Component
 @Slf4j
 public class AuthResultProvideConsumer implements ChannelAwareMessageListener {
+    @Autowired
+    private GrantResultProvide6Service grantResultProvide6Service;
+
     @Override
     public void onMessage(Message message, Channel channel) {
         try {
             log.info("数据授权的消费者【流程中对应6】消费消息{}：", new String(message.getBody()));
-           /* ClaimInfoData claimInfoData = JSON.parseObject(new String(message.getBody()), ClaimInfoData.class);
-            for (int i = 0; i < claimInfoData.getClaims().size(); i++) {
-                ClaimInfoData.Claim claim = claimInfoData.getClaims().get(i);
-                VerifiableClaim verifiableClaim = claim.getClaim();
-                String holder = verifiableClaim.getCredentialSubject().getId();
-                //解决幂等性问题
-                QueryWrapper<DtcDocument> dtcDocumentQueryWrapper = new QueryWrapper<>();
-                dtcDocumentQueryWrapper.eq("issuer", verifiableClaim.getIssuer());
-                dtcDocumentQueryWrapper.eq("holder", holder);
-                dtcDocumentQueryWrapper.eq("dtcid", verifiableClaim.getId());
-                DtcDocument selectOne = dtcDocumentMapper.selectOne(dtcDocumentQueryWrapper);
-                if (selectOne != null) {
-                    channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-                    return;
-                }
+            String msg = new String(message.getBody());
+            //这个就是授权凭证
+            VerifiableClaim vc = JSON.parseObject(msg, VerifiableClaim.class);
+            log.info("数据授权的消费者【流程中对应4】消费消息：{}", JSON.toJSONString(vc, true));
+            //bizData就是数据
+            Map<String, Object> bizData = vc.getCredentialSubject().getBizData();
+            //保存凭证  TODO 下面的bizData中取出的key，需要和柯博对接确定
+            long epochSecond = Instant.now().getEpochSecond();
+            grantResultProvide6Service.save(new GrantResultProvide6()
+                    .setCreatedTime(epochSecond)
+                    .setOperatedTime(epochSecond)
+                    .setApplyEtdsUuid(bizData.getOrDefault("", "").toString())
+                    .setGrantDetails(bizData.getOrDefault("", "").toString())
+                    .setGrantDtid(bizData.getOrDefault("", "").toString())
+                    .setGrantStatus(bizData.getOrDefault("", "").toString())
+                    .setGrantDocument(JSON.toJSONString(vc))
+                    .setNoticeId(Long.valueOf(bizData.getOrDefault("", -1).toString()))
+                    .setSerialNumber(bizData.getOrDefault("serialNumber", "").toString())
+                    .setToDtid(bizData.getOrDefault("", "").toString())
+                    .setToEtdsUuid(bizData.getOrDefault("", "").toString())
+                    .setUseStatus(0));
 
-                if (i == claimInfoData.getClaims().size() - 1) {
-                    channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-                    return;
-                }
-            }*/
             //手动签收
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
