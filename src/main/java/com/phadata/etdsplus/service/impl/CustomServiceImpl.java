@@ -15,6 +15,7 @@ import com.phadata.etdsplus.utils.EtdsUtil;
 import com.phadata.etdsplus.utils.MQSendUtil;
 import com.phadata.etdsplus.utils.result.Result;
 import net.phadata.identity.common.DTCType;
+import net.phadata.identity.dtc.entity.VerifiableClaim;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -77,7 +78,7 @@ public class CustomServiceImpl implements CustomService {
                 .setDesc(applyAuth.getDesc())
                 .setAuthType(AuthType.REQUEST.getCode());
         claimReqBizPackage.setBizData(JSON.parseObject(JSON.toJSONString(applyAuthBizDataDTO), Map.class));
-        Map<String, Object> claim2 = new HashMap<>(8);
+        Map<String, Object> claim2;
         //3. 给数据授权方的tdaas发送MQ消息【流程2】
         if (!cc.isEmpty()) {
             try {
@@ -95,13 +96,13 @@ public class CustomServiceImpl implements CustomService {
             throw new BussinessException("cc[数据供应方的list]属性不能为空");
         }
         //4. 给自己的tdaas发送MQ消息【流程1】
-        Map<String, Object> claim1 = new HashMap<>(8);
+        Map<String, Object> claim1;
         try {
             claimReqBizPackage.setHolder(etdsInfo.getCompanyDtid());
             //创建凭证
             DTCResponse dtcToApplyTdaas = dtcComponent.createDtc(claimReqBizPackage);
             //这就是凭证
-            dtcComponent.parse(dtcToApplyTdaas);
+            claim1 = dtcComponent.parse(dtcToApplyTdaas);
             //发送mq
             mqSendUtil.sendToTDaaS(etdsInfo.getCompanyDtid(), etdsInfo.getEtdsCode(), AuthType.REQUEST.getRemark(), JSON.toJSONString(claim1), MessageConsumerEnum.re_etds_to_re_tdaas_apply);
         } catch (Exception e) {
@@ -123,7 +124,8 @@ public class CustomServiceImpl implements CustomService {
                 .setNoticeDetails(String.format("数据请求方[%s]的ETDS服务[%s]向数据授权方[%s]发起了授权请求，数据供应方为:[%s]"
                         , etdsInfo.getCompanyDtid()
                         , etdsInfo.getEtdsCode(), to.getTdaas(), cc.get(0).getTdaas() + ":" + cc.get(0).getEtds()))
-                .setDtcDocument(JSON.toJSONString(claim1)));
+                .setDtcDocument(JSON.toJSONString(claim1))
+                .setClaimId(JSON.parseObject(JSON.toJSONString(claim1), VerifiableClaim.class).getId()));
         // 保存发送给数据授权方TDaaS的数据
         reAuthNoticeApply2Service.save(new ReAuthNoticeApply2()
                 .setApplyDtid(etdsInfo.getCompanyDtid())
@@ -137,13 +139,25 @@ public class CustomServiceImpl implements CustomService {
                 .setNoticeDetails(String.format("数据请求方[%s]的ETDS服务[%s]向数据授权方[%s]发起了授权请求，数据供应方为:[%s]"
                         , etdsInfo.getCompanyDtid()
                         , etdsInfo.getEtdsCode(), to.getTdaas(), cc.get(0).getTdaas() + ":" + cc.get(0).getEtds()))
-                .setDtcDocument(JSON.toJSONString(claim2)));
+                .setDtcDocument(JSON.toJSONString(claim2))
+                .setClaimId(JSON.parseObject(JSON.toJSONString(claim2), VerifiableClaim.class).getId()));
         return Result.success(true);
     }
 
     @Override
     public Result applyData(ApplyDataDTO applyData) {
         //TODO 申请数据的逻辑
+        //1. 给自己的tdaas发送MQ消息【流程7】
+        //2. 给数据供应方TDaaS发送MQ消息【流程8】
+        //3. 给数据供应方ETDS发送MQ消息【流程9】
+        //4. 本地存储业务
+
+        return null;
+    }
+
+    @Override
+    public Result responseData(ResponseDataDTO responseData) {
+        //TODO 响应数据的逻辑
         return null;
     }
 
