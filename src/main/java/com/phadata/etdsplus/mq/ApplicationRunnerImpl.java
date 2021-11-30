@@ -22,6 +22,9 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         System.out.println("通过实现ApplicationRunner接口，在spring boot项目启动后执行代码逻辑");
-        //initMQInfo.executeListener(etdsService);
+        //初始化队列一句绑定关系
+        //initMQInfo.initMQInfo(etdsService);
+        //添加监听
+        initMQInfo.executeListener(etdsService);
     }
 }

@@ -2,6 +2,7 @@ package com.phadata.etdsplus.mq;
 
 import com.alibaba.fastjson.JSON;
 import com.phadata.etdsplus.entity.po.GrantResultProvide6;
+import com.phadata.etdsplus.exception.BussinessException;
 import com.phadata.etdsplus.service.GrantResultProvide6Service;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -37,9 +38,10 @@ public class AuthResultProvideConsumer implements ChannelAwareMessageListener {
             log.info("数据授权的消费者【流程中对应4】消费消息：{}", JSON.toJSONString(vc, true));
             //bizData就是数据
             Map<String, Object> bizData = vc.getCredentialSubject().getBizData();
-            //保存凭证  TODO 下面的bizData中取出的key，需要和柯博对接确定
+            //保存凭证
             long epochSecond = Instant.now().getEpochSecond();
             grantResultProvide6Service.save(new GrantResultProvide6()
+                    .setClaimId(vc.getId())
                     .setCreatedTime(epochSecond)
                     .setOperatedTime(epochSecond)
                     .setApplyEtdsUuid(bizData.getOrDefault("", "").toString())

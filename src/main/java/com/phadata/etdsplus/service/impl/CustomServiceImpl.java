@@ -74,7 +74,7 @@ public class CustomServiceImpl implements CustomService {
                 .setTo(to)
                 .setCc(applyAuth.getCc())
                 .setExpiration(applyAuth.getExpiration())
-                .setSerializeNumber(applyAuth.getSerializeNumber())
+                .setSerialNumber(applyAuth.getSerialNumber())
                 .setDesc(applyAuth.getDesc())
                 .setAuthType(AuthType.REQUEST.getCode());
         claimReqBizPackage.setBizData(JSON.parseObject(JSON.toJSONString(applyAuthBizDataDTO), Map.class));
@@ -119,7 +119,7 @@ public class CustomServiceImpl implements CustomService {
                 .setGrantDtid(to.getTdaas())
                 .setToDtid(cc.get(0).getTdaas())
                 .setToEtdsUuid(cc.get(0).getEtds())
-                .setSerialNumber(applyAuth.getSerializeNumber())
+                .setSerialNumber(applyAuth.getSerialNumber())
                 //TODO 这里的通知详情需要确认放什么
                 .setNoticeDetails(String.format("数据请求方[%s]的ETDS服务[%s]向数据授权方[%s]发起了授权请求，数据供应方为:[%s]"
                         , etdsInfo.getCompanyDtid()
@@ -132,7 +132,7 @@ public class CustomServiceImpl implements CustomService {
                 .setFromEtdsUuid(etdsInfo.getEtdsCode())
                 .setCreatedTime(epochSecond)
                 .setOperatedTime(epochSecond)
-                .setSerialNumber(applyAuth.getSerializeNumber())
+                .setSerialNumber(applyAuth.getSerialNumber())
                 .setToDtid(cc.get(0).getTdaas())
                 .setToEtdsUuid(cc.get(0).getEtds())
                 //TODO 这里的通知详情需要确认放什么

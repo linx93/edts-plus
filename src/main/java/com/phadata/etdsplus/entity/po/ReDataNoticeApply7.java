@@ -66,5 +66,6 @@ public class ReDataNoticeApply7 implements Serializable {
     @ApiModelProperty(value = "创建时间")
     private Long createdTime;
 
-
+    @ApiModelProperty(value = "授权凭证id")
+    private String claimId;
 }

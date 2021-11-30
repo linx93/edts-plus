@@ -3,6 +3,7 @@ package com.phadata.etdsplus.entity.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
 
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 @ApiModel(value = "申请数据的dto", description = "申请数据的dto")
+@Accessors(chain = true)
 public class ApplyDataDTO {
     @ApiModelProperty(value = "", required = true)
     @NotBlank(message = "")

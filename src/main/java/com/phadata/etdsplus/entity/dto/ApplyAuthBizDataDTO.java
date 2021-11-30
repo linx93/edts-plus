@@ -49,6 +49,6 @@ public class ApplyAuthBizDataDTO {
 
     @ApiModelProperty(value = "序列号", required = true)
     @NotBlank(message = "序列号不能为空")
-    private String serializeNumber;
+    private String serialNumber;
 
 }

@@ -3,6 +3,7 @@ package com.phadata.etdsplus.service;
 
 import com.phadata.etdsplus.entity.dto.ApplyAuthDTO;
 import com.phadata.etdsplus.entity.dto.ApplyDataDTO;
+import com.phadata.etdsplus.entity.dto.ResponseDataDTO;
 import com.phadata.etdsplus.utils.result.Result;
 
 /**
@@ -29,4 +30,13 @@ public interface CustomService {
      * @return
      */
     Result applyData(ApplyDataDTO applyData);
+
+
+    /**
+     * 响应数据
+     *
+     * @param responseData
+     * @return
+     */
+    Result responseData(ResponseDataDTO responseData);
 }

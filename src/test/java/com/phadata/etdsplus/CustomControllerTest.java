@@ -12,8 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 /**
  * @description: 定制层请求的测试
@@ -29,12 +28,13 @@ public class CustomControllerTest {
     void applyAuthTest() {
         ApplyAuthDTO applyAuthDTO = new ApplyAuthDTO();
         ArrayList<Address> cc = new ArrayList<>();
-        cc.add(new Address().setEtds("数据提供方dtid").setTdaas("数据提供方etdsCode"));
+        cc.add(new Address().setEtds("c6bmo306n88ldpmt4r3g").setTdaas("dtid:dtca:9o4NzgSWDsGQvsvRssFwBBJBF8F"));
         applyAuthDTO.setCc(cc);
-        applyAuthDTO.setDesc("测试");
-        applyAuthDTO.setExpiration(Instant.now().getEpochSecond()+10000000);
-        applyAuthDTO.setSerializeNumber("123456789");
-        applyAuthDTO.setTo(new Address().setTdaas("dtid:dtca:dQAhX8P8MfYbyTtsAnxcDuHri1g"));
+        applyAuthDTO.setDesc("测试 柯博体验一下😄");
+        applyAuthDTO.setExpiration(Instant.now().getEpochSecond() + 10000000);
+        applyAuthDTO.setSerialNumber(UUID.randomUUID().toString());
+        applyAuthDTO.setTo(new Address().setTdaas("dtid:dtca:9o4NzgSWDsGQvsvRssFwBBJBF8F"));
+        System.out.println(JSON.toJSONString(applyAuthDTO, true));
         Result<Boolean> booleanResult = customController.applyAuth(applyAuthDTO);
         System.out.println(booleanResult);
     }

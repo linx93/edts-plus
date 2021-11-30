@@ -25,7 +25,7 @@ public class ApplyAuthBizDataDTOBuildTest {
         addresses.add(address);
         applyAuthBizDataDTO.setCc(addresses);
         applyAuthBizDataDTO.setDesc("desc");
-        applyAuthBizDataDTO.setSerializeNumber("123456");
+        applyAuthBizDataDTO.setSerialNumber("123456");
         applyAuthBizDataDTO.setExpiration(123L);
         applyAuthBizDataDTO.setFrom(address);
         applyAuthBizDataDTO.setTo(address);
@@ -33,7 +33,7 @@ public class ApplyAuthBizDataDTOBuildTest {
 
         Map map = JSON.parseObject(JSON.toJSONString(applyAuthBizDataDTO), Map.class);
         System.out.println(map);
-        System.out.println(map.get("serializeNumber") instanceof String);
+        System.out.println(map.get("serialNumber") instanceof String);
         System.out.println(map.get("desc") instanceof String);
     }
 }

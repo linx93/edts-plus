@@ -2,6 +2,7 @@ package com.phadata.etdsplus.controller;
 
 import com.phadata.etdsplus.entity.dto.ApplyAuthDTO;
 import com.phadata.etdsplus.entity.dto.ApplyDataDTO;
+import com.phadata.etdsplus.entity.dto.ResponseDataDTO;
 import com.phadata.etdsplus.service.CustomService;
 import com.phadata.etdsplus.utils.result.Result;
 import io.swagger.annotations.ApiOperation;
@@ -53,6 +54,18 @@ public class CustomController {
     @ApiOperation(value = "申请数据")
     public Result applyData(@Valid @RequestBody ApplyDataDTO applyData) {
         return customService.applyData(applyData);
+    }
+
+    /**
+     * 响应数据
+     *
+     * @param responseData
+     * @return
+     */
+    @PostMapping(value = "/response-data")
+    @ApiOperation(value = "响应数据")
+    public Result responseData(@Valid @RequestBody ResponseDataDTO responseData) {
+        return customService.responseData(responseData);
     }
 }
 
