@@ -128,6 +128,7 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
         String description = etdsInfo.getString("description");
         String etdsCode = etdsInfo.getString("etdsCode");
         String etdsUrl = etdsInfo.getString("etdsUrl");
+        String etdsName = etdsInfo.getString("etdsName");
         Etds build = Etds.builder().license(license)
                 .activationCode(activationCode)
                 .appKey(appKey)
@@ -138,6 +139,7 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
                 .etdsCode(etdsCode)
                 .etdsUrl(etdsUrl)
                 .createTime(Instant.now().getEpochSecond())
+                .etdsName(etdsName)
                 //默认etds状态正常
                 .state(0)
                 .build();

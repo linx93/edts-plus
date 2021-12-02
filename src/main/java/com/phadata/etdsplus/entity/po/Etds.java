@@ -66,5 +66,6 @@ public class Etds implements Serializable {
     @ApiModelProperty(value = "密钥")
     private String appSecret;
 
-
+    @ApiModelProperty(value = "etds名字")
+    private String etdsName;
 }

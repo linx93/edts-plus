@@ -38,5 +38,12 @@ public interface CustomService {
      * @param responseData
      * @return
      */
-    Result responseData(ResponseDataDTO responseData);
+    Result receiveData(ResponseDataDTO responseData);
+
+    /**
+     * 提供给定制层获取etds的唯一码和数字身份
+     *
+     * @return
+     */
+    Result findEtdsInfo();
 }

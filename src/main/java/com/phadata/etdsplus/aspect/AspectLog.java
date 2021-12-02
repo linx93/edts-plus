@@ -115,6 +115,9 @@ public class AspectLog {
         Map<String, Object> requestParams = new HashMap<>(16);
         for (int i = 0; i < paramNames.length; i++) {
             Object value = paramValues[i];
+            if (value instanceof HttpServletRequest) {
+                break;
+            }
             if (value instanceof MultipartFile) {
                 MultipartFile file = (MultipartFile) value;
                 value = file.getOriginalFilename();

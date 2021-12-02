@@ -8,7 +8,7 @@ import com.phadata.etdsplus.mq.ExchangeEnum;
 import com.phadata.etdsplus.mq.InitMQInfo;
 import com.phadata.etdsplus.mq.MessageConsumerEnum;
 import com.phadata.etdsplus.service.EtdsService;
-import com.phadata.etdsplus.utils.MQSendUtil;
+import com.phadata.etdsplus.mq.MQSendUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

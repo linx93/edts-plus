@@ -101,7 +101,7 @@ public class InitMQInfo {
         container.setQueueNames(queueName);
         container.setExposeListenerChannel(true);
         //设置每个消费者获取的最大的消息数量
-        container.setPrefetchCount(1);
+        container.setPrefetchCount(2);
         //消费者个数
         container.setConcurrentConsumers(1);
         //设置确认模式为手工确认

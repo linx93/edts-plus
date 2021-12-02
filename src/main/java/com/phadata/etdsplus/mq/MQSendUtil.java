@@ -1,4 +1,4 @@
-package com.phadata.etdsplus.utils;
+package com.phadata.etdsplus.mq;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
@@ -36,7 +36,7 @@ public class MQSendUtil {
                         .setQueue(queueName)
                         .setRoutingKey(routingKey));
         HttpResponse execute = HttpRequest.post(sendMQ).body(JSON.toJSONString(bizMessage)).execute();
-        log.info("【发给tdaas消费的】发送mq   queue:{}  routingKey:{}", queueName, routingKey);
+        log.info("【发给etds消费的】发送mq   queue:{}  routingKey:{}", queueName, routingKey);
         log.info("【发给etds消费的】发送mq的请求返回:{}", execute.body());
     }
 

@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * <p>
@@ -22,6 +23,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="ReDataNoticeProvide9对象", description="请求拉取数据通知(提供方)<9>")
 @TableName("re_data_notice_provide_9")
+@Accessors(chain = true)
 public class ReDataNoticeProvide9 implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -31,7 +31,6 @@ public class ApplyAuthBizDataDTO {
     private Address to;
 
     @ApiModelProperty(value = "授权类型（0:请求 1:响应）", required = true)
-    @Valid
     @NotNull
     private Integer authType;
 

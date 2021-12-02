@@ -37,7 +37,6 @@ public class CustomInterceptor implements HandlerInterceptor {
         if (!flag) {
             throw new BussinessException("TDaaS已关闭了ETDS的工作");
         }
-        //TODO 后续具体针对定制层的控制  ，还需要配置此拦截器的匹配的url
         return true;
     }
 }

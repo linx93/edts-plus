@@ -5,21 +5,23 @@ package com.phadata.etdsplus.enums;
  * @author: linx
  * @create: 2021-11-26 15:45
  */
-public enum AuthType {
+public enum DataType {
     /**
-     * 授权请求
+     * 请求
      */
-    REQUEST(0, "授权请求"),
+    REQUEST(0, "数据请求"),
+    /**
+     * 响应
+     */
+    RESPONSE(1, "数据响应");
 
-    /**
-     * 授权响应
-     */
-    RESPONSE(1, "授权响应");
 
     private final int code;
+
+
     private final String remark;
 
-    AuthType(int code, String remark) {
+    DataType(int code, String remark) {
         this.code = code;
         this.remark = remark;
     }

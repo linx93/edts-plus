@@ -22,14 +22,14 @@ public class JwtInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {
         //从http请求头中取出 token
-        String token = httpServletRequest.getHeader("token");
+        String token = httpServletRequest.getHeader("x-token");
         // 如果不是映射到方法直接通过
         if (!(object instanceof HandlerMethod)) {
             return true;
         }
         //如果token为空
         if (token == null) {
-            throw new BussinessException("token不能为空");
+            throw new BussinessException("x-token不能为空");
         }
         //验证token
         JwtUtil.verifyToken(token);

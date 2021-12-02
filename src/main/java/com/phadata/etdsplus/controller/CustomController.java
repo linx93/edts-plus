@@ -57,15 +57,27 @@ public class CustomController {
     }
 
     /**
-     * 响应数据
+     * 响应数据，这个接口是提供给定制层获取到真正数据时候调用的，用于接收定制层的数据
      *
      * @param responseData
      * @return
      */
-    @PostMapping(value = "/response-data")
+    @PostMapping(value = "/receive-data")
     @ApiOperation(value = "响应数据")
-    public Result responseData(@Valid @RequestBody ResponseDataDTO responseData) {
-        return customService.responseData(responseData);
+    public Result receiveData(@Valid @RequestBody ResponseDataDTO responseData) {
+        return customService.receiveData(responseData);
+    }
+
+    /**
+     * 提供给定制层获取etds的唯一码和数字身份
+     *
+     * @param
+     * @return
+     */
+    @GetMapping(value = "/find-etds-info")
+    @ApiOperation(value = "提供给定制层获取etds的唯一码和数字身份")
+    public Result findEtdsInfo() {
+        return customService.findEtdsInfo();
     }
 }
 
