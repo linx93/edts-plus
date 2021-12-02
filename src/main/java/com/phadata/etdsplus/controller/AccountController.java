@@ -1,10 +1,13 @@
 package com.phadata.etdsplus.controller;
 
 
+import com.auth0.jwt.interfaces.Claim;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.phadata.etdsplus.entity.po.Account;
 import com.phadata.etdsplus.entity.dto.LoginDTO;
+import com.phadata.etdsplus.entity.po.Etds;
 import com.phadata.etdsplus.service.AccountService;
+import com.phadata.etdsplus.service.EtdsService;
 import com.phadata.etdsplus.utils.BCryptPasswordEncoder;
 import com.phadata.etdsplus.utils.jwt.JwtUtil;
 import com.phadata.etdsplus.utils.result.Result;
@@ -12,10 +15,14 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>
@@ -31,9 +38,11 @@ import java.util.Map;
 @RequestMapping("/api/v1/account")
 public class AccountController {
     private final AccountService accountService;
+    private final EtdsService etdsService;
 
-    public AccountController(AccountService accountService) {
+    public AccountController(AccountService accountService, EtdsService etdsService) {
         this.accountService = accountService;
+        this.etdsService = etdsService;
     }
 
     /**
@@ -60,8 +69,76 @@ public class AccountController {
         map.put("iss", loginDTO.getAccount());
         String jwtToken = JwtUtil.createJwtToken(map);
         log.info("{} 登陆成功:{}", loginDTO.getAccount(), jwtToken);
-        return Result.success(jwtToken);
+        HashMap<String, Object> result = new HashMap<>(8);
+        //查询etds表的信息
+        List<Etds> etdsList = etdsService.list();
+        result.put("token", jwtToken);
+        result.put("account", loginDTO.getAccount());
+        if (etdsList.isEmpty()) {
+            result.put("active", false);
+            result.put("company", null);
+        } else {
+            //倒序
+            List<Etds> collect = etdsList.stream().sorted(Comparator.comparing(Etds::getId).reversed()).collect(Collectors.toList());
+            Etds etds = collect.get(0);
+            HashMap<String, Object> etdsMap = new HashMap<>(8);
+            etdsMap.put("createTime", etds.getCreateTime());
+            etdsMap.put("companyName", etds.getCompanyName());
+            etdsMap.put("companyDtid", etds.getCompanyDtid());
+            etdsMap.put("state", etds.getState());
+            etdsMap.put("etdsUrl", etds.getEtdsUrl());
+            etdsMap.put("description", etds.getDescription());
+            etdsMap.put("etdsCode", etds.getEtdsCode());
+            etdsMap.put("etdsName", etds.getEtdsName());
+            result.put("active", true);
+            result.put("company", etdsMap);
+        }
+        return Result.success(result);
     }
+
+    /**
+     * 刷新
+     *
+     * @return
+     */
+    @GetMapping(value = "refresh")
+    @ApiOperation(value = "刷新")
+    public Result refresh(HttpServletRequest httpServletRequest) {
+        //查询etds表的信息
+        List<Etds> etdsList = etdsService.list();
+        //倒序
+        List<Etds> collect = etdsList.stream().sorted(Comparator.comparing(Etds::getId).reversed()).collect(Collectors.toList());
+        String token = httpServletRequest.getHeader("x-token");
+        Map<String, Claim> stringClaimMap = JwtUtil.verifyToken(token);
+        Claim iss = stringClaimMap.get("iss");
+        String account = iss.asString();
+        Map<String, Object> map = new HashMap<>(8);
+        map.put("iss", account);
+        String jwtToken = JwtUtil.createJwtToken(map);
+        log.info("{} 登陆成功:{}", account, jwtToken);
+        Map<String, Object> result = new HashMap<>(8);
+        result.put("token", jwtToken);
+        result.put("account", account);
+        if (etdsList.isEmpty()) {
+            result.put("active", false);
+            result.put("company", null);
+        } else {
+            Etds etds = collect.get(0);
+            HashMap<String, Object> etdsMap = new HashMap<>(8);
+            etdsMap.put("createTime", etds.getCreateTime());
+            etdsMap.put("companyName", etds.getCompanyName());
+            etdsMap.put("companyDtid", etds.getCompanyDtid());
+            etdsMap.put("state", etds.getState());
+            etdsMap.put("etdsUrl", etds.getEtdsUrl());
+            etdsMap.put("description", etds.getDescription());
+            etdsMap.put("etdsCode", etds.getEtdsCode());
+            etdsMap.put("etdsName", etds.getEtdsName());
+            result.put("active", true);
+            result.put("company", etdsMap);
+        }
+        return Result.success(result);
+    }
+
 
     /**
      * 修改密码
@@ -86,6 +163,7 @@ public class AccountController {
         }
         return Result.success(null);
     }
+
 
 }
 
