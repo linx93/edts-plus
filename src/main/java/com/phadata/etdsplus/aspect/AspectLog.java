@@ -84,7 +84,7 @@ public class AspectLog {
         List<String> exceptions = new ArrayList<>();
         for (StackTraceElement traceElement : e.getStackTrace()) {
             String className = traceElement.getClassName();
-            if (className.contains("net.phadata.center")) {
+            if (className.contains("com.phadata.etdsplus")) {
                 String exception = className + "." + traceElement.getMethodName() + "(" + className.substring(className.lastIndexOf(".")).replace(".", "") + ".java:" + traceElement.getLineNumber() + ")";
                 if (!exception.contains("$$")) {
                     exceptions.add(exception);
