@@ -11,7 +11,7 @@
  Target Server Version : 80021
  File Encoding         : 65001
 
- Date: 24/11/2021 11:52:58
+ Date: 03/12/2021 14:44:09
 */
 
 SET NAMES utf8mb4;
@@ -32,11 +32,11 @@ CREATE TABLE `account` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户/账户表';
 
 -- ----------------------------
--- Table structure for data_statistics_apply_11
+-- Table structure for data_result_apply_11
 -- ----------------------------
-DROP TABLE IF EXISTS `data_statistics_apply_11`;
-CREATE TABLE `data_statistics_apply_11` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+DROP TABLE IF EXISTS `data_result_apply_11`;
+CREATE TABLE `data_result_apply_11` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
   `notice_id` bigint DEFAULT NULL COMMENT '授权通知id',
   `data_id` bigint DEFAULT NULL COMMENT '拉取数据通知id',
   `apply_etds_uuid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '发起etds唯一编码',
@@ -47,19 +47,21 @@ CREATE TABLE `data_statistics_apply_11` (
   `grant_name` varchar(128) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据授权方企业名称',
   `data_type` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '被授权的数据类型',
   `data_amount` int DEFAULT NULL COMMENT '被拉取的数量',
-  `statistics_document` varchar(1024) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '统计分析的凭证',
+  `data_document` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '数据的凭证',
   `serial_number` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '统一业务标识号',
   `operated_time` bigint DEFAULT NULL COMMENT '操作时间',
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='拉取数据统计日志(请求方)<11>';
+  `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `claim_id` (`claim_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1013 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='拉取数据统计日志(请求方)<11>';
 
 -- ----------------------------
 -- Table structure for data_statistics_provide_10
 -- ----------------------------
 DROP TABLE IF EXISTS `data_statistics_provide_10`;
 CREATE TABLE `data_statistics_provide_10` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
   `notice_id` bigint DEFAULT NULL COMMENT '授权通知id',
   `data_id` bigint DEFAULT NULL COMMENT '拉取数据通知id',
   `apply_etds_uuid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '发起etds唯一编码',
@@ -74,7 +76,9 @@ CREATE TABLE `data_statistics_provide_10` (
   `serial_number` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '统一业务标识号',
   `operated_time` bigint DEFAULT NULL COMMENT '操作时间',
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
+  `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `claim_id` (`claim_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='拉取数据统计日志(提供方)<10>';
 
 -- ----------------------------
@@ -82,7 +86,7 @@ CREATE TABLE `data_statistics_provide_10` (
 -- ----------------------------
 DROP TABLE IF EXISTS `data_statistics_provide_11`;
 CREATE TABLE `data_statistics_provide_11` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
   `notice_id` bigint DEFAULT NULL COMMENT '授权通知id',
   `data_id` bigint DEFAULT NULL COMMENT '拉取数据通知id',
   `apply_etds_uuid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '发起etds唯一编码',
@@ -97,7 +101,9 @@ CREATE TABLE `data_statistics_provide_11` (
   `serial_number` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '统一业务标识号',
   `operated_time` bigint DEFAULT NULL COMMENT '操作时间',
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
+  `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `claim_id` (`claim_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='拉取数据统计日志(提供方)<11>';
 
 -- ----------------------------
@@ -105,7 +111,7 @@ CREATE TABLE `data_statistics_provide_11` (
 -- ----------------------------
 DROP TABLE IF EXISTS `data_statistics_provide_12`;
 CREATE TABLE `data_statistics_provide_12` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
   `notice_id` bigint DEFAULT NULL COMMENT '授权通知id',
   `data_id` bigint DEFAULT NULL COMMENT '拉取数据通知id',
   `apply_etds_uuid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '发起etds唯一编码',
@@ -120,7 +126,9 @@ CREATE TABLE `data_statistics_provide_12` (
   `serial_number` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '统一业务标识号',
   `operated_time` bigint DEFAULT NULL COMMENT '操作时间',
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
+  `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `claim_id` (`claim_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='拉取数据统计日志(提供方)<12>';
 
 -- ----------------------------
@@ -128,7 +136,7 @@ CREATE TABLE `data_statistics_provide_12` (
 -- ----------------------------
 DROP TABLE IF EXISTS `data_statistics_provide_13`;
 CREATE TABLE `data_statistics_provide_13` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
   `notice_id` bigint DEFAULT NULL COMMENT '授权通知id',
   `data_id` bigint DEFAULT NULL COMMENT '拉取数据通知id',
   `apply_etds_uuid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '发起etds唯一编码',
@@ -143,7 +151,9 @@ CREATE TABLE `data_statistics_provide_13` (
   `serial_number` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '统一业务标识号',
   `operated_time` bigint DEFAULT NULL COMMENT '操作时间',
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
+  `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `claim_id` (`claim_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='拉取数据统计日志(提供方)<13>';
 
 -- ----------------------------
@@ -155,7 +165,7 @@ CREATE TABLE `data_switch` (
   `flag` int DEFAULT NULL COMMENT '0: 开启状态   1：关闭状态',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='数据开关表，标志etds能否发送数据';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='数据开关表，标志etds能否发送数据';
 
 -- ----------------------------
 -- Table structure for etds
@@ -175,6 +185,7 @@ CREATE TABLE `etds` (
   `etds_code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT 'Etds唯一标识码',
   `app_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '应用key(用于etds校验来自tdass的请求)',
   `app_secret` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '密钥(用于etds校验来自tdass的请求)',
+  `etds_name` varchar(255) DEFAULT NULL COMMENT 'etds名字',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='etds相关信息';
 
@@ -189,14 +200,14 @@ CREATE TABLE `etds_status_record` (
   `created_time` datetime DEFAULT NULL COMMENT '创建时间',
   `etds_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'etds的唯一code',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='tdaas对etds暂停/恢复的操作记录表';
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='tdaas对etds暂停/恢复的操作记录表';
 
 -- ----------------------------
 -- Table structure for grant_result_apply_4
 -- ----------------------------
 DROP TABLE IF EXISTS `grant_result_apply_4`;
 CREATE TABLE `grant_result_apply_4` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
   `notice_id` bigint DEFAULT NULL COMMENT '授权通知id',
   `apply_etds_uuid` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '发起方企业etds唯一编号',
   `grant_dtid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据授权方企业dtid',
@@ -210,15 +221,17 @@ CREATE TABLE `grant_result_apply_4` (
   `serial_number` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '统一业务标识号',
   `operated_time` bigint DEFAULT NULL COMMENT '操作时间',
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='授权结果返回表(请求方) <4>';
+  `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `claim_id` (`claim_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='授权结果返回表(请求方) <4>';
 
 -- ----------------------------
 -- Table structure for grant_result_provide_6
 -- ----------------------------
 DROP TABLE IF EXISTS `grant_result_provide_6`;
 CREATE TABLE `grant_result_provide_6` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
   `notice_id` bigint DEFAULT NULL COMMENT '授权通知id',
   `apply_etds_uuid` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '发起方企业etds唯一编号',
   `grant_dtid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据授权方企业dtid',
@@ -228,20 +241,24 @@ CREATE TABLE `grant_result_provide_6` (
   `to_etds_uuid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据提供方企业etds唯一编号',
   `grant_details` varchar(1024) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '授权详情',
   `grant_status` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '授权状态',
+  `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
   `grant_document` varchar(1024) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '授权的凭证',
+  `use_status` int DEFAULT NULL COMMENT '用于标记tdaas控制此授权凭证的状态（0:正常 1:暂停）',
   `serial_number` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '统一业务标识号',
   `operated_time` bigint DEFAULT NULL COMMENT '操作时间',
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='授权结果返回表(提供方) <6>';
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `claim_id` (`claim_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='授权结果返回表(提供方) <6>';
 
 -- ----------------------------
 -- Table structure for re_auth_notice_apply_1
 -- ----------------------------
 DROP TABLE IF EXISTS `re_auth_notice_apply_1`;
 CREATE TABLE `re_auth_notice_apply_1` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
   `apply_etds_uuid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '发起etds唯一编码',
+  `apply_dtid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '发起etds所属的tdaas的数字身份',
   `to_dtid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据提供方企业dtid',
   `to_name` varchar(128) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据提供方企业名称',
   `to_etds_uuid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据提供方企业etds唯一编号',
@@ -252,36 +269,38 @@ CREATE TABLE `re_auth_notice_apply_1` (
   `serial_number` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '统一业务标识号',
   `apply_time` bigint DEFAULT NULL COMMENT '发起时间',
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
+  `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='请求授权通知(请求方)<1>';
+) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='请求授权通知(请求方)<1>';
 
 -- ----------------------------
 -- Table structure for re_auth_notice_apply_2
 -- ----------------------------
 DROP TABLE IF EXISTS `re_auth_notice_apply_2`;
 CREATE TABLE `re_auth_notice_apply_2` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
   `from_etds_uuid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '发起etds唯一编码',
   `apply_dtid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据发起方企业dtid',
   `apply_name` varchar(128) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据发起方企业名称',
   `to_etds_uuid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据提供方企业etds唯一编号',
   `to_dtid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据授权方企业dtid',
   `to_name` varchar(128) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据授权方企业名称',
-  `grant_status` varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '凭证状态',
+  `grant_status` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '凭证状态',
   `notice_details` varchar(1024) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '通知详情',
   `dtc_document` varchar(1024) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '凭证详情',
   `serial_number` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '统一业务标识号',
   `operated_time` bigint DEFAULT NULL COMMENT '操作时间',
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
+  `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='请求授权通知(请求方)<2>';
+) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='请求授权通知(请求方)<2>';
 
 -- ----------------------------
 -- Table structure for re_data_notice_apply_7
 -- ----------------------------
 DROP TABLE IF EXISTS `re_data_notice_apply_7`;
 CREATE TABLE `re_data_notice_apply_7` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
   `result_id` bigint DEFAULT NULL COMMENT '授权结果返回主键',
   `apply_etds_uuid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '发起etds唯一编码',
   `to_dtid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据提供方企业dtid',
@@ -294,7 +313,9 @@ CREATE TABLE `re_data_notice_apply_7` (
   `serial_number` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '统一业务标识号',
   `operated_time` bigint DEFAULT NULL COMMENT '操作时间',
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
+  `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `claim_id` (`claim_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='请求拉取数据通知(请求方)<7>';
 
 -- ----------------------------
@@ -302,7 +323,7 @@ CREATE TABLE `re_data_notice_apply_7` (
 -- ----------------------------
 DROP TABLE IF EXISTS `re_data_notice_apply_8`;
 CREATE TABLE `re_data_notice_apply_8` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
   `result_id` bigint DEFAULT NULL COMMENT '授权结果返回主键',
   `apply_etds_uuid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '发起etds唯一编码',
   `to_dtid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据提供方企业dtid',
@@ -315,7 +336,9 @@ CREATE TABLE `re_data_notice_apply_8` (
   `serial_number` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '统一业务标识号',
   `operated_time` bigint DEFAULT NULL COMMENT '操作时间',
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
+  `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `claim_id` (`claim_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='请求拉取数据通知(请求方)<8>';
 
 -- ----------------------------
@@ -323,7 +346,7 @@ CREATE TABLE `re_data_notice_apply_8` (
 -- ----------------------------
 DROP TABLE IF EXISTS `re_data_notice_apply_9`;
 CREATE TABLE `re_data_notice_apply_9` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
   `result_id` bigint DEFAULT NULL COMMENT '授权结果返回主键',
   `apply_etds_uuid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '发起etds唯一编码',
   `to_dtid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据提供方企业dtid',
@@ -336,7 +359,9 @@ CREATE TABLE `re_data_notice_apply_9` (
   `serial_number` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '统一业务标识号',
   `operated_time` bigint DEFAULT NULL COMMENT '操作时间',
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
+  `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `claim_id` (`claim_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='请求拉取数据通知(请求方)<9>';
 
 -- ----------------------------
@@ -344,7 +369,7 @@ CREATE TABLE `re_data_notice_apply_9` (
 -- ----------------------------
 DROP TABLE IF EXISTS `re_data_notice_provide_9`;
 CREATE TABLE `re_data_notice_provide_9` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
   `result_id` bigint DEFAULT NULL COMMENT '授权结果返回主键',
   `apply_etds_uuid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '发起etds唯一编码',
   `to_dtid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据提供方企业dtid',
@@ -353,12 +378,14 @@ CREATE TABLE `re_data_notice_provide_9` (
   `grant_dtid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据授权方企业dtid',
   `grant_name` varchar(128) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据授权方企业名称',
   `notice_details` varchar(1024) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '通知详情',
-  `dtc_document` varchar(1024) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '凭证详情',
+  `dtc_document` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '凭证详情',
   `serial_number` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '统一业务标识号',
   `operated_time` bigint DEFAULT NULL COMMENT '操作时间',
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='请求拉取数据通知(提供方)<9>';
+  `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `claim_id` (`claim_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=286 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='请求拉取数据通知(提供方)<9>';
 
 -- ----------------------------
 -- Table structure for tdaas_private_key
@@ -371,6 +398,6 @@ CREATE TABLE `tdaas_private_key` (
   `public_key` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '公钥',
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='tdaas的publicKey和privateKey\n';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='tdaas的publicKey和privateKey\n';
 
 SET FOREIGN_KEY_CHECKS = 1;
