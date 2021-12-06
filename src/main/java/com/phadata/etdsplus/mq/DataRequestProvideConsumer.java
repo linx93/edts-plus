@@ -87,7 +87,7 @@ public class DataRequestProvideConsumer implements ChannelAwareMessageListener {
                 claimReqBizPackage.setHolder(applyDataDTO.getFrom().getTdaas());
                 ResponseDataDTO responseData = new ResponseDataDTO();
                 responseData.setBizHeader(null);
-                responseData.setChunk(null);
+                responseData.setChunk("");
                 responseData.setSerialNumber(vc.getCredentialSubject().getBizData().getOrDefault(SystemConstant.SERIAL_NUMBER, "").toString());
                 String desc = "";
                 if (one == null) {
@@ -112,11 +112,15 @@ public class DataRequestProvideConsumer implements ChannelAwareMessageListener {
                 Map<String, Object> claim11 = dtcComponent.parse(dtcResponse11);
                 //发送mq
                 mqSendUtil.sendToETDS(responseData.getTo().getTdaas(), etdsInfo.getEtdsCode(), DataType.RESPONSE.getRemark(), JSON.toJSONString(claim11), responseData.getTo().getEtds(), MessageConsumerEnum.pr_etds_to_re_etds_data);
-                //结束，不调用定制层
+                //结束，签收消息，不调用定制层
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
                 return;
             }
-            //3. 本地存储业务 表中的凭证id字段加了唯一索引，防止重复消费
+            //3. 调用定制层接口：将携带请求数据信息[HttpMate信息]的凭证推给定制层，有定制层去执行真正的请求数据
+            HttpResponse execute = HttpRequest.post(dataPush).body(JSON.toJSONString(vc)).execute();
+            log.info("调用定制层接口：将携带请求数据信息[HttpMate信息]的凭证推给定制层的响应:", execute);
+
+            //4. 本地存储业务 表中的凭证id字段加了唯一索引，防止重复消费
             long epochSecond = Instant.now().getEpochSecond();
             reDataNoticeProvide9Service.save(
                     new ReDataNoticeProvide9().setClaimId(vc.getId())
@@ -125,10 +129,6 @@ public class DataRequestProvideConsumer implements ChannelAwareMessageListener {
                             .setSerialNumber(vc.getCredentialSubject().getBizData().getOrDefault(SystemConstant.SERIAL_NUMBER, "").toString())
                             .setDtcDocument(JSON.toJSONString(vc))
             );
-
-            //4. 调用定制层接口：将携带请求数据信息[HttpMate信息]的凭证推给定制层，有定制层去执行真正的请求数据
-            HttpResponse execute = HttpRequest.post(dataPush).body(JSON.toJSONString(vc)).execute();
-            log.info("调用定制层接口：将携带请求数据信息[HttpMate信息]的凭证推给定制层的响应:", execute.body());
             //. 手动签收
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
@@ -136,6 +136,7 @@ public class DataRequestProvideConsumer implements ChannelAwareMessageListener {
             log.error("数据请求的消费者【流程中对应9】消费数据异常，MessageId: [{}]", message.getMessageProperties().getMessageId());
             try {
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+                log.error("消费发生异常后，手动签收消息，MessageId: [{}]", message.getMessageProperties().getMessageId());
             } catch (IOException ioException) {
                 log.error("手动单条签收异常消息出现问题");
                 ioException.printStackTrace();

@@ -30,9 +30,9 @@ public class CustomControllerTest {
         ArrayList<Address> cc = new ArrayList<>();
         cc.add(new Address().setEtds("c6bmo306n88ldpmt4r3g").setTdaas("dtid:dtca:9o4NzgSWDsGQvsvRssFwBBJBF8F"));
         applyAuthDTO.setCc(cc);
-        applyAuthDTO.setDesc("测试 柯博体验一下😄");
+        applyAuthDTO.setDesc("测试 柯博体验一下🦉");
         applyAuthDTO.setExpiration(Instant.now().getEpochSecond() + 10000000);
-        applyAuthDTO.setSerialNumber(UUID.randomUUID().toString());
+        applyAuthDTO.setSerialNumber("单元测试生成的serialNumber" + Math.random());
         applyAuthDTO.setTo(new Address().setTdaas("dtid:dtca:9o4NzgSWDsGQvsvRssFwBBJBF8F"));
         System.out.println(JSON.toJSONString(applyAuthDTO, true));
         Result<Boolean> booleanResult = customController.applyAuth(applyAuthDTO);

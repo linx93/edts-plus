@@ -3,6 +3,9 @@ package com.phadata.etdsplus.mq;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
+import com.phadata.etdsplus.constant.SystemConstant;
+import com.phadata.etdsplus.entity.po.DataResultApply11;
+import com.phadata.etdsplus.service.DataResultApply11Service;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import net.phadata.identity.dtc.entity.VerifiableClaim;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.Instant;
 
 
 /**
@@ -25,6 +29,11 @@ public class DataResultApplyConsumer implements ChannelAwareMessageListener {
 
     @Value("${custom.data-push:}")
     private String dataPush;
+    private final DataResultApply11Service dataResultApply11Service;
+
+    public DataResultApplyConsumer(DataResultApply11Service dataResultApply11Service) {
+        this.dataResultApply11Service = dataResultApply11Service;
+    }
 
     @Override
     public void onMessage(Message message, Channel channel) {
@@ -33,11 +42,17 @@ public class DataResultApplyConsumer implements ChannelAwareMessageListener {
             log.info("数据请求的消费者【流程中对应9】消费消息：{}", msg);
             //1. 获取凭证   这个vc就是授权凭证
             VerifiableClaim vc = JSON.parseObject(msg, VerifiableClaim.class);
-            //todo 2. 本地存储业务  表中的凭证id字段加了唯一索引，防止重复消费
-
-            //3. 调用定制层接口：将携带数据的凭证推给定制层
+            //2. 调用定制层接口：将携带数据的凭证推给定制层
             HttpResponse execute = HttpRequest.post(dataPush).body(JSON.toJSONString(vc)).execute();
-            log.info("调用定制层接口：将携带数据的凭证推给定制层:", execute.body());
+            log.info("调用定制层接口：将携带数据的凭证推给定制层:", execute);
+            //3. 本地存储业务  表中的凭证id字段加了唯一索引，防止重复消费
+            long epochSecond = Instant.now().getEpochSecond();
+            dataResultApply11Service.save(new DataResultApply11()
+                    .setClaimId(vc.getId())
+                    .setCreatedTime(epochSecond)
+                    .setOperatedTime(epochSecond)
+                    .setSerialNumber(vc.getCredentialSubject().getBizData().getOrDefault(SystemConstant.SERIAL_NUMBER, "").toString())
+                    .setDataDocument(JSON.toJSONString(vc)));
             //手动签收
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
@@ -45,6 +60,7 @@ public class DataResultApplyConsumer implements ChannelAwareMessageListener {
             log.error("数据响应结果的消费者【流程中对应11】消费数据提交确认异常，MessageId: [{}]", message.getMessageProperties().getMessageId());
             try {
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+                log.error("消费发生异常后，手动签收消息，MessageId: [{}]", message.getMessageProperties().getMessageId());
             } catch (IOException ioException) {
                 log.error("手动单条签收异常消息出现问题");
                 ioException.printStackTrace();

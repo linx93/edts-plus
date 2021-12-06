@@ -1,5 +1,5 @@
 server:
-  port: 18001
+  port: 18008
 spring:
   mvc:
     throw-exception-if-no-handler-found: true
@@ -44,17 +44,17 @@ mybatis-plus:
 #日志相关配置
 logging:
   level:
-    com.phadata.etdsplus.aspect: info
-    com.phadata.etdsplus: info
+    com.phadata.etdsplus.aspect: debug
+    com.phadata.etdsplus: debug
   file:
     #总日志文件，生成位置当前目录下的logs里面
-    name: ./logs/chain.log
+    name: ./logs/etds-plus.log
   logback:
     rollingpolicy:
       #服务重启清除历史日志，默认false
       clean-history-on-start: false
       #文件名，滚动生成，生成位置当前目录下的logs里面
-      file-name-pattern: ./logs/chain.%d{yyyy-MM-dd}.%i.log
+      file-name-pattern: ./logs/etds-plus.%d{yyyy-MM-dd}.%i.log
       #默认是7天，保存近30天
       max-history: 30
       #滚动日志每个文件大小的上限

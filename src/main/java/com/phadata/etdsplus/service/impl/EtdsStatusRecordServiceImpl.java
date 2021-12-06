@@ -52,7 +52,7 @@ public class EtdsStatusRecordServiceImpl extends ServiceImpl<EtdsStatusRecordMap
         if (!"0".equals(status)) {
             throw new BussinessException("当前ETDS已经处于暂停状态，不能重复操作");
         }
-        //TODO 1.检查发送和接收数据的状态
+        //payload 1.检查发送和接收数据的状态
         log.info("检查发送和接收数据的状态");
         // 2.停止MQ的binding
         initMQInfo.removeBinding(etdsService);

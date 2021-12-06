@@ -4,6 +4,7 @@ package com.phadata.etdsplus.service;
 import com.phadata.etdsplus.entity.dto.ApplyAuthDTO;
 import com.phadata.etdsplus.entity.dto.ApplyDataDTO;
 import com.phadata.etdsplus.entity.dto.ResponseDataDTO;
+import com.phadata.etdsplus.entity.dto.StatisticDataDTO;
 import com.phadata.etdsplus.utils.result.Result;
 
 /**
@@ -33,7 +34,7 @@ public interface CustomService {
 
 
     /**
-     * 响应数据
+     * 接收数据
      *
      * @param responseData
      * @return
@@ -46,4 +47,11 @@ public interface CustomService {
      * @return
      */
     Result findEtdsInfo();
+
+    /**
+     * 接收统计数据
+     * @param statisticDataDTO
+     * @return
+     */
+    Result receiveStatisticData(StatisticDataDTO statisticDataDTO);
 }

@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotBlank;
 
 /**
  * @description: 响应数据
@@ -28,10 +27,10 @@ public class ResponseDataDTO {
     @ApiModelProperty(value = "响应的数据:这个数据包一定是Chunk，使用Chunk.Wrapper()获得", required = true)
     private String chunk;
 
-    @ApiModelProperty(value = "向谁响应数据")
+    @ApiModelProperty(value = "向谁响应数据", required = true)
     private Address to;
 
-    @ApiModelProperty(value = "响应数据者")
+    @ApiModelProperty(value = "响应数据者", required = true)
     private Address from;
 
 }

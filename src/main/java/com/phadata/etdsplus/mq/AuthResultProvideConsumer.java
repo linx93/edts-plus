@@ -62,6 +62,7 @@ public class AuthResultProvideConsumer implements ChannelAwareMessageListener {
             log.error("数据授权的消费者【流程中对应6】消费数据异常，MessageId: [{}]", message.getMessageProperties().getMessageId());
             try {
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+                log.error("消费发生异常后，手动签收消息，MessageId: [{}]", message.getMessageProperties().getMessageId());
             } catch (IOException ioException) {
                 log.error("手动单条签收异常消息出现问题");
                 ioException.printStackTrace();

@@ -34,8 +34,6 @@ public class ApplyDataDTO {
     @ApiModelProperty("向谁请求数据")
     private Address to;
 
-    // 谁请求的数据
-    //From common.Address `json:"from"`
     @ApiModelProperty("请求数据者")
     private Address from;
 

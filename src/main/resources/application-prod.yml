@@ -1,5 +1,5 @@
 server:
-  port: 18001
+  port: 18008
 spring:
   mvc:
     throw-exception-if-no-handler-found: true
@@ -23,8 +23,18 @@ spring:
       validation-timeout: 3000
       read-only: false
       login-timeout: 5
+  rabbitmq:
+    host: 192.168.1.107
+    password: 123456
+    username: fecred
+    port: 5672
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual
 
 
+#mybatis-plus相关配置
 mybatis-plus:
   mapper-locations: classpath:/mappers/*Mapper.xml
   configuration:
@@ -34,8 +44,8 @@ mybatis-plus:
 #日志相关配置
 logging:
   level:
-    com.phadata.etdsplus.aspect: debug
-    com.phadata.etdsplus: info
+    com.phadata.etdsplus.aspect: error
+    com.phadata.etdsplus: error
   file:
     #总日志文件，生成位置当前目录下的logs里面
     name: ./logs/chain.log
@@ -94,3 +104,28 @@ auth-center:
   #通知鉴权中心etds激活成功的地址
   notify-etds-activate-success: 192.168.1.254:8080/api/v1/auth/etds/activation-success
 
+#关于凭证相关服务配置
+dtc-server:
+  #申请请求接口的rid
+  apply-rid: http://192.168.1.106:8765/api/v1/dtc/registry/apply
+  #创建凭证
+  create-claim: http://192.168.1.106:8765/api/v1/dtc/registry/claim/create
+  #验证凭证
+  validate-claim: http://192.168.1.106:8765/api/v1/dtc/registry/claim/validate
+  #注销凭证
+  writeOff-claim: http://192.168.1.106:8765/api/v1/dtc/registry/claim/writeOff
+  #服务接口密钥
+  sKey: 6m4SNklr5eZspUjd
+  #服务接口偏移量
+  vKey: s5IUgjA9h2DWmFS8
+
+#rabbitMQ发送配置
+mq:
+  send: http://192.168.1.111:4636/api/producer/send
+
+#定制层的配置
+custom:
+  #推授权凭证给定制层的地址
+  auth-push: http://192.168.1.52:8080/v1/response/auth
+  #推数据凭证给定制层的地址
+  data-push: http://192.168.1.52:8080/v1/response/data

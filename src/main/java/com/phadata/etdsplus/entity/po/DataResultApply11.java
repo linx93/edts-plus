@@ -3,14 +3,17 @@ package com.phadata.etdsplus.entity.po;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 拉取数据统计日志(请求方)<11>
+ * 具体的数据(请求方)<11>
  * </p>
  *
  * @author linx
@@ -18,8 +21,10 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="DataStatisticsApply11对象", description="拉取数据统计日志(请求方)<11>")
-public class DataStatisticsApply11 implements Serializable {
+@ApiModel(value="DataResultApply11对象", description="具体的数据(请求方)<11>")
+@Accessors(chain = true)
+@TableName("data_result_apply_11")
+public class DataResultApply11 implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -58,7 +63,7 @@ public class DataStatisticsApply11 implements Serializable {
     private Integer dataAmount;
 
     @ApiModelProperty(value = "统计分析的凭证")
-    private String statisticsDocument;
+    private String dataDocument;
 
     @ApiModelProperty(value = "统一业务标识号")
     private String serialNumber;

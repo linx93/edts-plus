@@ -1,7 +1,7 @@
 package com.phadata.etdsplus.enums;
 
 /**
- * @description: 授权类型
+ * @description: 请求数据类型
  * @author: linx
  * @create: 2021-11-26 15:45
  */

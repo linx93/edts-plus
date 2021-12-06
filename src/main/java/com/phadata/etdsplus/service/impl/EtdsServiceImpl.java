@@ -43,6 +43,7 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
     private final InitMQInfo initMQInfo;
     private final DataSwitchMapper dataSwitchMapper;
     private final DataSwitchService dataSwitchService;
+    private final EtdsMapper etdsMapper;
 
     @Value("${auth-center.app-key:}")
     private String appKey;
@@ -59,14 +60,20 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
     @Value("${auth-center.notify-etds-activate-success:}")
     private String activateSuccessUrl;
 
-    public EtdsServiceImpl(InitMQInfo initMQInfo, DataSwitchMapper dataSwitchMapper, DataSwitchService dataSwitchService) {
+    public EtdsServiceImpl(InitMQInfo initMQInfo, DataSwitchMapper dataSwitchMapper, DataSwitchService dataSwitchService, EtdsMapper etdsMapper) {
         this.initMQInfo = initMQInfo;
         this.dataSwitchMapper = dataSwitchMapper;
         this.dataSwitchService = dataSwitchService;
+        this.etdsMapper = etdsMapper;
     }
 
     @Override
     public void activationEtds(ETDSRegisterDTO etdsRegisterDTO) {
+        //0. 先判断此服务是否以及激活，【是否已经存在etds信息】
+        Integer count = etdsMapper.selectCount(new QueryWrapper<>());
+        if (count > 0) {
+            throw new BussinessException("此etds已经激活，不能重复激活");
+        }
         //1. 去鉴权中心获取token
         String token = getToken();
 

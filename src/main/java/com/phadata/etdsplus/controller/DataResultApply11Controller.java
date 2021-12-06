@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2021-11-26
  */
 @RestController
-@RequestMapping("/data-statistics-apply11")
-public class DataStatisticsApply11Controller {
+@RequestMapping("/data-result-apply11")
+public class DataResultApply11Controller {
 
 }
 
