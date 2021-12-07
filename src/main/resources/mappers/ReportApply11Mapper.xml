@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.phadata.etdsplus.mapper.ReportApply11Mapper">
+
+    <select id="dataApplyLine" resultType="com.phadata.etdsplus.entity.vo.Tj15">
+        SELECT
+            FROM_UNIXTIME( temp.requested_at, '%Y-%m-%d' ) AS `time`,
+            SUM( IFNULL(temp.response_http_meta_contentLength,0) ) AS `size`,
+            SUM( IFNULL(temp.temp.chunk_length,0) ) AS `totals`
+        FROM
+            ( SELECT requested_at, response_http_meta_contentLength, chunk_length FROM report_apply_11 WHERE auth_dtc = #{authDtcId} ) AS temp
+        WHERE
+        date_sub(curdate(),INTERVAL #{days} DAY) &lt;= date(FROM_UNIXTIME( temp.requested_at ))
+        GROUP BY
+        `time`
+    </select>
+    <select id="dataApplySum" resultType="com.phadata.etdsplus.entity.vo.Sjltj">
+        SELECT
+            SUM( IFNULL( response_http_meta_contentLength, 0 ) ) AS `size`,
+            SUM( IFNULL( chunk_length, 0 ) ) AS `totals`
+        FROM
+	        report_apply_11
+        WHERE
+	        auth_dtc = #{authDtcId}
+    </select>
+</mapper>

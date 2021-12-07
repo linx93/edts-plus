@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.phadata.etdsplus.config.DTCServerConfig;
 import com.phadata.etdsplus.constant.SystemConstant;
 import com.phadata.etdsplus.entity.dto.*;
-import com.phadata.etdsplus.entity.po.Etds;
-import com.phadata.etdsplus.entity.po.GrantResultApply4;
-import com.phadata.etdsplus.entity.po.ReAuthNoticeApply1;
-import com.phadata.etdsplus.entity.po.ReAuthNoticeApply2;
+import com.phadata.etdsplus.entity.po.*;
 import com.phadata.etdsplus.enums.AuthType;
 import com.phadata.etdsplus.enums.DataType;
 import com.phadata.etdsplus.exception.BussinessException;
@@ -44,8 +41,9 @@ public class CustomServiceImpl implements CustomService {
     private final ReAuthNoticeApply1Service reAuthNoticeApply1Service;
     private final ReAuthNoticeApply2Service reAuthNoticeApply2Service;
     private final GrantResultApply4Service grantResultApply4Service;
+    private final ReportProvide11Service reportProvide11Service;
 
-    public CustomServiceImpl(TdaasPrivateKeyMapper tdaasPrivateKeyMapper, DTCServerConfig dtcServerConfig, DTCComponent dtcComponent, EtdsUtil etdsUtil, EtdsService etdsService, MQSendUtil mqSendUtil, ReAuthNoticeApply1Service reAuthNoticeApply1Service, ReAuthNoticeApply2Service reAuthNoticeApply2Service, GrantResultApply4Service grantResultApply4Service) {
+    public CustomServiceImpl(TdaasPrivateKeyMapper tdaasPrivateKeyMapper, DTCServerConfig dtcServerConfig, DTCComponent dtcComponent, EtdsUtil etdsUtil, EtdsService etdsService, MQSendUtil mqSendUtil, ReAuthNoticeApply1Service reAuthNoticeApply1Service, ReAuthNoticeApply2Service reAuthNoticeApply2Service, GrantResultApply4Service grantResultApply4Service, ReportProvide11Service reportProvide11Service) {
         this.tdaasPrivateKeyMapper = tdaasPrivateKeyMapper;
         this.dtcServerConfig = dtcServerConfig;
         this.dtcComponent = dtcComponent;
@@ -55,6 +53,7 @@ public class CustomServiceImpl implements CustomService {
         this.reAuthNoticeApply1Service = reAuthNoticeApply1Service;
         this.reAuthNoticeApply2Service = reAuthNoticeApply2Service;
         this.grantResultApply4Service = grantResultApply4Service;
+        this.reportProvide11Service = reportProvide11Service;
     }
 
     @Override
@@ -237,7 +236,7 @@ public class CustomServiceImpl implements CustomService {
                 .setUnionId(UUID.randomUUID().toString())
                 .setIssuer(etdsInfo.getCompanyDtid());
 
-        //4. 给数据请求方的ETDS发送MQ消息【流程11】
+        //4. 给数据请求方的ETDS发送MQ消息【这里发送的数据体】【流程11】
         try {
             claimReqBizPackage.setHolder(responseAuthDTO.getFrom().getTdaas());
             // 构建设置bizData11的内容
@@ -270,14 +269,14 @@ public class CustomServiceImpl implements CustomService {
     }
 
     @Override
-    public Result receiveStatisticData(StatisticDataDTO statisticDataDTO) {
+    public Result receiveStatisticData(ReportDTO reportDTO) {
         Etds etdsInfo = etdsUtil.EtdsInfo(etdsService);
         //获取授权凭证具体信息
-        String dtcId = statisticDataDTO.getDtc();
+        String dtcId = reportDTO.getAuthDtc();
         ResponseAuthDTO responseAuthDTO = getResponseAuthDTOByDtcId(dtcId);
         //构建创建凭证的参数ClaimReqBizPackage
         ClaimReqBizPackage claimReqBizPackage = new ClaimReqBizPackage()
-                .setType(DTCType.DATA.getType())
+                .setType(DTCType.OTHER.getType())
                 .setTdrType("-1")
                 .setTimes(0)
                 .setExpire(SystemConstant.EXPIRED)
@@ -285,16 +284,17 @@ public class CustomServiceImpl implements CustomService {
                 .setIssuer(etdsInfo.getCompanyDtid());
         //构建bizData部分
         //1. 给自己的tdaas发送MQ消息【流程13】
+        //这就是凭证
+        Map<String, Object> claim13;
         try {
             claimReqBizPackage.setHolder(etdsInfo.getCompanyDtid());
             // 构建设置bizData13的内容
-            Map<String, Object> bizData13 = JSON.parseObject(JSON.toJSONString(statisticDataDTO), Map.class);
+            Map<String, Object> bizData13 = JSON.parseObject(JSON.toJSONString(reportDTO), Map.class);
             //设置bizData
             claimReqBizPackage.setBizData(bizData13);
             //创建凭证
             DTCResponse dtcResponse13 = dtcComponent.createDtc(claimReqBizPackage);
-            //这就是凭证
-            Map<String, Object> claim13 = dtcComponent.parse(dtcResponse13);
+            claim13 = dtcComponent.parse(dtcResponse13);
             //发送mq
             mqSendUtil.sendToTDaaS(etdsInfo.getCompanyDtid(), etdsInfo.getEtdsCode(), DataType.RESPONSE.getRemark(), JSON.toJSONString(claim13), MessageConsumerEnum.pr_etds_to_pr_tdaas_tj);
         } catch (Exception e) {
@@ -305,7 +305,7 @@ public class CustomServiceImpl implements CustomService {
         try {
             claimReqBizPackage.setHolder(responseAuthDTO.getCc().get(0).getTdaas());
             // 构建设置bizData12的内容
-            Map<String, Object> bizData12 = JSON.parseObject(JSON.toJSONString(statisticDataDTO), Map.class);
+            Map<String, Object> bizData12 = JSON.parseObject(JSON.toJSONString(reportDTO), Map.class);
             //设置bizData
             claimReqBizPackage.setBizData(bizData12);
             //创建凭证
@@ -320,9 +320,9 @@ public class CustomServiceImpl implements CustomService {
 
         //3. 给数据请求方的tdaas发送MQ消息【流程10】
         try {
-            claimReqBizPackage.setHolder(statisticDataDTO.getTo().getTdaas());
+            claimReqBizPackage.setHolder(reportDTO.getFrom().getTdaas());
             // 构建设置bizData10的内容
-            Map<String, Object> bizData10 = JSON.parseObject(JSON.toJSONString(statisticDataDTO), Map.class);
+            Map<String, Object> bizData10 = JSON.parseObject(JSON.toJSONString(reportDTO), Map.class);
             //设置bizData
             claimReqBizPackage.setBizData(bizData10);
             //创建凭证
@@ -330,10 +330,58 @@ public class CustomServiceImpl implements CustomService {
             //这就是凭证
             Map<String, Object> claim10 = dtcComponent.parse(dtcResponse10);
             //发送mq
-            mqSendUtil.sendToTDaaS(statisticDataDTO.getTo().getTdaas(), etdsInfo.getEtdsCode(), DataType.RESPONSE.getRemark(), JSON.toJSONString(claim10), MessageConsumerEnum.pr_etds_to_re_tdaas_tj);
+            mqSendUtil.sendToTDaaS(reportDTO.getFrom().getTdaas(), etdsInfo.getEtdsCode(), DataType.RESPONSE.getRemark(), JSON.toJSONString(claim10), MessageConsumerEnum.pr_etds_to_re_tdaas_tj);
         } catch (Exception e) {
             throw new BussinessException("【流程9】创建凭证失败:" + e.getMessage());
         }
+
+
+        //4. 给数据提供方的ETDS发送MQ消息【这里发的是统计信息，不是数据体】【流程11】、数据提供方etds本地存储由于做统计
+        //4.1 给数据提供方的ETDS发送MQ消息【这里发的是统计信息，不是数据体】【流程11】
+        try {
+            claimReqBizPackage.setHolder(responseAuthDTO.getFrom().getTdaas());
+            // 构建设置bizData11的内容
+            Map<String, Object> bizData11 = JSON.parseObject(JSON.toJSONString(reportDTO), Map.class);
+            //设置bizData
+            claimReqBizPackage.setBizData(bizData11);
+            //创建凭证
+            DTCResponse dtcResponse11 = dtcComponent.createDtc(claimReqBizPackage);
+            //这就是凭证
+            Map<String, Object> claim11 = dtcComponent.parse(dtcResponse11);
+            //发送mq
+            mqSendUtil.sendToETDS(reportDTO.getTo().getTdaas(), etdsInfo.getEtdsCode(), DataType.RESPONSE.getRemark(), JSON.toJSONString(claim11), reportDTO.getTo().getEtds(), MessageConsumerEnum.pr_etds_to_re_etds_data);
+        } catch (Exception e) {
+            throw new BussinessException("【流程9】创建凭证失败:" + e.getMessage());
+        }
+        //4.2 数据提供方etds本地存储由于做统计
+        String claim_id = claim13.getOrDefault("id", "").toString();
+        boolean save = reportProvide11Service.save(
+                new ReportProvide11().setAuthDtc(reportDTO.getAuthDtc())
+                        .setAuthStatus(reportDTO.getAuthStatus())
+                        .setAuthStatusDesc(reportDTO.getAuthStatusDesc())
+                        .setChunkLength(reportDTO.getChunkLength())
+                        .setChunkSize(reportDTO.getChunkSize())
+                        .setClaimId(claim_id)
+                        .setFirstResponse(reportDTO.getFirstResponse())
+                        .setFromEtds(reportDTO.getFrom() == null ? "" : reportDTO.getFrom().getEtds())
+                        .setFromTdaas(reportDTO.getFrom() == null ? "" : reportDTO.getFrom().getTdaas())
+                        .setLastResponse(reportDTO.getLastResponse())
+                        .setRequestedAt(reportDTO.getRequestedAt())
+                        .setRequestHttpMetaBody(reportDTO.getRequestHttpMeta() == null ? "" : reportDTO.getRequestHttpMeta().getBody())
+                        .setRequestHttpMetaHeader(reportDTO.getRequestHttpMeta() == null ? "" : JSON.toJSONString(reportDTO.getRequestHttpMeta().getHeader()))
+                        .setRequestHttpMetaMethod(reportDTO.getRequestHttpMeta() == null ? "" : reportDTO.getRequestHttpMeta().getMethod())
+                        .setRequestHttpMetaPath(reportDTO.getRequestHttpMeta() == null ? "" : reportDTO.getRequestHttpMeta().getPath())
+                        .setRequestHttpMetaQuery(reportDTO.getRequestHttpMeta() == null ? "" : reportDTO.getRequestHttpMeta().getQuery())
+                        .setResponseHttpMetaContentlength(reportDTO.getResponseHttpMeta() == null ? 0L : reportDTO.getResponseHttpMeta().getContentLength())
+                        .setResponseHttpMetaHeader(reportDTO.getResponseHttpMeta() == null ? "" : JSON.toJSONString(reportDTO.getResponseHttpMeta().getHeader()))
+                        .setResponseHttpMetaStatus(reportDTO.getResponseHttpMeta() == null ? -1 : reportDTO.getResponseHttpMeta().getStatus())
+                        .setRetries(reportDTO.getRetries())
+                        .setSerialNumber(reportDTO.getSerialNumber())
+                        .setToEtds(reportDTO.getTo() == null ? "" : reportDTO.getTo().getEtds())
+                        .setToTdaas(reportDTO.getTo() == null ? "" : reportDTO.getTo().getTdaas())
+                        .setCreateTime(new Date())
+        );
+
         return Result.success(true);
     }
 

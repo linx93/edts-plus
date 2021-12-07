@@ -1,9 +1,6 @@
 package com.phadata.etdsplus.controller;
 
-import com.phadata.etdsplus.entity.dto.ApplyAuthDTO;
-import com.phadata.etdsplus.entity.dto.ApplyDataDTO;
-import com.phadata.etdsplus.entity.dto.ResponseDataDTO;
-import com.phadata.etdsplus.entity.dto.StatisticDataDTO;
+import com.phadata.etdsplus.entity.dto.*;
 import com.phadata.etdsplus.service.CustomService;
 import com.phadata.etdsplus.utils.result.Result;
 import io.swagger.annotations.ApiOperation;
@@ -73,13 +70,13 @@ public class CustomController {
     /**
      * 接收数据的统计信息，这个接口是提供给定制层获取到真正数据时候调用的，用于接收定制层数据的统计信息
      *
-     * @param statisticDataDTO
+     * @param reportDTO
      * @return
      */
     @PostMapping(value = "/receive-statistics-data")
     @ApiOperation(value = "接收数据的统计信息")
-    public Result receiveStatisticData(@Valid @RequestBody StatisticDataDTO statisticDataDTO) {
-        return customService.receiveStatisticData(statisticDataDTO);
+    public Result receiveStatisticData(@RequestBody ReportDTO reportDTO) {
+        return customService.receiveStatisticData(reportDTO);
     }
 
     /**

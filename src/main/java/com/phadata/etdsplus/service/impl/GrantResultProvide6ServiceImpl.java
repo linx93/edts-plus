@@ -5,17 +5,21 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.phadata.etdsplus.entity.dto.Address;
 import com.phadata.etdsplus.entity.po.GrantResultProvide6;
-import com.phadata.etdsplus.entity.vo.DataProvideAuthVO;
-import com.phadata.etdsplus.entity.vo.PageInfo;
+import com.phadata.etdsplus.entity.vo.*;
+import com.phadata.etdsplus.exception.BussinessException;
 import com.phadata.etdsplus.mapper.GrantResultProvide6Mapper;
+import com.phadata.etdsplus.mapper.ReportProvide11Mapper;
 import com.phadata.etdsplus.service.GrantResultProvide6Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import net.phadata.identity.dtc.entity.VerifiableClaim;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <p>
@@ -27,6 +31,12 @@ import java.util.Map;
  */
 @Service
 public class GrantResultProvide6ServiceImpl extends ServiceImpl<GrantResultProvide6Mapper, GrantResultProvide6> implements GrantResultProvide6Service {
+    private final ReportProvide11Mapper reportProvide11Mapper;
+
+    public GrantResultProvide6ServiceImpl(ReportProvide11Mapper reportProvide11Mapper) {
+        this.reportProvide11Mapper = reportProvide11Mapper;
+    }
+
 
     @Override
     public PageInfo<List<DataProvideAuthVO>> listAuthList(Integer page, Integer size) {
@@ -42,6 +52,7 @@ public class GrantResultProvide6ServiceImpl extends ServiceImpl<GrantResultProvi
         listPageInfo = new PageInfo<List<DataProvideAuthVO>>().setCurrent(page).setSize(size).setTotal(pageInfo.getTotal()).setRecords(result);
         return listPageInfo;
     }
+
 
     /**
      * 转换数据给前端

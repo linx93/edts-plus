@@ -1,10 +1,7 @@
 package com.phadata.etdsplus.service;
 
 
-import com.phadata.etdsplus.entity.dto.ApplyAuthDTO;
-import com.phadata.etdsplus.entity.dto.ApplyDataDTO;
-import com.phadata.etdsplus.entity.dto.ResponseDataDTO;
-import com.phadata.etdsplus.entity.dto.StatisticDataDTO;
+import com.phadata.etdsplus.entity.dto.*;
 import com.phadata.etdsplus.utils.result.Result;
 
 /**
@@ -50,8 +47,8 @@ public interface CustomService {
 
     /**
      * 接收统计数据
-     * @param statisticDataDTO
+     * @param reportDTO
      * @return
      */
-    Result receiveStatisticData(StatisticDataDTO statisticDataDTO);
+    Result receiveStatisticData(ReportDTO reportDTO);
 }

@@ -3,13 +3,9 @@ package com.phadata.etdsplus.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.phadata.etdsplus.entity.dto.ETDSRegisterDTO;
-import com.phadata.etdsplus.entity.vo.DataApplyAuthVO;
-import com.phadata.etdsplus.entity.vo.DataProvideAuthVO;
-import com.phadata.etdsplus.entity.vo.PageInfo;
+import com.phadata.etdsplus.entity.vo.*;
 import com.phadata.etdsplus.exception.BussinessException;
-import com.phadata.etdsplus.service.EtdsService;
-import com.phadata.etdsplus.service.GrantResultApply4Service;
-import com.phadata.etdsplus.service.GrantResultProvide6Service;
+import com.phadata.etdsplus.service.*;
 import com.phadata.etdsplus.utils.result.Result;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -38,11 +34,16 @@ public class EtdsController {
     private final EtdsService etdsService;
     private final GrantResultApply4Service grantResultApply4Service;
     private final GrantResultProvide6Service grantResultProvide6Service;
+    private final ReportApply11Service reportApply11Service;
+    private final ReportProvide11Service reportProvide11Service;
 
-    public EtdsController(EtdsService etdsService, GrantResultApply4Service grantResultApply4Service, GrantResultProvide6Service grantResultProvide6Service) {
+
+    public EtdsController(EtdsService etdsService, GrantResultApply4Service grantResultApply4Service, GrantResultProvide6Service grantResultProvide6Service, ReportApply11Service reportApply11Service, ReportProvide11Service reportProvide11Service) {
         this.etdsService = etdsService;
         this.grantResultApply4Service = grantResultApply4Service;
         this.grantResultProvide6Service = grantResultProvide6Service;
+        this.reportApply11Service = reportApply11Service;
+        this.reportProvide11Service = reportProvide11Service;
     }
 
     /**
@@ -101,7 +102,7 @@ public class EtdsController {
     @PostMapping(value = "/etds/data-apply/auth-list")
     @ApiOperation(value = "授权凭证列表（数据请求方）")
     public Result<PageInfo<List<DataApplyAuthVO>>> applyAuthList(@ApiParam(value = "页码（默认1）", name = "page") @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                                       @ApiParam(value = "页数（默认5）", name = "size") @RequestParam(value = "size", defaultValue = "5") Integer size) {
+                                                                 @ApiParam(value = "页数（默认5）", name = "size") @RequestParam(value = "size", defaultValue = "5") Integer size) {
         PageInfo<List<DataApplyAuthVO>> list;
         try {
             list = grantResultApply4Service.listAuthList(page, size);
@@ -112,6 +113,90 @@ public class EtdsController {
         return Result.success(list);
     }
 
+
+    /**
+     * 最近15天授权凭证折线图（数据请求方）
+     *
+     * @param
+     * @return
+     */
+    @PostMapping(value = "/etds/data-apply/line")
+    @ApiOperation(value = "最近15天授权凭证折线图（数据请求方）")
+    public Result<LineChartVO> dataApplyLine(@ApiParam(name = "days", value = "默认不传的话就是最近15天") @RequestParam(value = "days", defaultValue = "15", required = false) Integer days,
+                                             @ApiParam(name = "authDtcId", value = "授权凭证的id", required = true) @RequestParam(value = "authDtcId") String authDtcId) {
+        LineChartVO lineChartVO;
+        try {
+            lineChartVO = reportApply11Service.dataApplyLine(days, authDtcId);
+        } catch (Exception e) {
+            log.error("查询最近15天授权凭证折线图）失败:{}", e.getMessage());
+            throw new BussinessException("查询失败");
+        }
+        return Result.success(lineChartVO);
+    }
+
+
+    /**
+     * 最近15天授权凭证折线图（数据提供方）
+     *
+     * @param
+     * @return
+     */
+    @PostMapping(value = "/etds/data-provide/line")
+    @ApiOperation(value = "最近15天授权凭证折线图（数据提供方）")
+    public Result<LineChartVO> dataProvideLine(@ApiParam(name = "days", value = "默认不传的话就是最近15天") @RequestParam(value = "days", defaultValue = "15", required = false) Integer days,
+                                               @ApiParam(name = "authDtcId", value = "授权凭证的id", required = true) @RequestParam(value = "authDtcId") String authDtcId) {
+        LineChartVO lineChartVO;
+        try {
+            lineChartVO = reportProvide11Service.dataProvideLine(days, authDtcId);
+        } catch (Exception e) {
+            log.error("查询最近15天授权凭证折线图）失败:{}", e.getMessage());
+            throw new BussinessException("查询失败");
+        }
+        return Result.success(lineChartVO);
+    }
+
+
+    /**
+     * 流转日志（数据请求方）
+     *
+     * @param
+     * @return
+     */
+    @PostMapping(value = "/etds/apply/move-logs")
+    @ApiOperation(value = "流转日志（数据请求方）")
+    public Result<PageInfo<List<MoveLogsVO>>> applyMoveLogs(@ApiParam(value = "页码（默认1）", name = "page") @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                                            @ApiParam(value = "页数（默认5）", name = "size") @RequestParam(value = "size", defaultValue = "5") Integer size,
+                                                            @ApiParam(name = "authDtcId", value = "授权凭证的id", required = true) @RequestParam(value = "authDtcId") String authDtcId) {
+        PageInfo<List<MoveLogsVO>> list;
+        try {
+            list = reportApply11Service.applyMoveLogs(page, size, authDtcId);
+        } catch (Exception e) {
+            log.error("查询授权凭证列表（数据请求方）失败:{}", e.getMessage());
+            throw new BussinessException("查询失败");
+        }
+        return Result.success(list);
+    }
+
+    /**
+     * 流转日志（数据供应方）
+     *
+     * @param
+     * @return
+     */
+    @PostMapping(value = "/etds/provide/move-logs")
+    @ApiOperation(value = "流转日志（数据供应方）")
+    public Result<PageInfo<List<MoveLogsVO>>> provideMoveLogs(@ApiParam(value = "页码（默认1）", name = "page") @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                                              @ApiParam(value = "页数（默认5）", name = "size") @RequestParam(value = "size", defaultValue = "5") Integer size,
+                                                              @ApiParam(name = "authDtcId", value = "授权凭证的id", required = true) @RequestParam(value = "authDtcId") String authDtcId) {
+        PageInfo<List<MoveLogsVO>> list;
+        try {
+            list = reportProvide11Service.provideMoveLogs(page, size, authDtcId);
+        } catch (Exception e) {
+            log.error("查询授权凭证列表（数据供应方）失败:{}", e.getMessage());
+            throw new BussinessException("查询失败");
+        }
+        return Result.success(list);
+    }
 
 }
 
