@@ -11,7 +11,7 @@
  Target Server Version : 80021
  File Encoding         : 65001
 
- Date: 03/12/2021 14:44:09
+ Date: 07/12/2021 19:17:01
 */
 
 SET NAMES utf8mb4;
@@ -54,7 +54,7 @@ CREATE TABLE `data_result_apply_11` (
   `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
   PRIMARY KEY (`id`),
   UNIQUE KEY `claim_id` (`claim_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1013 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='拉取数据统计日志(请求方)<11>';
+) ENGINE=InnoDB AUTO_INCREMENT=2832 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='拉取数据统计日志(请求方)<11>';
 
 -- ----------------------------
 -- Table structure for data_statistics_provide_10
@@ -224,7 +224,7 @@ CREATE TABLE `grant_result_apply_4` (
   `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
   PRIMARY KEY (`id`),
   UNIQUE KEY `claim_id` (`claim_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='授权结果返回表(请求方) <4>';
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='授权结果返回表(请求方) <4>';
 
 -- ----------------------------
 -- Table structure for grant_result_provide_6
@@ -249,7 +249,7 @@ CREATE TABLE `grant_result_provide_6` (
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `claim_id` (`claim_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='授权结果返回表(提供方) <6>';
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='授权结果返回表(提供方) <6>';
 
 -- ----------------------------
 -- Table structure for re_auth_notice_apply_1
@@ -271,7 +271,7 @@ CREATE TABLE `re_auth_notice_apply_1` (
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
   `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='请求授权通知(请求方)<1>';
+) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='请求授权通知(请求方)<1>';
 
 -- ----------------------------
 -- Table structure for re_auth_notice_apply_2
@@ -293,7 +293,7 @@ CREATE TABLE `re_auth_notice_apply_2` (
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
   `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='请求授权通知(请求方)<2>';
+) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='请求授权通知(请求方)<2>';
 
 -- ----------------------------
 -- Table structure for re_data_notice_apply_7
@@ -385,7 +385,75 @@ CREATE TABLE `re_data_notice_provide_9` (
   `claim_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '凭证id',
   PRIMARY KEY (`id`),
   UNIQUE KEY `claim_id` (`claim_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=286 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='请求拉取数据通知(提供方)<9>';
+) ENGINE=InnoDB AUTO_INCREMENT=800 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='请求拉取数据通知(提供方)<9>';
+
+-- ----------------------------
+-- Table structure for report_apply_11
+-- ----------------------------
+DROP TABLE IF EXISTS `report_apply_11`;
+CREATE TABLE `report_apply_11` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `claim_id` varchar(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '凭证id',
+  `requested_at` bigint DEFAULT NULL COMMENT '请求时间',
+  `first_response` bigint DEFAULT NULL COMMENT '首次响应时间\n',
+  `last_response` bigint DEFAULT NULL COMMENT '最后响应时间',
+  `serial_number` varchar(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求序列号',
+  `from_tdaas` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求方数字身份',
+  `from_etds` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求方etds唯一码',
+  `to_tdaas` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '响应方数字身份',
+  `to_etds` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '响应方etds唯一码',
+  `request_http_meta_path` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '请求Path',
+  `request_http_meta_query` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '请求Query',
+  `request_http_meta_method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求方法，只允许GET/POST',
+  `request_http_meta_header` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '请求头',
+  `request_http_meta_body` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '请求body的数据',
+  `auth_dtc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '授权凭证id',
+  `retries` int DEFAULT NULL COMMENT '重试次数',
+  `auth_status` int DEFAULT NULL COMMENT '授权状态码',
+  `auth_status_desc` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '授权状态描述',
+  `response_http_meta_header` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '响应头',
+  `response_http_meta_status` int DEFAULT NULL COMMENT '响应状态码',
+  `response_http_meta_contentLength` bigint DEFAULT NULL COMMENT '响应数据大小,单位是byte',
+  `chunk_size` bigint DEFAULT NULL COMMENT '分片大小,每片的大小单位b',
+  `chunk_length` int DEFAULT NULL COMMENT '分片的数量',
+  `create_time` datetime DEFAULT NULL COMMENT '插入时间',
+  PRIMARY KEY (`id`),
+  KEY `auth_dtc_index` (`auth_dtc`)
+) ENGINE=InnoDB AUTO_INCREMENT=207 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Table structure for report_provide_11
+-- ----------------------------
+DROP TABLE IF EXISTS `report_provide_11`;
+CREATE TABLE `report_provide_11` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `claim_id` varchar(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '凭证id',
+  `requested_at` bigint DEFAULT NULL COMMENT '请求时间',
+  `first_response` bigint DEFAULT NULL COMMENT '首次响应时间\n',
+  `last_response` bigint DEFAULT NULL COMMENT '最后响应时间',
+  `serial_number` varchar(225) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求序列号',
+  `from_tdaas` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求方数字身份',
+  `from_etds` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求方etds唯一码',
+  `to_tdaas` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '响应方数字身份',
+  `to_etds` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '响应方etds唯一码',
+  `request_http_meta_path` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '请求Path',
+  `request_http_meta_query` text COLLATE utf8mb4_general_ci COMMENT '请求Query',
+  `request_http_meta_method` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求方法，只允许GET/POST',
+  `request_http_meta_header` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '请求头',
+  `request_http_meta_body` text COLLATE utf8mb4_general_ci COMMENT '请求body的数据',
+  `auth_dtc` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '授权凭证id',
+  `retries` int DEFAULT NULL COMMENT '重试次数',
+  `auth_status` int DEFAULT NULL COMMENT '授权状态码',
+  `auth_status_desc` text COLLATE utf8mb4_general_ci COMMENT '授权状态描述',
+  `response_http_meta_header` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '响应头',
+  `response_http_meta_status` int DEFAULT NULL COMMENT '响应状态码',
+  `response_http_meta_contentLength` bigint DEFAULT NULL COMMENT '响应数据大小,单位是byte',
+  `chunk_size` bigint DEFAULT NULL COMMENT '分片大小,每片的大小单位b',
+  `chunk_length` int DEFAULT NULL COMMENT '分片的数量',
+  `create_time` datetime DEFAULT NULL COMMENT '插入时间',
+  PRIMARY KEY (`id`),
+  KEY `auth_dtc_index` (`auth_dtc`)
+) ENGINE=InnoDB AUTO_INCREMENT=207 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for tdaas_private_key
