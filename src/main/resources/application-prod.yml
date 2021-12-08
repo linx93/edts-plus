@@ -37,8 +37,8 @@ spring:
 #mybatis-plus相关配置
 mybatis-plus:
   mapper-locations: classpath:/mappers/*Mapper.xml
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 
 #日志相关配置
@@ -48,13 +48,13 @@ logging:
     com.phadata.etdsplus: error
   file:
     #总日志文件，生成位置当前目录下的logs里面
-    name: ./logs/chain.log
+    name: ./logs/etds-plus.log
   logback:
     rollingpolicy:
       #服务重启清除历史日志，默认false
       clean-history-on-start: false
       #文件名，滚动生成，生成位置当前目录下的logs里面
-      file-name-pattern: ./logs/chain.%d{yyyy-MM-dd}.%i.log
+      file-name-pattern: ./logs/etds-plus.%d{yyyy-MM-dd}.%i.log
       #默认是7天，保存近30天
       max-history: 30
       #滚动日志每个文件大小的上限
@@ -94,26 +94,28 @@ knife4j:
 
 #关于鉴权中心配置
 auth-center:
+  address: 192.168.1.254:8080
   #请求鉴权中心内置的key和secret
   app-key: c6ae6i06n88im0kpc92g
   secret: c6ae6i06n88im0kpc920
   #请求鉴权中获取token的地址
-  get-token-url: 192.168.1.254:8080/api/v1/auth/token/create
+  get-token-url: ${auth-center.address}/api/v1/auth/token/create
   #请求鉴权中获取etds相关信息的地址
-  get-etds-info-url: 192.168.1.254:8080/api/v1/auth/etds/activation-code
+  get-etds-info-url: ${auth-center.address}/api/v1/auth/etds/activation-code
   #通知鉴权中心etds激活成功的地址
-  notify-etds-activate-success: 192.168.1.254:8080/api/v1/auth/etds/activation-success
+  notify-etds-activate-success: ${auth-center.address}/api/v1/auth/etds/activation-success
 
 #关于凭证相关服务配置
 dtc-server:
+  address: http://192.168.1.106:8765
   #申请请求接口的rid
-  apply-rid: http://192.168.1.106:8765/api/v1/dtc/registry/apply
+  apply-rid: ${dtc-server.address}/api/v1/dtc/registry/apply
   #创建凭证
-  create-claim: http://192.168.1.106:8765/api/v1/dtc/registry/claim/create
+  create-claim: ${dtc-server.address}/api/v1/dtc/registry/claim/create
   #验证凭证
-  validate-claim: http://192.168.1.106:8765/api/v1/dtc/registry/claim/validate
+  validate-claim: ${dtc-server.address}/api/v1/dtc/registry/claim/validate
   #注销凭证
-  writeOff-claim: http://192.168.1.106:8765/api/v1/dtc/registry/claim/writeOff
+  writeOff-claim: ${dtc-server.address}/api/v1/dtc/registry/claim/writeOff
   #服务接口密钥
   sKey: 6m4SNklr5eZspUjd
   #服务接口偏移量
@@ -125,7 +127,8 @@ mq:
 
 #定制层的配置
 custom:
+  address: http://192.168.1.52:8080
   #推授权凭证给定制层的地址
-  auth-push: http://192.168.1.52:8080/v1/response/auth
+  auth-push: ${custom.address}/v1/response/auth
   #推数据凭证给定制层的地址
-  data-push: http://192.168.1.52:8080/v1/response/data
+  data-push: ${custom.address}/v1/response/data
