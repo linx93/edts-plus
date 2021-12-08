@@ -3,6 +3,8 @@ package com.phadata.etdsplus.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.phadata.etdsplus.entity.dto.ETDSRegisterDTO;
+import com.phadata.etdsplus.entity.po.ReportApply11;
+import com.phadata.etdsplus.entity.po.ReportProvide11;
 import com.phadata.etdsplus.entity.vo.*;
 import com.phadata.etdsplus.exception.BussinessException;
 import com.phadata.etdsplus.service.*;
@@ -164,10 +166,10 @@ public class EtdsController {
      */
     @PostMapping(value = "/etds/apply/move-logs")
     @ApiOperation(value = "流转日志（数据请求方）")
-    public Result<PageInfo<List<MoveLogsVO>>> applyMoveLogs(@ApiParam(value = "页码（默认1）", name = "page") @RequestParam(value = "page", defaultValue = "1") Integer page,
+    public Result<PageInfo<List<ReportApply11>>> applyMoveLogs(@ApiParam(value = "页码（默认1）", name = "page") @RequestParam(value = "page", defaultValue = "1") Integer page,
                                                             @ApiParam(value = "页数（默认5）", name = "size") @RequestParam(value = "size", defaultValue = "5") Integer size,
                                                             @ApiParam(name = "authDtcId", value = "授权凭证的id", required = true) @RequestParam(value = "authDtcId") String authDtcId) {
-        PageInfo<List<MoveLogsVO>> list;
+        PageInfo<List<ReportApply11>> list;
         try {
             list = reportApply11Service.applyMoveLogs(page, size, authDtcId);
         } catch (Exception e) {
@@ -185,10 +187,10 @@ public class EtdsController {
      */
     @PostMapping(value = "/etds/provide/move-logs")
     @ApiOperation(value = "流转日志（数据供应方）")
-    public Result<PageInfo<List<MoveLogsVO>>> provideMoveLogs(@ApiParam(value = "页码（默认1）", name = "page") @RequestParam(value = "page", defaultValue = "1") Integer page,
+    public Result<PageInfo<List<ReportProvide11>>> provideMoveLogs(@ApiParam(value = "页码（默认1）", name = "page") @RequestParam(value = "page", defaultValue = "1") Integer page,
                                                               @ApiParam(value = "页数（默认5）", name = "size") @RequestParam(value = "size", defaultValue = "5") Integer size,
                                                               @ApiParam(name = "authDtcId", value = "授权凭证的id", required = true) @RequestParam(value = "authDtcId") String authDtcId) {
-        PageInfo<List<MoveLogsVO>> list;
+        PageInfo<List<ReportProvide11>> list;
         try {
             list = reportProvide11Service.provideMoveLogs(page, size, authDtcId);
         } catch (Exception e) {

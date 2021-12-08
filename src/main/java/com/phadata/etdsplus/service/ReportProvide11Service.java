@@ -37,7 +37,7 @@ public interface ReportProvide11Service extends IService<ReportProvide11> {
      * @return
      */
 
-    PageInfo<List<MoveLogsVO>> provideMoveLogs(Integer page, Integer size, String authDtcId);
+    PageInfo<List<ReportProvide11>> provideMoveLogs(Integer page, Integer size, String authDtcId);
 
 
 }

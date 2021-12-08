@@ -94,7 +94,7 @@ public class DataResultApplyConsumer implements ChannelAwareMessageListener {
                                 .setRequestHttpMetaMethod(reportDTO.getRequestHttpMeta() == null ? "" : reportDTO.getRequestHttpMeta().getMethod())
                                 .setRequestHttpMetaPath(reportDTO.getRequestHttpMeta() == null ? "" : reportDTO.getRequestHttpMeta().getPath())
                                 .setRequestHttpMetaQuery(reportDTO.getRequestHttpMeta() == null ? "" : reportDTO.getRequestHttpMeta().getQuery())
-                                .setResponseHttpMetaContentlength(reportDTO.getResponseHttpMeta() == null ? 0L : reportDTO.getResponseHttpMeta().getContentLength())
+                                .setResponseHttpMetaContentLength(reportDTO.getResponseHttpMeta() == null ? 0L : reportDTO.getResponseHttpMeta().getContentLength())
                                 .setResponseHttpMetaHeader(reportDTO.getResponseHttpMeta() == null ? "" : JSON.toJSONString(reportDTO.getResponseHttpMeta().getHeader()))
                                 .setResponseHttpMetaStatus(reportDTO.getResponseHttpMeta() == null ? -1 : reportDTO.getResponseHttpMeta().getStatus())
                                 .setRetries(reportDTO.getRetries())

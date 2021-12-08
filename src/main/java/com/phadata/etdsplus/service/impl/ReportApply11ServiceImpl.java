@@ -64,21 +64,15 @@ public class ReportApply11ServiceImpl extends ServiceImpl<ReportApply11Mapper, R
     }
 
     @Override
-    public PageInfo<List<MoveLogsVO>> applyMoveLogs(Integer page, Integer size, String authDtcId) {
+    public PageInfo<List<ReportApply11>> applyMoveLogs(Integer page, Integer size, String authDtcId) {
         LambdaQueryWrapper<ReportApply11> eq = new QueryWrapper<ReportApply11>().lambda().eq(ReportApply11::getAuthDtc, authDtcId);
         Page<ReportApply11> applyPage = reportApply11Mapper.selectPage(new Page<>(page, size), eq);
-        ArrayList<MoveLogsVO> moveLogsVOS = new ArrayList<>();
         List<ReportApply11> records = applyPage.getRecords();
-        if (!records.isEmpty()) {
-            records.forEach(ele -> moveLogsVOS.add(new MoveLogsVO()
-                    .setDataSize(ele.getResponseHttpMetaContentlength() * 1.0D / 1024)
-                    .setPath(ele.getRequestHttpMetaPath())
-                    .setReqTime(ele.getRequestedAt())));
-        }
-        PageInfo<List<MoveLogsVO>> listPageInfo = new PageInfo<List<MoveLogsVO>>()
+        PageInfo<List<ReportApply11>> listPageInfo = new PageInfo<List<ReportApply11>>()
                 .setTotal(applyPage.getTotal())
-                .setSize(size).setCurrent(page)
-                .setRecords(moveLogsVOS);
+                .setSize(size)
+                .setCurrent(page)
+                .setRecords(records);
         return listPageInfo;
     }
 

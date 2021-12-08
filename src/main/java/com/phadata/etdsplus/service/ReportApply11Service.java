@@ -34,5 +34,5 @@ public interface ReportApply11Service extends IService<ReportApply11> {
      * @param authDtcId 授权凭证id
      * @return
      */
-    PageInfo<List<MoveLogsVO>> applyMoveLogs(Integer page, Integer size, String authDtcId);
+    PageInfo<List<ReportApply11>> applyMoveLogs(Integer page, Integer size, String authDtcId);
 }

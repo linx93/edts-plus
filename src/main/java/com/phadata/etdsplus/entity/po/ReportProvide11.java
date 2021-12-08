@@ -96,7 +96,7 @@ public class ReportProvide11 implements Serializable {
 
     @ApiModelProperty(value = "响应数据大小,单位是byte")
     @TableField("response_http_meta_contentLength")
-    private Long responseHttpMetaContentlength;
+    private Long responseHttpMetaContentLength;
 
     @ApiModelProperty(value = "分片大小,每片的大小单位b")
     private Long chunkSize;
