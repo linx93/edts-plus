@@ -30,7 +30,8 @@ CREATE TABLE `account` (
   `updated_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户/账户表';
-
+-- 初始化管理员账户 admin 000000
+INSERT INTO `account` ( `account`, `password`, `status`, `created_time`, `updated_time` ) VALUES('admin','$2a$10$Hs4YJT0ZPB3iaHwNLmJrHuV957.TVaY6ysDFEekij1G/hmcC3kKP6',0,NOW(),NOW());
 -- ----------------------------
 -- Table structure for data_result_apply_11
 -- ----------------------------
