@@ -19,6 +19,7 @@ CREATE DATABASE IF NOT EXISTS etds DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_gener
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+use etds;
 -- ----------------------------
 -- Table structure for account
 -- ----------------------------
@@ -250,6 +251,8 @@ CREATE TABLE `grant_result_provide_6` (
   `serial_number` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '统一业务标识号',
   `operated_time` bigint DEFAULT NULL COMMENT '操作时间',
   `created_time` bigint DEFAULT NULL COMMENT '创建时间',
+  `apply_dtid` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据请求方企业数字身份',
+  `apply_name` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据请求方企业企业名称',
   PRIMARY KEY (`id`),
   UNIQUE KEY `claim_id` (`claim_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='授权结果返回表(提供方) <6>';
