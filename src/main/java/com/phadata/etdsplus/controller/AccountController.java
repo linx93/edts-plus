@@ -153,6 +153,11 @@ public class AccountController {
         if (one == null) {
             return Result.failed("用户名不存在");
         }
+        //对比老密码是否一致
+        boolean matches = new BCryptPasswordEncoder().matches(loginDTO.getOldPassword(), one.getPassword());
+        if (!matches) {
+            return Result.failed("旧密码错误");
+        }
         String newPassword = new BCryptPasswordEncoder().encode(loginDTO.getPassword());
         Account account = new Account();
         account.setId(one.getId());

@@ -21,4 +21,8 @@ public class LoginDTO {
     @ApiModelProperty(value = "密码",required = true)
     @NotBlank(message = "密码不能为空")
     private String password;
+
+
+    @ApiModelProperty(value = "老密码",required = true)
+    private String oldPassword;
 }
