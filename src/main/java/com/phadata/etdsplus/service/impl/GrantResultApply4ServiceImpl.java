@@ -35,10 +35,9 @@ public class GrantResultApply4ServiceImpl extends ServiceImpl<GrantResultApply4M
         List<DataApplyAuthVO> result = new ArrayList<>();
         Page<GrantResultApply4> list = page(new Page<>(page, size));
         List<GrantResultApply4> records = list.getRecords();
-        if (records.isEmpty()) {
-            return listPageInfo;
+        if (!records.isEmpty()) {
+            records.forEach(grantResultApply4 -> result.add(convert(grantResultApply4)));
         }
-        records.forEach(grantResultApply4 -> result.add(convert(grantResultApply4)));
         listPageInfo = listPageInfo.setRecords(result).setSize(size).setTotal(list.getTotal()).setCurrent(page);
         return listPageInfo;
     }
@@ -66,10 +65,13 @@ public class GrantResultApply4ServiceImpl extends ServiceImpl<GrantResultApply4M
         dataApplyAuthVO.setId(grantResultApply4.getId());
         dataApplyAuthVO.setAuthDtcId(verifiableClaim.getId());
         dataApplyAuthVO.setCreateTime(verifiableClaim.getIssuanceDate().toEpochSecond());
-        dataApplyAuthVO.setAuthDtid(verifiableClaim.getCredentialSubject().getId());
+        dataApplyAuthVO.setAuthDtid(verifiableClaim.getIssuer());
+        dataApplyAuthVO.setAuthName(grantResultApply4.getGrantName());
         dataApplyAuthVO.setProvideDtid(cc.get(0).getTdaas());
+        dataApplyAuthVO.setProvideName(grantResultApply4.getToName());
         dataApplyAuthVO.setProvideEtdsCode(cc.get(0).getTdaas());
         dataApplyAuthVO.setAuthDtcState(result);
+        dataApplyAuthVO.setDesc(bizData.getOrDefault("desc", "").toString());
         return dataApplyAuthVO;
     }
 }

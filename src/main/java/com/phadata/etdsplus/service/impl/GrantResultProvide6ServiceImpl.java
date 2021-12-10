@@ -40,15 +40,13 @@ public class GrantResultProvide6ServiceImpl extends ServiceImpl<GrantResultProvi
 
     @Override
     public PageInfo<List<DataProvideAuthVO>> listAuthList(Integer page, Integer size) {
-        PageInfo<List<DataProvideAuthVO>> listPageInfo = new PageInfo<>();
+        PageInfo<List<DataProvideAuthVO>> listPageInfo;
         List<DataProvideAuthVO> result = new ArrayList<>();
         IPage<GrantResultProvide6> pageInfo = page(new Page<>(page, size));
         List<GrantResultProvide6> records = pageInfo.getRecords();
-        if (records.isEmpty()) {
-            return listPageInfo;
+        if (!records.isEmpty()) {
+            records.forEach(GrantResultProvide6 -> result.add(convert(GrantResultProvide6)));
         }
-
-        records.forEach(GrantResultProvide6 -> result.add(convert(GrantResultProvide6)));
         listPageInfo = new PageInfo<List<DataProvideAuthVO>>().setCurrent(page).setSize(size).setTotal(pageInfo.getTotal()).setRecords(result);
         return listPageInfo;
     }
@@ -76,8 +74,10 @@ public class GrantResultProvide6ServiceImpl extends ServiceImpl<GrantResultProvi
         dataProvideAuthVO.setId(grantResultProvide6.getId());
         dataProvideAuthVO.setAuthDtcId(verifiableClaim.getId());
         dataProvideAuthVO.setCreateTime(verifiableClaim.getIssuanceDate().toEpochSecond());
-        dataProvideAuthVO.setAuthDtid(verifiableClaim.getCredentialSubject().getId());
+        dataProvideAuthVO.setAuthDtid(verifiableClaim.getIssuer());
+        dataProvideAuthVO.setAuthName(grantResultProvide6.getGrantName());
         dataProvideAuthVO.setApplyDtid(from.getTdaas());
+        dataProvideAuthVO.setApplyName(grantResultProvide6.getApplyName());
         dataProvideAuthVO.setAuthDtcState(grantResultProvide6.getUseStatus());
         dataProvideAuthVO.setDesc(bizData.getOrDefault("desc", "").toString());
         return dataProvideAuthVO;

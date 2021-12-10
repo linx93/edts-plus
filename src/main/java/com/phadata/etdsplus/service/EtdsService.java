@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.phadata.etdsplus.entity.dto.ETDSRegisterDTO;
 import com.phadata.etdsplus.entity.po.Etds;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.phadata.etdsplus.entity.vo.FrontPageVO;
 
 import java.net.UnknownHostException;
 
@@ -41,4 +42,13 @@ public interface EtdsService extends IService<Etds> {
      * @param etdsInfo
      */
     void syncEtdsInfo(JSONObject etdsInfo);
+
+
+    /**
+     * 首页的统计
+     *
+     * @param days
+     * @return
+     */
+    FrontPageVO dashboardStatistics(Integer days);
 }

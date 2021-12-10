@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @description: 提供给tdaas调用的接口
@@ -116,10 +117,15 @@ public class TdaasController {
     @PostMapping(value = "/sync-private-key")
     @ApiOperation(value = "提供给tdaas同步pubKey和priKey到etds中的接口")
     public Result syncPrivateKey(@Valid @RequestBody SyncPrivateKeyDTO syncPrivateKeyDTO) {
+        List<TdaasPrivateKey> list = tdaasPrivateKeyService.list();
+        if (!list.isEmpty()) {
+            Result.failed("数据已存在");
+        }
         boolean save = tdaasPrivateKeyService.save(TdaasPrivateKey.builder()
                 .companyDtid(syncPrivateKeyDTO.getCompanyDtid())
                 .privateKey(syncPrivateKeyDTO.getPrivateKey())
                 .publicKey(syncPrivateKeyDTO.getPublicKey())
+                .safeCode(syncPrivateKeyDTO.getSafeCode())
                 .createTime(new Date()).build());
         if (!save) {
             Result.failed("保存失败");

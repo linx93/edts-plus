@@ -44,8 +44,8 @@ mybatis-plus:
 #日志相关配置
 logging:
   level:
-    com.phadata.etdsplus.aspect: error
-    com.phadata.etdsplus: error
+    com.phadata.etdsplus.aspect: info
+    com.phadata.etdsplus: info
   file:
     #总日志文件，生成位置当前目录下的logs里面
     name: ./logs/etds-plus.log
@@ -107,9 +107,13 @@ auth-center:
 
 #关于凭证相关服务配置
 dtc-server:
-  address: http://192.168.1.106:8765
+  address: http://192.168.1.225:8765
   #申请请求接口的rid
   apply-rid: ${dtc-server.address}/api/v1/dtc/registry/apply
+  #注册发行方
+  register-issuer: ${dtc-server.address}/api/v1/dtc/registry/issuer/register
+  #查询发行方
+  get-issuer: ${dtc-server.address}/api/v1/dtc/registry/issuer/get
   #创建凭证
   create-claim: ${dtc-server.address}/api/v1/dtc/registry/claim/create
   #验证凭证
@@ -120,6 +124,13 @@ dtc-server:
   sKey: 6m4SNklr5eZspUjd
   #服务接口偏移量
   vKey: s5IUgjA9h2DWmFS8
+
+#关于数字身份相关的配置
+dtid-sever:
+  #解析数字身份的地址
+  resolve-dtid: http://192.168.1.106:8765/resolve
+
+
 
 #rabbitMQ发送配置
 mq:

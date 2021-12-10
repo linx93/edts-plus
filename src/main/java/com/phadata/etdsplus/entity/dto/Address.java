@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 
 /**
  * @description: 包含tdaas和etds的标识
- * @author: xionglin
+ * @author: linx
  * @create: 2021-11-26 10:43
  */
 @Accessors(chain = true)
@@ -19,6 +19,5 @@ public class Address {
     private String tdaas;
 
     @ApiModelProperty(value = "etds的唯一码", required = true)
-    @NotBlank(message = "etds的唯一码不能为空")
     private String etds;
 }

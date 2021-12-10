@@ -16,8 +16,14 @@ public class DataApplyAuthVO {
     @ApiModelProperty(value = "数据授权方数字身份")
     private String authDtid;
 
+    @ApiModelProperty(value = "数据授权方名称")
+    private String authName;
+
     @ApiModelProperty(value = "数据提供方数字身份")
     private String provideDtid;
+
+    @ApiModelProperty(value = "数据提供方企业名称")
+    private String provideName;
 
     @ApiModelProperty(value = "数据提供方的ETDS的唯一码")
     private String provideEtdsCode;
@@ -36,6 +42,9 @@ public class DataApplyAuthVO {
 
     @ApiModelProperty(value = "授权凭证的id")
     private String authDtcId;
+
+    @ApiModelProperty(value = "授权详情/描述")
+    private String desc;
 
     @ApiModelProperty(value = "创建时间")
     private Long createTime;

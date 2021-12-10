@@ -18,6 +18,7 @@ import com.phadata.etdsplus.utils.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import net.phadata.identity.common.DTCType;
 import net.phadata.identity.dtc.entity.VerifiableClaim;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -35,24 +36,28 @@ public class CustomServiceImpl implements CustomService {
     private final TdaasPrivateKeyMapper tdaasPrivateKeyMapper;
     private final DTCServerConfig dtcServerConfig;
     private final DTCComponent dtcComponent;
+    private final DTIDComponent dtidComponent;
     private final EtdsUtil etdsUtil;
     private final EtdsService etdsService;
     private final MQSendUtil mqSendUtil;
     private final ReAuthNoticeApply1Service reAuthNoticeApply1Service;
     private final ReAuthNoticeApply2Service reAuthNoticeApply2Service;
     private final GrantResultApply4Service grantResultApply4Service;
+    private final GrantResultProvide6Service grantResultProvide6Service;
     private final ReportProvide11Service reportProvide11Service;
 
-    public CustomServiceImpl(TdaasPrivateKeyMapper tdaasPrivateKeyMapper, DTCServerConfig dtcServerConfig, DTCComponent dtcComponent, EtdsUtil etdsUtil, EtdsService etdsService, MQSendUtil mqSendUtil, ReAuthNoticeApply1Service reAuthNoticeApply1Service, ReAuthNoticeApply2Service reAuthNoticeApply2Service, GrantResultApply4Service grantResultApply4Service, ReportProvide11Service reportProvide11Service) {
+    public CustomServiceImpl(TdaasPrivateKeyMapper tdaasPrivateKeyMapper, DTCServerConfig dtcServerConfig, DTCComponent dtcComponent, DTIDComponent dtidComponent, EtdsUtil etdsUtil, EtdsService etdsService, MQSendUtil mqSendUtil, ReAuthNoticeApply1Service reAuthNoticeApply1Service, ReAuthNoticeApply2Service reAuthNoticeApply2Service, GrantResultApply4Service grantResultApply4Service, GrantResultProvide6Service grantResultProvide6Service, ReportProvide11Service reportProvide11Service) {
         this.tdaasPrivateKeyMapper = tdaasPrivateKeyMapper;
         this.dtcServerConfig = dtcServerConfig;
         this.dtcComponent = dtcComponent;
+        this.dtidComponent = dtidComponent;
         this.etdsUtil = etdsUtil;
         this.etdsService = etdsService;
         this.mqSendUtil = mqSendUtil;
         this.reAuthNoticeApply1Service = reAuthNoticeApply1Service;
         this.reAuthNoticeApply2Service = reAuthNoticeApply2Service;
         this.grantResultApply4Service = grantResultApply4Service;
+        this.grantResultProvide6Service = grantResultProvide6Service;
         this.reportProvide11Service = reportProvide11Service;
     }
 
@@ -153,7 +158,7 @@ public class CustomServiceImpl implements CustomService {
         Etds etdsInfo = etdsUtil.EtdsInfo(etdsService);
         //获取授权凭证具体信息
         String dtcId = applyData.getDtc();
-        ResponseAuthDTO responseAuthDTO = getResponseAuthDTOByDtcId(dtcId);
+        ResponseAuthDTO responseAuthDTO = getResponseAuthDTOByDtcIdApply(dtcId);
         //检验此凭证是否被tdaas关闭
         //构建创建凭证的参数ClaimReqBizPackage
         ClaimReqBizPackage claimReqBizPackage = new ClaimReqBizPackage()
@@ -223,10 +228,11 @@ public class CustomServiceImpl implements CustomService {
 
     @Override
     public Result<Boolean> receiveData(ResponseDataDTO responseData) {
+        log.info("定制层");
         Etds etdsInfo = etdsUtil.EtdsInfo(etdsService);
         //获取授权凭证具体信息
         String dtcId = responseData.getDtc().getDtc();
-        ResponseAuthDTO responseAuthDTO = getResponseAuthDTOByDtcId(dtcId);
+        ResponseAuthDTO responseAuthDTO = getResponseAuthDTOByDtcIdProvide(dtcId);
         //构建创建凭证的参数ClaimReqBizPackage
         ClaimReqBizPackage claimReqBizPackage = new ClaimReqBizPackage()
                 .setType(DTCType.DATA.getType())
@@ -273,7 +279,7 @@ public class CustomServiceImpl implements CustomService {
         Etds etdsInfo = etdsUtil.EtdsInfo(etdsService);
         //获取授权凭证具体信息
         String dtcId = reportDTO.getAuthDtc();
-        ResponseAuthDTO responseAuthDTO = getResponseAuthDTOByDtcId(dtcId);
+        ResponseAuthDTO responseAuthDTO = getResponseAuthDTOByDtcIdProvide(dtcId);
         //构建创建凭证的参数ClaimReqBizPackage
         ClaimReqBizPackage claimReqBizPackage = new ClaimReqBizPackage()
                 .setType(DTCType.OTHER.getType())
@@ -355,9 +361,36 @@ public class CustomServiceImpl implements CustomService {
         }
         //4.2 数据提供方etds本地存储由于做统计
         String claim_id = claim13.getOrDefault("id", "").toString();
+        String fromTdaasName = "";
+        if (reportDTO.getFrom() != null) {
+            try {
+                fromTdaasName = reportDTO.getFrom().getTdaas() == null ? "" : dtidComponent.getCompanyNameByDtid(reportDTO.getFrom().getTdaas());
+            } catch (Exception e) {
+                log.error("【流程9】解析数字身份异常:{}", e.getMessage());
+                throw new BussinessException("【流程9】解析数字身份异常:" + e.getMessage());
+            }
+        }
+        String toTdaasName = "";
+        if (reportDTO.getTo() != null) {
+            try {
+                toTdaasName = reportDTO.getTo().getTdaas() == null ? "" : dtidComponent.getCompanyNameByDtid(reportDTO.getTo().getTdaas());
+            } catch (Exception e) {
+                log.error("【流程9】解析数字身份异常:{}", e.getMessage());
+                throw new BussinessException("【流程9】解析数字身份异常:" + e.getMessage());
+            }
+        }
+        String authTdaasName = "";
+        try {
+            authTdaasName = (StringUtils.isBlank(responseAuthDTO.getCc().get(0).getTdaas())) ? "" : dtidComponent.getCompanyNameByDtid(responseAuthDTO.getCc().get(0).getTdaas());
+        } catch (Exception e) {
+            log.error("【流程9】解析数字身份异常:{}", e.getMessage());
+            throw new BussinessException("【流程9】解析数字身份异常:" + e.getMessage());
+        }
         boolean save = reportProvide11Service.save(
                 new ReportProvide11().setAuthDtc(reportDTO.getAuthDtc())
                         .setAuthStatus(reportDTO.getAuthStatus())
+                        .setAuthTdaas(responseAuthDTO.getCc().get(0).getTdaas())
+                        .setAuthTdaasName(authTdaasName)
                         .setAuthStatusDesc(reportDTO.getAuthStatusDesc())
                         .setChunkLength(reportDTO.getChunkLength())
                         .setChunkSize(reportDTO.getChunkSize())
@@ -365,6 +398,7 @@ public class CustomServiceImpl implements CustomService {
                         .setFirstResponse(reportDTO.getFirstResponse())
                         .setFromEtds(reportDTO.getFrom() == null ? "" : reportDTO.getFrom().getEtds())
                         .setFromTdaas(reportDTO.getFrom() == null ? "" : reportDTO.getFrom().getTdaas())
+                        .setFromTdaasName(fromTdaasName)
                         .setLastResponse(reportDTO.getLastResponse())
                         .setRequestedAt(reportDTO.getRequestedAt())
                         .setRequestHttpMetaBody(reportDTO.getRequestHttpMeta() == null ? "" : reportDTO.getRequestHttpMeta().getBody())
@@ -379,6 +413,7 @@ public class CustomServiceImpl implements CustomService {
                         .setSerialNumber(reportDTO.getSerialNumber())
                         .setToEtds(reportDTO.getTo() == null ? "" : reportDTO.getTo().getEtds())
                         .setToTdaas(reportDTO.getTo() == null ? "" : reportDTO.getTo().getTdaas())
+                        .setToTdaasName(toTdaasName)
                         .setCreateTime(new Date())
         );
 
@@ -387,13 +422,13 @@ public class CustomServiceImpl implements CustomService {
 
 
     /**
-     * 根据凭证id查询授权凭证内容
+     * 根据凭证id查询授权凭证内容【查询的是数据供应方中的授权凭证】
      *
      * @param dtcId
      * @return
      */
-    private ResponseAuthDTO getResponseAuthDTOByDtcId(String dtcId) {
-        GrantResultApply4 one = grantResultApply4Service.getOne(new QueryWrapper<GrantResultApply4>().lambda().eq(GrantResultApply4::getClaimId, dtcId));
+    private ResponseAuthDTO getResponseAuthDTOByDtcIdProvide(String dtcId) {
+        GrantResultProvide6 one = grantResultProvide6Service.getOne(new QueryWrapper<GrantResultProvide6>().lambda().eq(GrantResultProvide6::getClaimId, dtcId));
         if (one == null) {
             throw new BussinessException("没有查询到对应的授权凭证   " + "  [dtc=" + dtcId + "]");
         }
@@ -405,6 +440,28 @@ public class CustomServiceImpl implements CustomService {
         //授权凭证红中bizData的内容
         ResponseAuthDTO responseAuthDTO = JSON.parseObject(JSON.toJSONString(vc.getCredentialSubject().getBizData()), ResponseAuthDTO.class);
 
+        return responseAuthDTO;
+    }
+
+
+    /**
+     * 根据凭证id查询授权凭证内容【查询的是数据请求方中的授权凭证】
+     *
+     * @param dtcId
+     * @return
+     */
+    private ResponseAuthDTO getResponseAuthDTOByDtcIdApply(String dtcId) {
+        GrantResultApply4 one = grantResultApply4Service.getOne(new QueryWrapper<GrantResultApply4>().lambda().eq(GrantResultApply4::getClaimId, dtcId));
+        if (one == null) {
+            throw new BussinessException("没有查询到对应的授权凭证   " + "  [dtc=" + dtcId + "]");
+        }
+        //获取授权凭证
+        String grantDocument = one.getGrantDocument();
+        log.info("授权凭证:{}", grantDocument);
+        //授权凭证
+        VerifiableClaim vc = JSON.parseObject(grantDocument, VerifiableClaim.class);
+        //授权凭证红中bizData的内容
+        ResponseAuthDTO responseAuthDTO = JSON.parseObject(JSON.toJSONString(vc.getCredentialSubject().getBizData()), ResponseAuthDTO.class);
         return responseAuthDTO;
     }
 

@@ -1,8 +1,14 @@
 package com.phadata.etdsplus.mq;
 
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.phadata.etdsplus.entity.dto.Address;
 import com.phadata.etdsplus.entity.po.GrantResultProvide6;
 import com.phadata.etdsplus.exception.BussinessException;
+import com.phadata.etdsplus.service.DTCComponent;
+import com.phadata.etdsplus.service.DTIDComponent;
 import com.phadata.etdsplus.service.GrantResultProvide6Service;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +16,7 @@ import net.phadata.identity.dtc.entity.VerifiableClaim;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -27,6 +34,14 @@ import java.util.Map;
 public class AuthResultProvideConsumer implements ChannelAwareMessageListener {
     @Autowired
     private GrantResultProvide6Service grantResultProvide6Service;
+    @Autowired
+    private DTCComponent dtcComponent;
+
+    @Autowired
+    private DTIDComponent dtidComponent;
+
+    @Value("${custom.auth-push:}")
+    private String authPush;
 
     @Override
     public void onMessage(Message message, Channel channel) {
@@ -38,6 +53,11 @@ public class AuthResultProvideConsumer implements ChannelAwareMessageListener {
             log.info("数据授权的消费者【流程中对应4】消费消息：{}", JSON.toJSONString(vc, true));
             //bizData就是数据
             Map<String, Object> bizData = vc.getCredentialSubject().getBizData();
+            Object object = bizData.get("from");
+            Address from = new Address();
+            if (object != null) {
+                from = JSON.parseObject(JSON.toJSONString(object), Address.class);
+            }
             //保存凭证
             long epochSecond = Instant.now().getEpochSecond();
             grantResultProvide6Service.save(new GrantResultProvide6()
@@ -52,9 +72,29 @@ public class AuthResultProvideConsumer implements ChannelAwareMessageListener {
                     .setNoticeId(Long.valueOf(bizData.getOrDefault("", -1).toString()))
                     .setSerialNumber(bizData.getOrDefault("serialNumber", "").toString())
                     .setToDtid(bizData.getOrDefault("", "").toString())
+                    //todo 这里还需要填写toName
                     .setToEtdsUuid(bizData.getOrDefault("", "").toString())
+                    .setApplyDtid(from.getTdaas())
+                    .setApplyName(dtidComponent.getCompanyNameByDtid(from.getTdaas()))
                     .setUseStatus(0));
-
+            //2. 调用定制层的回调接口，推送授权凭证给定制层
+            HttpResponse execute = HttpRequest.post(authPush).body(JSON.toJSONString(vc)).execute();
+            log.info("调用定制层推送授权凭证的响应:{}", execute.body());
+            JSONObject jsonObject = JSON.parseObject(execute.body());
+            /**
+             * 返回数据格式:
+             * {
+             *     "action": "ResponseAuth",
+             *     "error": "解析凭证失败： EOF",
+             *     "result": false,
+             *     "version": "development"
+             * }
+             */
+            Boolean result = jsonObject.getBoolean("result");
+            if (!result) {
+                //3. TODO 新建一张表保存调用定制层失败的日志
+                throw new BussinessException(jsonObject.getString("error"));
+            }
             //手动签收
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {

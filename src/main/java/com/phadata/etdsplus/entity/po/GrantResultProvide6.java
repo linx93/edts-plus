@@ -36,8 +36,14 @@ public class GrantResultProvide6 implements Serializable {
     @ApiModelProperty(value = "授权通知id")
     private Long noticeId;
 
-    @ApiModelProperty(value = "发起方企业etds唯一编号")
+    @ApiModelProperty(value = "数据请求方企业etds唯一编号")
     private String applyEtdsUuid;
+
+    @ApiModelProperty(value = "数据请求方企业数字身份")
+    private String applyDtid;
+
+    @ApiModelProperty(value = "数据请求方企业企业名称")
+    private String applyName;
 
     @ApiModelProperty(value = "数据授权方企业dtid")
     private String grantDtid;

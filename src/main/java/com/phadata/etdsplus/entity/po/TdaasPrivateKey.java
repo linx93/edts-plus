@@ -44,6 +44,9 @@ public class TdaasPrivateKey implements Serializable {
     @ApiModelProperty(value = "公钥")
     private String publicKey;
 
+    @ApiModelProperty(value = "安全码")
+    private String safeCode;
+
     private Date createTime;
 
 

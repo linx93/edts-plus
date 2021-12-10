@@ -59,7 +59,7 @@ public class ReportProvide11ServiceImpl extends ServiceImpl<ReportProvide11Mappe
         }));
         Sjltj sjltj = reportProvide11Mapper.dataProvideSum(authDtcId);
         LineChartVO lineChartVO = new LineChartVO().setSjltj(sjltj)
-                .setTj(new LineChartVO.Tj().setTotal(totalSum.get()).setTotalSize(sizeSum.get()).setLineChart(new LineChartVO.Tj.LineChart().setTj15(tj15s)));
+                .setTj(new LineChartVO.Tj().setTotal(totalSum.get()).setTotalSize(sizeSum.get()).setLineChart(tj15s));
         return lineChartVO;
     }
 

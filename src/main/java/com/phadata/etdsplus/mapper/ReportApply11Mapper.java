@@ -33,11 +33,25 @@ public interface ReportApply11Mapper extends BaseMapper<ReportApply11> {
 
     /**
      * 查询某个授权凭证所以的数据
+     *
      * @param authDtcId
      * @return
      */
     Sjltj dataApplySum(@Param("authDtcId") String authDtcId);
 
 
+    /**
+     * 首页
+     *
+     * @param days
+     * @return
+     */
+    List<Tj15> dataApplyLineAll(Integer days);
 
+    /**
+     * 首页
+     *
+     * @return
+     */
+    Sjltj dataApplySumAll();
 }

@@ -4,8 +4,11 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.phadata.etdsplus.entity.dto.ResponseAuthDTO;
 import com.phadata.etdsplus.entity.po.GrantResultApply4;
 import com.phadata.etdsplus.exception.BussinessException;
+import com.phadata.etdsplus.service.DTCComponent;
+import com.phadata.etdsplus.service.DTIDComponent;
 import com.phadata.etdsplus.service.GrantResultApply4Service;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +34,11 @@ import java.util.Map;
 public class AuthResultApplyConsumer implements ChannelAwareMessageListener {
     @Autowired
     private GrantResultApply4Service grantResultApply4Service;
+    @Autowired
+    private DTCComponent dtcComponent;
+
+    @Autowired
+    private DTIDComponent dtidComponent;
 
     @Value("${custom.auth-push:}")
     private String authPush;
@@ -44,6 +52,7 @@ public class AuthResultApplyConsumer implements ChannelAwareMessageListener {
             log.info("数据授权的消费者【流程中对应4】消费消息：{}", JSON.toJSONString(vc, true));
             //bizData就是数据
             Map<String, Object> bizData = vc.getCredentialSubject().getBizData();
+            ResponseAuthDTO responseAuthDTO = JSON.parseObject(JSON.toJSONString(bizData), ResponseAuthDTO.class);
             //1. 保存凭证
             long epochSecond = Instant.now().getEpochSecond();
             grantResultApply4Service.save(new GrantResultApply4()
@@ -53,6 +62,7 @@ public class AuthResultApplyConsumer implements ChannelAwareMessageListener {
                     .setApplyEtdsUuid(bizData.getOrDefault("", "").toString())
                     .setGrantDetails(bizData.getOrDefault("", "").toString())
                     .setGrantDtid(bizData.getOrDefault("", "").toString())
+                    .setGrantName(dtidComponent.getCompanyNameByDtid(vc.getIssuer()))
                     .setGrantStatus(bizData.getOrDefault("", "").toString())
                     .setGrantDocument(JSON.toJSONString(vc))
                     .setNoticeId(Long.valueOf(bizData.getOrDefault("", -1).toString()))

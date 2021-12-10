@@ -479,6 +479,7 @@ CREATE TABLE `tdaas_private_key` (
   `private_key` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '私钥',
   `public_key` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '公钥',
   `create_time` datetime DEFAULT NULL,
+  `safe_code` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '安全码',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='tdaas的publicKey和privateKey\n';
 

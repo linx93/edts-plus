@@ -7,12 +7,18 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.phadata.etdsplus.entity.dto.ETDSRegisterDTO;
 import com.phadata.etdsplus.entity.po.Etds;
+import com.phadata.etdsplus.entity.vo.FrontPageVO;
+import com.phadata.etdsplus.entity.vo.Sjltj;
+import com.phadata.etdsplus.entity.vo.Tj15;
 import com.phadata.etdsplus.exception.BussinessException;
 import com.phadata.etdsplus.localcache.CacheEnum;
 import com.phadata.etdsplus.localcache.SimpleCache;
 import com.phadata.etdsplus.mapper.DataSwitchMapper;
 import com.phadata.etdsplus.mapper.EtdsMapper;
+import com.phadata.etdsplus.mapper.ReportApply11Mapper;
+import com.phadata.etdsplus.mapper.ReportProvide11Mapper;
 import com.phadata.etdsplus.mq.InitMQInfo;
+import com.phadata.etdsplus.service.DTCComponent;
 import com.phadata.etdsplus.service.DataSwitchService;
 import com.phadata.etdsplus.service.EtdsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -24,7 +30,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -44,6 +54,9 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
     private final DataSwitchMapper dataSwitchMapper;
     private final DataSwitchService dataSwitchService;
     private final EtdsMapper etdsMapper;
+    private final ReportApply11Mapper reportApply11Mapper;
+    private final ReportProvide11Mapper reportProvide11Mapper;
+    private final DTCComponent dtcComponent;
 
     @Value("${auth-center.app-key:}")
     private String appKey;
@@ -60,11 +73,14 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
     @Value("${auth-center.notify-etds-activate-success:}")
     private String activateSuccessUrl;
 
-    public EtdsServiceImpl(InitMQInfo initMQInfo, DataSwitchMapper dataSwitchMapper, DataSwitchService dataSwitchService, EtdsMapper etdsMapper) {
+    public EtdsServiceImpl(InitMQInfo initMQInfo, DataSwitchMapper dataSwitchMapper, DataSwitchService dataSwitchService, EtdsMapper etdsMapper, ReportApply11Mapper reportApply11Mapper, ReportProvide11Mapper reportProvide11Mapper, DTCComponent dtcComponent) {
         this.initMQInfo = initMQInfo;
         this.dataSwitchMapper = dataSwitchMapper;
         this.dataSwitchService = dataSwitchService;
         this.etdsMapper = etdsMapper;
+        this.reportApply11Mapper = reportApply11Mapper;
+        this.reportProvide11Mapper = reportProvide11Mapper;
+        this.dtcComponent = dtcComponent;
     }
 
     @Override
@@ -96,6 +112,9 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
         initMQInfo.initMQInfo(this);
         // 6. mq信息生成后，对队列信息监听
         initMQInfo.executeListener(this);
+
+        //7. 注册成为发行方
+        dtcComponent.registerIssuer(this);
     }
 
 
@@ -117,6 +136,43 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
         }
         // 4. 放入缓存
         SimpleCache.setCache(CacheEnum.ETDS.getCode(), JSON.toJSONString(etds));
+    }
+
+    @Override
+    public FrontPageVO dashboardStatistics(Integer days) {
+        List<Tj15> tj15sApply = reportApply11Mapper.dataApplyLineAll(days);
+        List<Tj15> tj15sProvide = reportProvide11Mapper.dataApplyLineAll(days);
+        List<Tj15> tj15ApplyList = setData(days, tj15sApply);
+        List<Tj15> tj15sProvideList = setData(days, tj15sProvide);
+        Sjltj sjltjApply = reportApply11Mapper.dataApplySumAll();
+        Sjltj sjltjProvide = reportProvide11Mapper.dataApplySumAll();
+        FrontPageVO.Tj tjApply = new FrontPageVO.Tj().setTotal(sjltjApply.getTotals()).setTotalSize(sjltjApply.getSize()).setLineChart(tj15ApplyList);
+        FrontPageVO.Tj tjProvide = new FrontPageVO.Tj().setTotal(sjltjProvide.getTotals()).setTotalSize(sjltjProvide.getSize()).setLineChart(tj15sProvideList);
+        FrontPageVO frontPageVO = new FrontPageVO().setReceiving(tjApply).setTransmission(tjProvide);
+        return frontPageVO;
+    }
+
+    private List<Tj15> setData(Integer days, List<Tj15> data) {
+        List<Tj15> out = initDays(days);
+        out.forEach(tj15 -> data.forEach(ele -> {
+            if (tj15.getTime().equals(ele.getTime())) {
+                Integer totals = ele.getTotals();
+                Long size = ele.getSize();
+                tj15.setSize(size);
+                tj15.setTotals(totals);
+            }
+        }));
+        return out;
+    }
+
+    private List<Tj15> initDays(Integer days) {
+        //获取前一天
+        ArrayList<Tj15> list = new ArrayList<>(days);
+        for (int i = -(days - 1); i <= 0; i++) {
+            String dataStr = LocalDate.now().plusDays(i).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            list.add(new Tj15().setTime(dataStr).setSize(0L).setTotals(0));
+        }
+        return list;
     }
 
     /**

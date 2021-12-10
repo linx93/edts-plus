@@ -16,8 +16,14 @@ public class DataProvideAuthVO {
     @ApiModelProperty(value = "数据授权方数字身份")
     private String authDtid;
 
+    @ApiModelProperty(value = "数据授权方企业名称")
+    private String authName;
+
     @ApiModelProperty(value = "数据请求方数字身份")
     private String applyDtid;
+
+    @ApiModelProperty(value = "数据请求方企业名称")
+    private String applyName;
 
     @ApiModelProperty(value = "用于标记tdaas控制此授权凭证的状态（0:正常 1:暂停）]")
     private Integer authDtcState;

@@ -39,4 +39,14 @@ public interface DTCComponent {
      * @return
      */
     Map<String, Object> parse(DTCResponse dtcResponse);
+
+
+    /**
+     * 注册成为发行方
+     *
+     * @param etdsService
+     * @return
+     * @throws Exception
+     */
+    boolean registerIssuer(EtdsService etdsService);
 }

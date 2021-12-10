@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author linx
@@ -31,8 +31,24 @@ public interface ReportProvide11Mapper extends BaseMapper<ReportProvide11> {
 
     /**
      * 查询某个授权凭证所以的数据
+     *
      * @param authDtcId
      * @return
      */
     Sjltj dataProvideSum(@Param("authDtcId") String authDtcId);
+
+    /**
+     * 首页
+     *
+     * @param days
+     * @return
+     */
+    List<Tj15> dataApplyLineAll(Integer days);
+
+    /**
+     * 首页
+     *
+     * @return
+     */
+    Sjltj dataApplySumAll();
 }

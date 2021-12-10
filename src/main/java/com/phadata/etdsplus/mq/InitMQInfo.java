@@ -1,6 +1,7 @@
 package com.phadata.etdsplus.mq;
 
 import com.phadata.etdsplus.entity.po.Etds;
+import com.phadata.etdsplus.exception.BussinessException;
 import com.phadata.etdsplus.service.EtdsService;
 import com.phadata.etdsplus.utils.EtdsUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -77,7 +78,15 @@ public class InitMQInfo {
      * @param etdsService
      */
     public void executeListener(EtdsService etdsService) {
-        Etds etdsInfo = etdsUtil.EtdsInfo(etdsService);
+        Etds etdsInfo = null;
+        try {
+            etdsInfo = etdsUtil.EtdsInfo(etdsService);
+        } catch (BussinessException bussinessException) {
+            //log.info("初始化时获取etds信息不存在:{}", bussinessException.getMessage());
+        }
+        if (etdsInfo == null) {
+            return;
+        }
         //("4", "6", "9", "11")
         log.info("初始化MQ的consumer，注册消费监听逻辑到SimpleMessageListenerContainer监听容器中开始：------------------------------------");
         registerConsumerToContainer(etdsInfo, authResultApplyConsumer, "4");

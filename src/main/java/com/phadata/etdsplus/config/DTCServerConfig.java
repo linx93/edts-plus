@@ -34,6 +34,16 @@ public class DTCServerConfig {
     private String writeOffClaim;
 
     /**
+     * #注册发行方
+     */
+    private String registerIssuer;
+
+    /**
+     * 查询发行方是否注册成功
+     */
+    private String getIssuer;
+
+    /**
      * 服务接口密钥
      */
     private String sKey;

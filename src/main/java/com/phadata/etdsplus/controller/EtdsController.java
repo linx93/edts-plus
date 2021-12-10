@@ -81,7 +81,7 @@ public class EtdsController {
      * @param
      * @return
      */
-    @PostMapping(value = "/etds/data-provide/auth-list")
+    @GetMapping(value = "/etds/data-provide/auth-list")
     @ApiOperation(value = "授权凭证列表（数据提供方）")
     public Result<PageInfo<List<DataProvideAuthVO>>> provideAuthList(@ApiParam(value = "页码（默认1）", name = "page") @RequestParam(value = "page", defaultValue = "1") Integer page,
                                                                      @ApiParam(value = "页数（默认5）", name = "size") @RequestParam(value = "size", defaultValue = "5") Integer size) {
@@ -101,7 +101,7 @@ public class EtdsController {
      * @param
      * @return
      */
-    @PostMapping(value = "/etds/data-apply/auth-list")
+    @GetMapping(value = "/etds/data-apply/auth-list")
     @ApiOperation(value = "授权凭证列表（数据请求方）")
     public Result<PageInfo<List<DataApplyAuthVO>>> applyAuthList(@ApiParam(value = "页码（默认1）", name = "page") @RequestParam(value = "page", defaultValue = "1") Integer page,
                                                                  @ApiParam(value = "页数（默认5）", name = "size") @RequestParam(value = "size", defaultValue = "5") Integer size) {
@@ -122,7 +122,7 @@ public class EtdsController {
      * @param
      * @return
      */
-    @PostMapping(value = "/etds/data-apply/line")
+    @GetMapping(value = "/etds/data-apply/line")
     @ApiOperation(value = "最近15天授权凭证折线图（数据请求方）")
     public Result<LineChartVO> dataApplyLine(@ApiParam(name = "days", value = "默认不传的话就是最近15天") @RequestParam(value = "days", defaultValue = "15", required = false) Integer days,
                                              @ApiParam(name = "authDtcId", value = "授权凭证的id", required = true) @RequestParam(value = "authDtcId") String authDtcId) {
@@ -143,7 +143,7 @@ public class EtdsController {
      * @param
      * @return
      */
-    @PostMapping(value = "/etds/data-provide/line")
+    @GetMapping(value = "/etds/data-provide/line")
     @ApiOperation(value = "最近15天授权凭证折线图（数据提供方）")
     public Result<LineChartVO> dataProvideLine(@ApiParam(name = "days", value = "默认不传的话就是最近15天") @RequestParam(value = "days", defaultValue = "15", required = false) Integer days,
                                                @ApiParam(name = "authDtcId", value = "授权凭证的id", required = true) @RequestParam(value = "authDtcId") String authDtcId) {
@@ -164,7 +164,7 @@ public class EtdsController {
      * @param
      * @return
      */
-    @PostMapping(value = "/etds/apply/move-logs")
+    @GetMapping(value = "/etds/apply/move-logs")
     @ApiOperation(value = "流转日志（数据请求方）")
     public Result<PageInfo<List<ReportApply11>>> applyMoveLogs(@ApiParam(value = "页码（默认1）", name = "page") @RequestParam(value = "page", defaultValue = "1") Integer page,
                                                             @ApiParam(value = "页数（默认5）", name = "size") @RequestParam(value = "size", defaultValue = "5") Integer size,
@@ -185,7 +185,7 @@ public class EtdsController {
      * @param
      * @return
      */
-    @PostMapping(value = "/etds/provide/move-logs")
+    @GetMapping(value = "/etds/provide/move-logs")
     @ApiOperation(value = "流转日志（数据供应方）")
     public Result<PageInfo<List<ReportProvide11>>> provideMoveLogs(@ApiParam(value = "页码（默认1）", name = "page") @RequestParam(value = "page", defaultValue = "1") Integer page,
                                                               @ApiParam(value = "页数（默认5）", name = "size") @RequestParam(value = "size", defaultValue = "5") Integer size,
@@ -198,6 +198,26 @@ public class EtdsController {
             throw new BussinessException("查询失败");
         }
         return Result.success(list);
+    }
+
+
+    /**
+     * 流转日志（数据供应方）
+     *
+     * @param
+     * @return
+     */
+    @GetMapping(value = "/dashboard/statistics")
+    @ApiOperation(value = "首页的统计")
+    public Result<FrontPageVO> dashboardStatistics(@ApiParam(name = "days", value = "默认不传的话就是最近15天") @RequestParam(value = "days", defaultValue = "15", required = false) Integer days) {
+        FrontPageVO frontPageVO;
+        try {
+            frontPageVO = etdsService.dashboardStatistics(days);
+        } catch (Exception e) {
+            log.error("查询首页的统计数据失败:{}", e.getMessage());
+            throw new BussinessException("查询失败");
+        }
+        return Result.success(frontPageVO);
     }
 
 }

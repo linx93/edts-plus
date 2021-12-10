@@ -52,13 +52,19 @@ public class ReportProvide11 implements Serializable {
     @ApiModelProperty(value = "请求方数字身份")
     private String fromTdaas;
 
+    @ApiModelProperty(value = "请求方企业名称")
+    private String fromTdaasName;
+
     @ApiModelProperty(value = "请求方etds唯一码")
     private String fromEtds;
 
-    @ApiModelProperty(value = "响应方数字身份")
+    @ApiModelProperty(value = "提供方数字身份")
     private String toTdaas;
 
-    @ApiModelProperty(value = "响应方etds唯一码")
+    @ApiModelProperty(value = "提供方企业名称")
+    private String toTdaasName;
+
+    @ApiModelProperty(value = "提供方etds唯一码")
     private String toEtds;
 
     @ApiModelProperty(value = "请求Path")
@@ -78,6 +84,12 @@ public class ReportProvide11 implements Serializable {
 
     @ApiModelProperty(value = "授权凭证id")
     private String authDtc;
+
+    @ApiModelProperty(value = "授权方数字身份")
+    private String authTdaas;
+
+    @ApiModelProperty(value = "授权方企业名称")
+    private String authTdaasName;
 
     @ApiModelProperty(value = "重试次数")
     private Integer retries;

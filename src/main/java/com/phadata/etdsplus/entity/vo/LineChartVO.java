@@ -45,7 +45,7 @@ public class LineChartVO {
     @Data
     @Accessors(chain = true)
     public static class Tj {
-        private LineChart lineChart;
+        private List<Tj15>  lineChart;
 
         /**
          * totals的和[15的和]
@@ -56,11 +56,5 @@ public class LineChartVO {
          * size的和[15的和]
          */
         private Long totalSize;
-
-        @Data
-        @Accessors(chain = true)
-        public static class LineChart {
-            private List<Tj15> tj15;
-        }
     }
 }
