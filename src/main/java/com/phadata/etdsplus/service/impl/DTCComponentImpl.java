@@ -167,8 +167,9 @@ public class DTCComponentImpl implements DTCComponent {
         //返回的是注册ID
         String registryId = result.getString("payload");
         //使用注册ID查询是否注册成功
-
-        HttpResponse get = HttpRequest.get(dtcServerConfig.getGetIssuer() + "/" + registryId).execute();
+        String url = dtcServerConfig.getGetIssuer() + "/" + registryId;
+        log.info("使用注册ID查询是否注册成功的url:{}", url);
+        HttpResponse get = HttpRequest.get(url).execute();
         log.info("使用注册ID查询是否注册成功的响应:{}", get.body());
         JSONObject resultGet = JSON.parseObject(get.body());
 

@@ -5,6 +5,7 @@ import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.phadata.etdsplus.entity.dto.Address;
+import com.phadata.etdsplus.entity.dto.ResponseAuthDTO;
 import com.phadata.etdsplus.entity.po.GrantResultProvide6;
 import com.phadata.etdsplus.exception.BussinessException;
 import com.phadata.etdsplus.service.DTCComponent;
@@ -19,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Map;
@@ -53,11 +56,13 @@ public class AuthResultProvideConsumer implements ChannelAwareMessageListener {
             log.info("数据授权的消费者【流程中对应4】消费消息：{}", JSON.toJSONString(vc, true));
             //bizData就是数据
             Map<String, Object> bizData = vc.getCredentialSubject().getBizData();
-            Object object = bizData.get("from");
-            Address from = new Address();
-            if (object != null) {
-                from = JSON.parseObject(JSON.toJSONString(object), Address.class);
-            }
+            ResponseAuthDTO responseAuthDTO = JSON.parseObject(JSON.toJSONString(bizData), ResponseAuthDTO.class);
+            //数据授权方
+            Address from = responseAuthDTO.getFrom();
+            //数据请求方
+            Address to = responseAuthDTO.getTo();
+            //数据提供方
+            Address provide = responseAuthDTO.getCc().get(0);
             //保存凭证
             long epochSecond = Instant.now().getEpochSecond();
             grantResultProvide6Service.save(new GrantResultProvide6()
@@ -66,16 +71,18 @@ public class AuthResultProvideConsumer implements ChannelAwareMessageListener {
                     .setOperatedTime(epochSecond)
                     .setApplyEtdsUuid(bizData.getOrDefault("", "").toString())
                     .setGrantDetails(bizData.getOrDefault("", "").toString())
-                    .setGrantDtid(bizData.getOrDefault("", "").toString())
+                    .setGrantDtid(from.getTdaas())
+                    .setGrantName(dtidComponent.getCompanyNameByDtid(from.getTdaas()))
                     .setGrantStatus(bizData.getOrDefault("", "").toString())
                     .setGrantDocument(JSON.toJSONString(vc))
                     .setNoticeId(Long.valueOf(bizData.getOrDefault("", -1).toString()))
                     .setSerialNumber(bizData.getOrDefault("serialNumber", "").toString())
-                    .setToDtid(bizData.getOrDefault("", "").toString())
-                    //todo 这里还需要填写toName
-                    .setToEtdsUuid(bizData.getOrDefault("", "").toString())
-                    .setApplyDtid(from.getTdaas())
-                    .setApplyName(dtidComponent.getCompanyNameByDtid(from.getTdaas()))
+                    .setToDtid(provide.getTdaas())
+                    .setToName(dtidComponent.getCompanyNameByDtid(provide.getTdaas()))
+                    .setToEtdsUuid(provide.getEtds())
+                    .setApplyDtid(to.getTdaas())
+                    .setApplyName(dtidComponent.getCompanyNameByDtid(to.getTdaas()))
+                    .setApplyEtdsUuid(to.getEtds())
                     .setUseStatus(0));
             //2. 调用定制层的回调接口，推送授权凭证给定制层
             HttpResponse execute = HttpRequest.post(authPush).body(JSON.toJSONString(vc)).execute();

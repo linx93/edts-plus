@@ -33,12 +33,12 @@ public class ReportDTO {
     private String serialNumber;
 
     /**
-     * 请求方
+     * 数据请求方
      */
     private Address from;
 
     /**
-     * 响应方
+     * 数据提供方
      */
     private Address to;
 

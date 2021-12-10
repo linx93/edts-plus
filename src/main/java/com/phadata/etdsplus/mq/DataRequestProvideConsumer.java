@@ -46,13 +46,15 @@ public class DataRequestProvideConsumer implements ChannelAwareMessageListener {
     private final EtdsMapper etdsMapper;
     private final MQSendUtil mqSendUtil;
     private final DTCComponent dtcComponent;
+    private final DataSwitchService dataSwitchService;
 
-    public DataRequestProvideConsumer(ReDataNoticeProvide9Service reDataNoticeProvide9Service, GrantResultProvide6Service grantResultProvide6Service, EtdsMapper etdsMapper, MQSendUtil mqSendUtil, DTCComponent dtcComponent) {
+    public DataRequestProvideConsumer(ReDataNoticeProvide9Service reDataNoticeProvide9Service, GrantResultProvide6Service grantResultProvide6Service, EtdsMapper etdsMapper, MQSendUtil mqSendUtil, DTCComponent dtcComponent, DataSwitchService dataSwitchService) {
         this.reDataNoticeProvide9Service = reDataNoticeProvide9Service;
         this.grantResultProvide6Service = grantResultProvide6Service;
         this.etdsMapper = etdsMapper;
         this.mqSendUtil = mqSendUtil;
         this.dtcComponent = dtcComponent;
+        this.dataSwitchService = dataSwitchService;
     }
 
     @Override
@@ -74,7 +76,9 @@ public class DataRequestProvideConsumer implements ChannelAwareMessageListener {
             //2. 获取授权凭证id，再到本地库中查询授权凭证，检查这个凭证的状态是否被TDaaS关闭使用
             String authDtcId = vc.getCredentialSubject().getBizData().getOrDefault("dtc", "-1").toString();
             GrantResultProvide6 one = grantResultProvide6Service.getOne(new QueryWrapper<GrantResultProvide6>().lambda().eq(GrantResultProvide6::getClaimId, authDtcId));
-            if (one == null || one.getUseStatus() == 1) {
+            //查询etds的数据开关
+            boolean dataSwitch = dataSwitchService.findFlag();
+            if (one == null || one.getUseStatus() == 1 || !dataSwitch) {
                 //构建创建凭证的参数ClaimReqBizPackage
                 ClaimReqBizPackage claimReqBizPackage = new ClaimReqBizPackage()
                         .setType(DTCType.DATA.getType())
@@ -91,14 +95,18 @@ public class DataRequestProvideConsumer implements ChannelAwareMessageListener {
                 responseData.setSerialNumber(vc.getCredentialSubject().getBizData().getOrDefault(SystemConstant.SERIAL_NUMBER, "").toString());
                 String desc = "";
                 if (one == null) {
-                    desc = "此授权凭证不存在";
+                    desc = "【此授权凭证在数据提供方的ETDS上不存在】";
                     log.error("授权凭证【claimId={}】不存在", authDtcId);
-                } else {
-                    if (one.getUseStatus() == 1) {
-                        desc = "此授权凭证被数据提供方TDaaS暂时关闭使用";
-                        log.error("授权凭证【claimId={}】被数据提供方TDaaS暂时关闭使用", authDtcId);
-                    }
                 }
+                if (one.getUseStatus() == 1) {
+                    desc += "+【此授权凭证被数据提供方TDaaS暂时关闭使用】";
+                    log.error("授权凭证【claimId={}】被数据提供方TDaaS暂时关闭使用", authDtcId);
+                }
+                if (!dataSwitch) {
+                    desc += "+【数据提供方ETDS的总开关处于关闭状态】";
+                    log.error("数据提供方ETDS的总开关处于关闭状态");
+                }
+
                 responseData.setDtc(new AuthState().setDtc(authDtcId).setDesc(desc).setCode(0));
                 responseData.setTo(applyDataDTO.getFrom());
                 responseData.setFrom(new Address().setTdaas(etdsInfo.getCompanyDtid()).setEtds(etdsInfo.getEtdsCode()));
@@ -111,7 +119,7 @@ public class DataRequestProvideConsumer implements ChannelAwareMessageListener {
                 //这就是凭证
                 Map<String, Object> claim11 = dtcComponent.parse(dtcResponse11);
                 //发送mq
-                mqSendUtil.sendToETDS(responseData.getTo().getTdaas(), etdsInfo.getEtdsCode(), DataType.RESPONSE.getRemark(), JSON.toJSONString(claim11), responseData.getTo().getEtds(), MessageConsumerEnum.pr_etds_to_re_etds_data);
+                mqSendUtil.sendToETDS(responseData.getTo().getTdaas(), responseData.getTo().getEtds(), DataType.RESPONSE.getRemark(), JSON.toJSONString(claim11), responseData.getTo().getEtds(), MessageConsumerEnum.pr_etds_to_re_etds_data);
                 //结束，签收消息，不调用定制层
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
                 return;
