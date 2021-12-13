@@ -65,7 +65,7 @@ public class ReportProvide11ServiceImpl extends ServiceImpl<ReportProvide11Mappe
 
     @Override
     public PageInfo<List<ReportProvide11>> provideMoveLogs(Integer page, Integer size, String authDtcId) {
-        LambdaQueryWrapper<ReportProvide11> eq = new QueryWrapper<ReportProvide11>().lambda().eq(ReportProvide11::getAuthDtc, authDtcId);
+        LambdaQueryWrapper<ReportProvide11> eq = new QueryWrapper<ReportProvide11>().lambda().eq(ReportProvide11::getAuthDtc, authDtcId).orderByDesc(ReportProvide11::getRequestedAt);
         Page<ReportProvide11> applyPage = reportProvide11Mapper.selectPage(new Page<>(page, size), eq);
         List<ReportProvide11> records = applyPage.getRecords();
         PageInfo<List<ReportProvide11>> listPageInfo = new PageInfo<List<ReportProvide11>>()

@@ -1,6 +1,8 @@
 package com.phadata.etdsplus.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.phadata.etdsplus.entity.dto.Address;
 import com.phadata.etdsplus.entity.po.GrantResultApply4;
@@ -30,10 +32,16 @@ import java.util.concurrent.atomic.AtomicReference;
 public class GrantResultApply4ServiceImpl extends ServiceImpl<GrantResultApply4Mapper, GrantResultApply4> implements GrantResultApply4Service {
 
     @Override
-    public PageInfo<List<DataApplyAuthVO>> listAuthList(Integer page, Integer size) {
+    public PageInfo<List<DataApplyAuthVO>> listAuthList(Integer page, Integer size, Integer flag) {
         PageInfo<List<DataApplyAuthVO>> listPageInfo = new PageInfo<>();
         List<DataApplyAuthVO> result = new ArrayList<>();
-        Page<GrantResultApply4> list = page(new Page<>(page, size));
+        LambdaQueryWrapper<GrantResultApply4> lambda = new QueryWrapper<GrantResultApply4>().lambda();
+        if (flag != -1) {
+            //按flag的状态过滤
+            lambda.eq(GrantResultApply4::getGrantStatus, flag);
+        }
+        lambda.orderByDesc(GrantResultApply4::getId);
+        Page<GrantResultApply4> list = page(new Page<>(page, size), lambda);
         List<GrantResultApply4> records = list.getRecords();
         if (!records.isEmpty()) {
             records.forEach(grantResultApply4 -> result.add(convert(grantResultApply4)));

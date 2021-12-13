@@ -16,6 +16,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -104,10 +106,15 @@ public class EtdsController {
     @GetMapping(value = "/etds/data-apply/auth-list")
     @ApiOperation(value = "授权凭证列表（数据请求方）")
     public Result<PageInfo<List<DataApplyAuthVO>>> applyAuthList(@ApiParam(value = "页码（默认1）", name = "page") @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                                                 @ApiParam(value = "页数（默认5）", name = "size") @RequestParam(value = "size", defaultValue = "5") Integer size) {
+                                                                 @ApiParam(value = "页数（默认5）", name = "size") @RequestParam(value = "size", defaultValue = "5") Integer size,
+                                                                 @ApiParam(value = "-1代表查询所有的状态（不传值默认为-1）| 授权凭证的状态[1: 已同意  2:已拒绝 4:已撤销]", name = "authDtcState") @RequestParam(value = "authDtcState", defaultValue = "-1") Integer flag) {
         PageInfo<List<DataApplyAuthVO>> list;
         try {
-            list = grantResultApply4Service.listAuthList(page, size);
+            ArrayList<Integer> flagList = new ArrayList<>(Arrays.asList(-1, 1, 2, 4));
+            if (!flagList.contains(flag)) {
+                return Result.failed("授权凭证的状态authDtcState只能传[1: 已同意  2:已拒绝 4:已撤销]");
+            }
+            list = grantResultApply4Service.listAuthList(page, size, flag);
         } catch (Exception e) {
             log.error("查询授权凭证列表（数据请求方）失败:{}", e.getMessage());
             throw new BussinessException("查询失败");
@@ -167,8 +174,8 @@ public class EtdsController {
     @GetMapping(value = "/etds/apply/move-logs")
     @ApiOperation(value = "流转日志（数据请求方）")
     public Result<PageInfo<List<ReportApply11>>> applyMoveLogs(@ApiParam(value = "页码（默认1）", name = "page") @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                                            @ApiParam(value = "页数（默认5）", name = "size") @RequestParam(value = "size", defaultValue = "5") Integer size,
-                                                            @ApiParam(name = "authDtcId", value = "授权凭证的id", required = true) @RequestParam(value = "authDtcId") String authDtcId) {
+                                                               @ApiParam(value = "页数（默认5）", name = "size") @RequestParam(value = "size", defaultValue = "5") Integer size,
+                                                               @ApiParam(name = "authDtcId", value = "授权凭证的id", required = true) @RequestParam(value = "authDtcId") String authDtcId) {
         PageInfo<List<ReportApply11>> list;
         try {
             list = reportApply11Service.applyMoveLogs(page, size, authDtcId);
@@ -188,8 +195,8 @@ public class EtdsController {
     @GetMapping(value = "/etds/provide/move-logs")
     @ApiOperation(value = "流转日志（数据供应方）")
     public Result<PageInfo<List<ReportProvide11>>> provideMoveLogs(@ApiParam(value = "页码（默认1）", name = "page") @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                                              @ApiParam(value = "页数（默认5）", name = "size") @RequestParam(value = "size", defaultValue = "5") Integer size,
-                                                              @ApiParam(name = "authDtcId", value = "授权凭证的id", required = true) @RequestParam(value = "authDtcId") String authDtcId) {
+                                                                   @ApiParam(value = "页数（默认5）", name = "size") @RequestParam(value = "size", defaultValue = "5") Integer size,
+                                                                   @ApiParam(name = "authDtcId", value = "授权凭证的id", required = true) @RequestParam(value = "authDtcId") String authDtcId) {
         PageInfo<List<ReportProvide11>> list;
         try {
             list = reportProvide11Service.provideMoveLogs(page, size, authDtcId);

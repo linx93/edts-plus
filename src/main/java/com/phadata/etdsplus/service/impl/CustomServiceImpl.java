@@ -222,7 +222,7 @@ public class CustomServiceImpl implements CustomService {
         //发送mq
         mqSendUtil.sendToTDaaS(applyData.getTo().getTdaas(), applyData.getTo().getEtds(), DataType.REQUEST.getRemark(), JSON.toJSONString(claim8), MessageConsumerEnum.re_etds_to_pr_tdaas_data);
         //发送mq
-        mqSendUtil.sendToETDS(applyData.getTo().getTdaas(), applyData.getTo().getEtds(), DataType.REQUEST.getRemark(), JSON.toJSONString(claim9), applyData.getTo().getTdaas(), MessageConsumerEnum.re_etds_to_pr_etds_data);
+        mqSendUtil.sendToETDS(applyData.getTo().getTdaas(), applyData.getTo().getEtds(), DataType.REQUEST.getRemark(), JSON.toJSONString(claim9), applyData.getTo().getEtds(), MessageConsumerEnum.re_etds_to_pr_etds_data);
         //todo 4. 本地存储业务
 
         return Result.success(true);
@@ -350,8 +350,8 @@ public class CustomServiceImpl implements CustomService {
         }
 
 
-        //4. 给数据提供方的ETDS发送MQ消息【这里发的是统计信息，不是数据体】【流程11】、数据提供方etds本地存储由于做统计
-        //4.1 给数据提供方的ETDS发送MQ消息【这里发的是统计信息，不是数据体】【流程11】
+
+        //4 给数据请求方方的ETDS发送MQ消息【这里发的是统计信息，不是数据体】【流程11】
         try {
             claimReqBizPackage.setHolder(provide.getTdaas());
             // 构建设置bizData11的内容
@@ -363,11 +363,12 @@ public class CustomServiceImpl implements CustomService {
             //这就是凭证
             Map<String, Object> claim11 = dtcComponent.parse(dtcResponse11);
             //发送mq
-            mqSendUtil.sendToETDS(provide.getTdaas(),provide.getEtds(), DataType.RESPONSE.getRemark(), JSON.toJSONString(claim11), provide.getEtds(), MessageConsumerEnum.pr_etds_to_re_etds_data);
+            mqSendUtil.sendToETDS(request.getTdaas(), responseAuthDTO.getTo().getEtds(), DataType.RESPONSE.getRemark(), JSON.toJSONString(claim11), request.getEtds(), MessageConsumerEnum.pr_etds_to_re_etds_data);
         } catch (Exception e) {
             throw new BussinessException("【流程9】创建凭证失败:" + e.getMessage());
         }
-        //4.2 数据提供方etds本地存储由于做统计
+        //5. 给数据请求方的ETDS发送MQ消息【这里发的是统计信息，不是数据体】【流程11】、数据提供方etds本地存储由于做统计
+        //4.1 数据提供方etds本地存储由于做统计
         String claim_id = claim13.getOrDefault("id", "").toString();
         //数据请求方的企业名称
         String fromTdaasName = "";

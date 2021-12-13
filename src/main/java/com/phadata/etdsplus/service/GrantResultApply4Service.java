@@ -24,8 +24,9 @@ public interface GrantResultApply4Service extends IService<GrantResultApply4> {
      *
      * @param page
      * @param size
+     * @param flag
      * @return
      */
-    PageInfo<List<DataApplyAuthVO>> listAuthList(Integer page, Integer size);
+    PageInfo<List<DataApplyAuthVO>> listAuthList(Integer page, Integer size, Integer flag);
 
 }

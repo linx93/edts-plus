@@ -65,7 +65,7 @@ public class ReportApply11ServiceImpl extends ServiceImpl<ReportApply11Mapper, R
 
     @Override
     public PageInfo<List<ReportApply11>> applyMoveLogs(Integer page, Integer size, String authDtcId) {
-        LambdaQueryWrapper<ReportApply11> eq = new QueryWrapper<ReportApply11>().lambda().eq(ReportApply11::getAuthDtc, authDtcId);
+        LambdaQueryWrapper<ReportApply11> eq = new QueryWrapper<ReportApply11>().lambda().eq(ReportApply11::getAuthDtc, authDtcId).orderByDesc(ReportApply11::getRequestedAt);
         Page<ReportApply11> applyPage = reportApply11Mapper.selectPage(new Page<>(page, size), eq);
         List<ReportApply11> records = applyPage.getRecords();
         PageInfo<List<ReportApply11>> listPageInfo = new PageInfo<List<ReportApply11>>()

@@ -7,13 +7,13 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 /**
- * @description: 登陆DTO
+ * @description: 修改密码DTO
  * @author: linx
  * @create: 2021-11-15 15:36
  */
 @Data
 @ApiModel(value="登陆/修改密码的DTO对象", description="登陆/修改密码的DTO对象")
-public class LoginDTO {
+public class UpdatePasswordDTO {
     @ApiModelProperty(value = "账户",required = true)
     @NotBlank(message = "账户不能为空")
     private String account;
@@ -22,4 +22,7 @@ public class LoginDTO {
     @NotBlank(message = "密码不能为空")
     private String password;
 
+
+    @ApiModelProperty(value = "老密码",required = true)
+    private String oldPassword;
 }

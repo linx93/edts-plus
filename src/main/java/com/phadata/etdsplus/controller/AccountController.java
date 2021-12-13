@@ -3,8 +3,9 @@ package com.phadata.etdsplus.controller;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.phadata.etdsplus.entity.po.Account;
 import com.phadata.etdsplus.entity.dto.LoginDTO;
+import com.phadata.etdsplus.entity.dto.UpdatePasswordDTO;
+import com.phadata.etdsplus.entity.po.Account;
 import com.phadata.etdsplus.entity.po.Etds;
 import com.phadata.etdsplus.service.AccountService;
 import com.phadata.etdsplus.service.EtdsService;
@@ -22,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * <p>
@@ -148,17 +148,17 @@ public class AccountController {
      */
     @PostMapping(value = "update-pwd")
     @ApiOperation(value = "修改密码")
-    public Result updatePassword(@Valid @RequestBody LoginDTO loginDTO) {
-        Account one = accountService.getOne(new QueryWrapper<Account>().lambda().eq(Account::getAccount, loginDTO.getAccount()));
+    public Result updatePassword(@Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) {
+        Account one = accountService.getOne(new QueryWrapper<Account>().lambda().eq(Account::getAccount, updatePasswordDTO.getAccount()));
         if (one == null) {
             return Result.failed("用户名不存在");
         }
         //对比老密码是否一致
-        boolean matches = new BCryptPasswordEncoder().matches(loginDTO.getOldPassword(), one.getPassword());
+        boolean matches = new BCryptPasswordEncoder().matches(updatePasswordDTO.getOldPassword(), one.getPassword());
         if (!matches) {
             return Result.failed("旧密码错误");
         }
-        String newPassword = new BCryptPasswordEncoder().encode(loginDTO.getPassword());
+        String newPassword = new BCryptPasswordEncoder().encode(updatePasswordDTO.getPassword());
         Account account = new Account();
         account.setId(one.getId());
         account.setPassword(newPassword);

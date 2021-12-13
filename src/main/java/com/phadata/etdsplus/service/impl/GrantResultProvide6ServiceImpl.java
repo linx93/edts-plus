@@ -1,9 +1,11 @@
 package com.phadata.etdsplus.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.phadata.etdsplus.entity.dto.Address;
+import com.phadata.etdsplus.entity.po.GrantResultApply4;
 import com.phadata.etdsplus.entity.po.GrantResultProvide6;
 import com.phadata.etdsplus.entity.vo.*;
 import com.phadata.etdsplus.exception.BussinessException;
@@ -42,7 +44,7 @@ public class GrantResultProvide6ServiceImpl extends ServiceImpl<GrantResultProvi
     public PageInfo<List<DataProvideAuthVO>> listAuthList(Integer page, Integer size) {
         PageInfo<List<DataProvideAuthVO>> listPageInfo;
         List<DataProvideAuthVO> result = new ArrayList<>();
-        IPage<GrantResultProvide6> pageInfo = page(new Page<>(page, size));
+        IPage<GrantResultProvide6> pageInfo = page(new Page<>(page, size), new QueryWrapper<GrantResultProvide6>().lambda().orderByDesc(GrantResultProvide6::getId));
         List<GrantResultProvide6> records = pageInfo.getRecords();
         if (!records.isEmpty()) {
             records.forEach(GrantResultProvide6 -> result.add(convert(GrantResultProvide6)));
