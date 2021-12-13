@@ -27,13 +27,13 @@
     </select>
     <select id="dataApplyLineAll" resultType="com.phadata.etdsplus.entity.vo.Tj15">
         SELECT
-            FROM_UNIXTIME( temp.requested_at, '%Y-%m-%d' ) AS `time`,
+            FROM_UNIXTIME( temp.requested_at, '%Y-%m' ) AS `time`,
             SUM( IFNULL(temp.response_http_meta_contentLength,0) ) AS `size`,
             SUM( IFNULL(temp.chunk_length,0)) AS `totals`
         FROM
             report_apply_11  AS temp
         WHERE
-        date_sub(curdate(),INTERVAL #{days} DAY) &lt;= date(FROM_UNIXTIME( temp.requested_at ))
+        date_sub(curdate(),INTERVAL #{months} MONTH) &lt;= date(FROM_UNIXTIME( temp.requested_at ))
         GROUP BY
         `time`
     </select>

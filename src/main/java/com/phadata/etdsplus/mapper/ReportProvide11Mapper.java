@@ -40,10 +40,10 @@ public interface ReportProvide11Mapper extends BaseMapper<ReportProvide11> {
     /**
      * 首页
      *
-     * @param days
+     * @param months
      * @return
      */
-    List<Tj15> dataApplyLineAll(Integer days);
+    List<Tj15> dataApplyLineAll(Integer months);
 
     /**
      * 首页

@@ -47,8 +47,8 @@ public interface EtdsService extends IService<Etds> {
     /**
      * 首页的统计
      *
-     * @param days
+     * @param months
      * @return
      */
-    FrontPageVO dashboardStatistics(Integer days);
+    FrontPageVO dashboardStatistics(Integer months);
 }

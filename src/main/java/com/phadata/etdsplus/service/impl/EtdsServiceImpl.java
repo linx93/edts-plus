@@ -139,11 +139,11 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
     }
 
     @Override
-    public FrontPageVO dashboardStatistics(Integer days) {
-        List<Tj15> tj15sApply = reportApply11Mapper.dataApplyLineAll(days);
-        List<Tj15> tj15sProvide = reportProvide11Mapper.dataApplyLineAll(days);
-        List<Tj15> tj15ApplyList = setData(days, tj15sApply);
-        List<Tj15> tj15sProvideList = setData(days, tj15sProvide);
+    public FrontPageVO dashboardStatistics(Integer months) {
+        List<Tj15> tj15sApply = reportApply11Mapper.dataApplyLineAll(months);
+        List<Tj15> tj15sProvide = reportProvide11Mapper.dataApplyLineAll(months);
+        List<Tj15> tj15ApplyList = setData(months, tj15sApply);
+        List<Tj15> tj15sProvideList = setData(months, tj15sProvide);
         Sjltj sjltjApply = reportApply11Mapper.dataApplySumAll();
         Sjltj sjltjProvide = reportProvide11Mapper.dataApplySumAll();
         FrontPageVO.Tj tjApply = new FrontPageVO.Tj().setTotal(sjltjApply.getTotals()).setTotalSize(sjltjApply.getSize()).setLineChart(tj15ApplyList);
@@ -152,8 +152,8 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
         return frontPageVO;
     }
 
-    private List<Tj15> setData(Integer days, List<Tj15> data) {
-        List<Tj15> out = initDays(days);
+    private List<Tj15> setData(Integer months, List<Tj15> data) {
+        List<Tj15> out = initMonths(months);
         out.forEach(tj15 -> data.forEach(ele -> {
             if (tj15.getTime().equals(ele.getTime())) {
                 Integer totals = ele.getTotals();
@@ -165,11 +165,11 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
         return out;
     }
 
-    private List<Tj15> initDays(Integer days) {
+    private static List<Tj15> initMonths(Integer months) {
         //获取前一天
-        ArrayList<Tj15> list = new ArrayList<>(days);
-        for (int i = -(days - 1); i <= 0; i++) {
-            String dataStr = LocalDate.now().plusDays(i).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        ArrayList<Tj15> list = new ArrayList<>(months);
+        for (int i = -(months - 1); i <= 0; i++) {
+            String dataStr = LocalDate.now().plusMonths(i).format(DateTimeFormatter.ofPattern("yyyy-MM"));
             list.add(new Tj15().setTime(dataStr).setSize(0L).setTotals(0));
         }
         return list;

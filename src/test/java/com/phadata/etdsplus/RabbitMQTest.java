@@ -116,9 +116,10 @@ public class RabbitMQTest {
 
     @Autowired
     private MQSendUtil mqSendUtil;
+
     @Test
-    void sendMsgTest(){
-        mqSendUtil.sendToETDS("dtid:dtca:sdfsdfdsfsdfsdf","111","title","msg info","c6bmo306n88ldpmt4r3g", MessageConsumerEnum.re_etds_to_pr_etds_data);
-        mqSendUtil.sendToTDaaS("dtid:dtca:dQAhX8P8MfYbyTtsAnxcDuHri1g","111","title","德玛西亚人，从不退缩", MessageConsumerEnum.gr_tdaas_to_pr_tdaas);
+    void sendMsgTest() {
+        mqSendUtil.sendToETDS("", "dtid:dtca:sdfsdfdsfsdfsdf", "111", "title", "msg info", "c6bmo306n88ldpmt4r3g", MessageConsumerEnum.re_etds_to_pr_etds_data);
+        mqSendUtil.sendToTDaaS("", "dtid:dtca:dQAhX8P8MfYbyTtsAnxcDuHri1g", "111", "title", "德玛西亚人，从不退缩", MessageConsumerEnum.gr_tdaas_to_pr_tdaas);
     }
 }

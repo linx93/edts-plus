@@ -216,10 +216,10 @@ public class EtdsController {
      */
     @GetMapping(value = "/dashboard/statistics")
     @ApiOperation(value = "首页的统计")
-    public Result<FrontPageVO> dashboardStatistics(@ApiParam(name = "days", value = "默认不传的话就是最近15天") @RequestParam(value = "days", defaultValue = "15", required = false) Integer days) {
+    public Result<FrontPageVO> dashboardStatistics(@ApiParam(name = "months", value = "默认不传的话就是最近15个月") @RequestParam(value = "months", defaultValue = "15", required = false) Integer months) {
         FrontPageVO frontPageVO;
         try {
-            frontPageVO = etdsService.dashboardStatistics(days);
+            frontPageVO = etdsService.dashboardStatistics(months);
         } catch (Exception e) {
             log.error("查询首页的统计数据失败:{}", e.getMessage());
             throw new BussinessException("查询失败");

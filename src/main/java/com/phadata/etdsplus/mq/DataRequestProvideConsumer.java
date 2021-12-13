@@ -99,17 +99,19 @@ public class DataRequestProvideConsumer implements ChannelAwareMessageListener {
                     log.error("授权凭证【claimId={}】不存在", authDtcId);
                 }
                 if (one.getUseStatus() == 1) {
-                    desc += "+【此授权凭证被数据提供方TDaaS暂时关闭使用】";
+                    desc += "【此授权凭证被数据提供方TDaaS暂时关闭使用】";
                     log.error("授权凭证【claimId={}】被数据提供方TDaaS暂时关闭使用", authDtcId);
                 }
                 if (!dataSwitch) {
-                    desc += "+【数据提供方ETDS的总开关处于关闭状态】";
+                    desc += "【数据提供方ETDS的总开关处于关闭状态】";
                     log.error("数据提供方ETDS的总开关处于关闭状态");
                 }
 
                 responseData.setDtc(new AuthState().setDtc(authDtcId).setDesc(desc).setCode(0));
                 responseData.setTo(applyDataDTO.getFrom());
                 responseData.setFrom(new Address().setTdaas(etdsInfo.getCompanyDtid()).setEtds(etdsInfo.getEtdsCode()));
+                log.error("获取数据失败:{}", desc);
+                log.error("凭证的authDtcId = :{}", authDtcId);
                 // 构建设置bizData11的内容
                 Map<String, Object> bizData11 = JSON.parseObject(JSON.toJSONString(responseData), Map.class);
                 //设置bizData
@@ -119,7 +121,7 @@ public class DataRequestProvideConsumer implements ChannelAwareMessageListener {
                 //这就是凭证
                 Map<String, Object> claim11 = dtcComponent.parse(dtcResponse11);
                 //发送mq
-                mqSendUtil.sendToETDS(responseData.getTo().getTdaas(), responseData.getTo().getEtds(), DataType.RESPONSE.getRemark(), JSON.toJSONString(claim11), responseData.getTo().getEtds(), MessageConsumerEnum.pr_etds_to_re_etds_data);
+                mqSendUtil.sendToETDS(desc, responseData.getTo().getTdaas(), responseData.getTo().getEtds(), DataType.RESPONSE.getRemark(), JSON.toJSONString(claim11), responseData.getTo().getEtds(), MessageConsumerEnum.pr_etds_to_re_etds_data);
                 //结束，签收消息，不调用定制层
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
                 return;

@@ -22,7 +22,11 @@ public class MQSendUtil {
     @Value("${mq.send}")
     private String sendMQ;
 
-    public void sendToETDS(String dtid, String machineId, String title, String content, String etdsCode, MessageConsumerEnum messageConsumerEnum) {
+    public void sendToETDS(String errorLogInfo, String dtid, String machineId, String title, String content, String etdsCode, MessageConsumerEnum messageConsumerEnum) {
+        if (dtid == null || dtid.equals("")) {
+            log.error("发送mq失败,dtid为空");
+            return;
+        }
         String queueName = InitMQInfo.buildQueueName(dtid, etdsCode, String.valueOf(messageConsumerEnum.getCode()));
         String routingKey = InitMQInfo.buildRoutingKey(dtid, etdsCode, String.valueOf(messageConsumerEnum.getCode()));
         BizMessage bizMessage = new BizMessage()
@@ -36,11 +40,16 @@ public class MQSendUtil {
                         .setQueue(queueName)
                         .setRoutingKey(routingKey));
         HttpResponse execute = HttpRequest.post(sendMQ).body(JSON.toJSONString(bizMessage)).execute();
-        log.info("【发给etds消费的】发送mq   queue:{}  routingKey:{}", queueName, routingKey);
-        log.info("【发给etds消费的】发送mq的请求返回:{}", execute.body());
+        log.info(errorLogInfo);
+        log.info("调用MQ的入参:{}", JSON.toJSONString(bizMessage));
+        log.info("【SEND-MQ-ETDS】发送mq的请求返回:{}", execute.body());
     }
 
-    public void sendToTDaaS(String dtid, String machineId, String title, String content, MessageConsumerEnum messageConsumerEnum) {
+    public void sendToTDaaS(String errorLogInfo, String dtid, String machineId, String title, String content, MessageConsumerEnum messageConsumerEnum) {
+        if (dtid == null || dtid.equals("")) {
+            log.error("发送mq失败,dtid为空");
+            return;
+        }
         String queueName = dtid + "_" + messageConsumerEnum.getCode();
         String routingKey = dtid + "_" + messageConsumerEnum.getCode();
         BizMessage bizMessage = new BizMessage()
@@ -53,8 +62,10 @@ public class MQSendUtil {
                         .setExchangeType("DIRECT")
                         .setQueue(queueName)
                         .setRoutingKey(routingKey));
+
         HttpResponse execute = HttpRequest.post(sendMQ).body(JSON.toJSONString(bizMessage)).execute();
-        log.info("【发给tdaas消费的】发送mq   queue:{}  routingKey:{}", queueName, routingKey);
-        log.info("【发给tdaas消费的】发送mq的请求返回:{}", execute.body());
+        log.info(errorLogInfo);
+        log.info("调用MQ的入参:{}", JSON.toJSONString(bizMessage));
+        log.info("【SEND-MQ-TDaaS】发送mq的请求返回:{}", execute.body());
     }
 }
