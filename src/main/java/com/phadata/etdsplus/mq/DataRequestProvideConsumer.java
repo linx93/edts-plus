@@ -97,16 +97,16 @@ public class DataRequestProvideConsumer implements ChannelAwareMessageListener {
                 if (one == null) {
                     desc = "【此授权凭证在数据提供方的ETDS上不存在】";
                     log.error("授权凭证【claimId={}】不存在", authDtcId);
-                }
-                if (one.getUseStatus() == 1) {
-                    desc += "【此授权凭证被数据提供方TDaaS暂时关闭使用】";
-                    log.error("授权凭证【claimId={}】被数据提供方TDaaS暂时关闭使用", authDtcId);
+                } else {
+                    if (one.getUseStatus() == 1) {
+                        desc += "【此授权凭证被数据提供方TDaaS暂时关闭使用】";
+                        log.error("授权凭证【claimId={}】被数据提供方TDaaS暂时关闭使用", authDtcId);
+                    }
                 }
                 if (!dataSwitch) {
                     desc += "【数据提供方ETDS的总开关处于关闭状态】";
                     log.error("数据提供方ETDS的总开关处于关闭状态");
                 }
-
                 responseData.setDtc(new AuthState().setDtc(authDtcId).setDesc(desc).setCode(0));
                 responseData.setTo(applyDataDTO.getFrom());
                 responseData.setFrom(new Address().setTdaas(etdsInfo.getCompanyDtid()).setEtds(etdsInfo.getEtdsCode()));
