@@ -165,7 +165,7 @@ public class DTCComponentImpl implements DTCComponent {
             throw new BussinessException("注册成为发行方失败:" + result.getString("message"));
         }
         //返回的是注册ID
-        String registryId = result.getString("payload");
+        String registryId = result.getJSONObject("payload").getString("registryId");
         //使用注册ID查询是否注册成功
         String url = dtcServerConfig.getGetIssuer() + "/" + registryId;
         log.info("使用注册ID查询是否注册成功的url:{}", url);
