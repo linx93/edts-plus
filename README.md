@@ -16,14 +16,14 @@
 - 准备MySQL数据库的ETDS服务脚本、执行
 - 执行准备ETDS服务的jar包、启动
 - 初始化完成后默认内置管理员 账户:admin  密码:000000
-- MySQL数据库脚本在resources/initsql目录下【init.sql】
+- MySQL数据库脚本在resources/initsql目录下**init.sql**
 
 ### 激活ETDS的流程
 - 通过初始化管理员admin登陆ETDS服务进入激活界面
 - 通过TDaaS界面上获取到（由鉴权中心服务提前生成的）
-- 最后在ETDS服务的激活界面输入【激活码】和【ETDS服务的后端地址】进行激活即可
+- 最后在ETDS服务的激活界面输入**激活码**和**ETDS服务的后端地址**进行激活即可
 - ⚠️ 激活码:由TDaaS界面提供 
-- ⚠️ ETDS服务的**后端地址**:地址格式【http:ip:port】或【http:域名:port】
+- ⚠️ ETDS服务的**后端地址**:地址格式**【http:ip:port】**或**【http:域名:port】**
 ## 2. 接口文档
 
 ### 2.1 供ETDS的前端调用
