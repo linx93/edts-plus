@@ -1264,7 +1264,7 @@
 	"payload": {}
 }
 ```
-### ETDS和定制层的交互设计图
+### ETDS和定制层的交互设计图 
 ![avatar][ETDS-CUSTOM]
 ### ETDS和TDaaS的交互设计图
 ![avatar][ETDS-TDaaS]
