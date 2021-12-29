@@ -69,7 +69,12 @@ public class DataRequestProvideConsumer implements ChannelAwareMessageListener {
             }
             Etds etdsInfo = list.get(0);
             String msg = new String(message.getBody());
-            log.info("数据请求的消费者【流程中对应9】消费消息：{}", msg);
+            int len = 1000;
+            if (msg.length() <= len) {
+                log.info("数据请求的消费者【流程中对应9】消费消息：{}", msg);
+            } else {
+                log.info("数据请求的消费者【流程中对应9】消费消息：消息内容长度大于{},不打印具体消息内容", len);
+            }
             //1. 获取凭证   这个vc就是凭证
             VerifiableClaim vc = JSON.parseObject(msg, VerifiableClaim.class);
             ApplyDataDTO applyDataDTO = JSON.parseObject(JSON.toJSONString(vc.getCredentialSubject().getBizData()), ApplyDataDTO.class);

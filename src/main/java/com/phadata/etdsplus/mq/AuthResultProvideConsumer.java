@@ -73,7 +73,7 @@ public class AuthResultProvideConsumer implements ChannelAwareMessageListener {
                     .setGrantDetails(bizData.getOrDefault("", "").toString())
                     .setGrantDtid(from.getTdaas())
                     .setGrantName(dtidComponent.getCompanyNameByDtid(from.getTdaas()))
-                    .setGrantStatus(bizData.getOrDefault("", "").toString())
+                    .setGrantStatus(bizData.getOrDefault("result", "").toString())
                     .setGrantDocument(JSON.toJSONString(vc))
                     .setNoticeId(Long.valueOf(bizData.getOrDefault("", -1).toString()))
                     .setSerialNumber(bizData.getOrDefault("serialNumber", "").toString())
