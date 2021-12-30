@@ -18,7 +18,7 @@ import java.util.Map.Entry;
  * 生成的token默认过期时间为7天
  *
  * @author xionglin
- * @createDate 2018.11.7 01:05:20
+ * @since 2018.11.7 01:05:20
  */
 @Slf4j
 public class JwtUtil {
@@ -27,17 +27,17 @@ public class JwtUtil {
      */
     private static final String SECRET = "tianji";
 
-    private static final int expire = 7;
+    private static final int EXPIRE = 7;
 
     /**
      * 默认的头map(线程安全)可根据需求自己设置defaultHeaderMap中alg和typ的的值；一般使用默认值
      */
-    private static final Map<String, Object> defaultHeaderMap = Collections.synchronizedMap(new HashMap<>(3));
+    private static final Map<String, Object> DEFAULT_HEADER_MAP = Collections.synchronizedMap(new HashMap<>(3));
 
     //默认头设置值
     static {
-        defaultHeaderMap.put("alg", "HS256");
-        defaultHeaderMap.put("typ", "JWT");
+        DEFAULT_HEADER_MAP.put("alg", "HS256");
+        DEFAULT_HEADER_MAP.put("typ", "JWT");
     }
 
     /**
@@ -50,102 +50,102 @@ public class JwtUtil {
     /**
      * 创建JwtToken
      *
-     * @param payLoadMap
-     * @return
+     * @param payLoadMap 数据
+     * @return token
      */
     public static String createJwtToken(Map<String, Object> payLoadMap) {
-        String JwtToken = null;
+        String jwtToken = null;
         try {
-            Builder builder = getBuilder(defaultHeaderMap, payLoadMap);
+            Builder builder = getBuilder(DEFAULT_HEADER_MAP, payLoadMap);
             //加密
-            JwtToken = builder.sign(Algorithm.HMAC256(SECRET));
-        } catch (IllegalArgumentException e) {
-            log.error("createJwtToken  error >> ex = {}", ExceptionUtils.getStackTrace(e));
-        } catch (JWTCreationException e) {
+            assert builder != null;
+            jwtToken = builder.sign(Algorithm.HMAC256(SECRET));
+        } catch (IllegalArgumentException | JWTCreationException e) {
             log.error("createJwtToken  error >> ex = {}", ExceptionUtils.getStackTrace(e));
         }
-        return JwtToken;
+        return jwtToken;
     }
 
 
     /**
      * 创建JwtToken
      *
-     * @param payLoadMap
+     * @param payLoadMap 数据
      * @param secret     密钥
-     * @return
+     * @return token
      */
     public static String createJwtToken(Map<String, Object> payLoadMap, String secret) {
-        String JwtToken = null;
+        String jwtToken = null;
         try {
-            Builder builder = getBuilder(defaultHeaderMap, payLoadMap);
+            Builder builder = getBuilder(DEFAULT_HEADER_MAP, payLoadMap);
+            assert builder != null;
             if (secret == null) {
                 //默认秘钥加密
-                JwtToken = builder.sign(Algorithm.HMAC256(SECRET));
+                jwtToken = builder.sign(Algorithm.HMAC256(SECRET));
             } else {
                 //默认秘钥加密
-                JwtToken = builder.sign(Algorithm.HMAC256(secret));
+                jwtToken = builder.sign(Algorithm.HMAC256(secret));
             }
-        } catch (IllegalArgumentException e) {
-            log.error("createJwtToken  error >> ex = {}", ExceptionUtils.getStackTrace(e));
-        } catch (JWTCreationException e) {
+        } catch (IllegalArgumentException | JWTCreationException e) {
             log.error("createJwtToken  error >> ex = {}", ExceptionUtils.getStackTrace(e));
         }
-        return JwtToken;
+        return jwtToken;
     }
 
     /**
      * 创建JwtToken
      *
-     * @param headerMap
-     * @param payLoadMap
-     * @return
+     * @param headerMap  头
+     * @param payLoadMap 数据
+     * @return token
      */
     public static String createJwtToken(Map<String, Object> headerMap, Map<String, Object> payLoadMap) {
-        String JwtToken = null;
+        String jwtToken = null;
         try {
             Builder builder = getBuilder(headerMap, payLoadMap);
-            JwtToken = builder.sign(Algorithm.HMAC256(SECRET));
+            assert builder != null;
+            jwtToken = builder.sign(Algorithm.HMAC256(SECRET));
         } catch (IllegalArgumentException e) {
             log.error("createJwtToken  error >> ex = {}", ExceptionUtils.getMessage(e));
         } catch (JWTCreationException e) {
             log.error("createJwtToken  error >> ex = {}", ExceptionUtils.getStackTrace(e));
         }
-        return JwtToken;
+        return jwtToken;
     }
 
     /**
      * 创建JwtToken
      *
-     * @param headerMap
-     * @param payLoadMap
+     * @param headerMap  头
+     * @param payLoadMap 数据
      * @param secret     密钥
-     * @return
+     * @return token
      */
     public static String createJwtToken(Map<String, Object> headerMap, Map<String, Object> payLoadMap, String secret) {
-        String JwtToken = null;
+        String jwtToken = null;
         try {
             Builder builder = getBuilder(headerMap, payLoadMap);
+            assert builder != null;
             if (secret == null) {
                 //用默认加密
-                JwtToken = builder.sign(Algorithm.HMAC256(SECRET));
+                jwtToken = builder.sign(Algorithm.HMAC256(SECRET));
             } else {
                 //加密
-                JwtToken = builder.sign(Algorithm.HMAC256(secret));
+                jwtToken = builder.sign(Algorithm.HMAC256(secret));
             }
         } catch (IllegalArgumentException e) {
             log.error("createJwtToken  error >> ex = {}", ExceptionUtils.getMessage(e));
         } catch (JWTCreationException e) {
             log.error("createJwtToken  error >> ex = {}", ExceptionUtils.getStackTrace(e));
         }
-        return JwtToken;
+        return jwtToken;
     }
 
     /**
      * 验证token
      *
-     * @param token
-     * @return
+     * @param token jwt token
+     * @return payload
      */
     public static Map<String, Claim> verifyToken(String token) {
         JWTVerifier jwtVerifier = null;
@@ -154,8 +154,9 @@ public class JwtUtil {
         } catch (IllegalArgumentException e) {
             log.error("verifyToken  error >> ex = {}", ExceptionUtils.getMessage(e));
         }
-        DecodedJWT verify = null;
+        DecodedJWT verify;
         try {
+            assert jwtVerifier != null;
             verify = jwtVerifier.verify(token);
         } catch (AlgorithmMismatchException e) {
             log.error("verifyToken  error >> ex = {}", ExceptionUtils.getStackTrace(e));
@@ -180,13 +181,13 @@ public class JwtUtil {
     /**
      * 解码token
      *
-     * @param token
-     * @return
+     * @param token jwt token
+     * @return payload
      */
     public static Map<String, Claim> verifyToken(String token, String secret) {
         JWTVerifier jwtVerifier = null;
         try {
-            if (secret == null || secret.trim().equals("")) {
+            if (secret == null || "".equals(secret.trim())) {
                 jwtVerifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
             } else {
                 jwtVerifier = JWT.require(Algorithm.HMAC256(secret)).build();
@@ -196,6 +197,7 @@ public class JwtUtil {
         }
         DecodedJWT verify;
         try {
+            assert jwtVerifier != null;
             verify = jwtVerifier.verify(token);
         } catch (AlgorithmMismatchException e) {
             log.error("verifyToken  error >> ex = {}", ExceptionUtils.getStackTrace(e));
@@ -216,22 +218,25 @@ public class JwtUtil {
         return verify.getClaims();
     }
 
+
+    /**  Payload 默认给出的几个claim
+     "iss" => "http://example.org",   #非必须。issuer 请求实体，可以是发起请求的用户的信息，也可是jwt的签发者。
+     "iat" => 1356999524,                #非必须。issued at。 token创建时间，unix时间戳格式
+     "exp" => "1548333419",            #非必须。expire 指定token的生命周期。unix时间戳格式
+     "aud" => "http://example.com",   #非必须。接收该JWT的一方。
+     "sub" => "jrocket@example.com",  #非必须。该JWT所面向的用户
+     "nbf" => 1357000000,   # 非必须。not before。如果当前时间在nbf里的时间之前，则Token不被接受；一般都会留一些余地，比如几分钟。
+     "jti" => '222we',     # 非必须。JWT ID。针对当前token的唯一标识
+     */
     /**
      * 为加密构建Builder对象
-     * @param headerMap
-     * @param payLoadMap
-     * @return
+     *
+     * @param headerMap  头 map
+     * @param payLoadMap 数据 map
+     * @return builder对象
      */
     private static Builder getBuilder(Map<String, Object> headerMap, Map<String, Object> payLoadMap) {
-        /**  Payload 默认给出的几个claim
-         "iss" => "http://example.org",   #非必须。issuer 请求实体，可以是发起请求的用户的信息，也可是jwt的签发者。
-         "iat" => 1356999524,                #非必须。issued at。 token创建时间，unix时间戳格式
-         "exp" => "1548333419",            #非必须。expire 指定token的生命周期。unix时间戳格式
-         "aud" => "http://example.com",   #非必须。接收该JWT的一方。
-         "sub" => "jrocket@example.com",  #非必须。该JWT所面向的用户
-         "nbf" => 1357000000,   # 非必须。not before。如果当前时间在nbf里的时间之前，则Token不被接受；一般都会留一些余地，比如几分钟。
-         "jti" => '222we',     # 非必须。JWT ID。针对当前token的唯一标识
-         */
+
         if (headerMap.size() <= 0 || payLoadMap.size() <= 0) {
             return null;
         }
@@ -240,7 +245,7 @@ public class JwtUtil {
         //签发时间
         builder.withIssuedAt(new Date());
         //默认过期的时间为7天
-        builder.withExpiresAt(getDate(expire));
+        builder.withExpiresAt(getDate(EXPIRE));
         Set<Entry<String, Object>> entrySet = payLoadMap.entrySet();
         for (Entry<String, Object> entry : entrySet) {
             if ("exp".equals(entry.getKey())) {
@@ -267,13 +272,12 @@ public class JwtUtil {
     /**
      * 获取(days)天后时间
      *
-     * @param days
-     * @return
+     * @param days 天
+     * @return 日期
      */
     private static Date getDate(int days) {
         return new Date(System.currentTimeMillis() + (days * 24 * 60 * 60 * 1000));
     }
-
 
 
 }
