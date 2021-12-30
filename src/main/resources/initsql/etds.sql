@@ -177,6 +177,7 @@ CREATE TABLE `data_switch` (
 DROP TABLE IF EXISTS `etds`;
 CREATE TABLE `etds` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `license_expiration_time` bigint DEFAULT NULL COMMENT 'license过期时间',
   `license` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT 'license',
   `create_time` bigint DEFAULT NULL COMMENT '创建时间',
   `update_time` bigint DEFAULT NULL COMMENT '更新时间',
