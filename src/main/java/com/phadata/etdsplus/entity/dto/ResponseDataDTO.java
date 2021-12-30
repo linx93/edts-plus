@@ -7,9 +7,9 @@ import lombok.experimental.Accessors;
 
 
 /**
- * @description: 响应数据
+ * 响应数据
  * @author: linx
- * @create: 2021-11-30 14:37
+ * @since 2021-11-30 14:37
  */
 @Data
 @ApiModel(value = "数据响应DTC的bizData/数据响应DTC的bizData", description = "数据响应DTC的bizData")

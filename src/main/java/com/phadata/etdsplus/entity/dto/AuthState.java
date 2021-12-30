@@ -5,9 +5,9 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
- * @description: 响应的授权信息
+ * 响应的授权信息
  * @author: linx
- * @create: 2021-12-01 10:18
+ * @since 2021-12-01 10:18
  */
 @Data
 @Accessors(chain = true)

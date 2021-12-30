@@ -29,9 +29,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @description: 提供给tdaas调用的接口
+ * 提供给tdaas调用的接口
  * @author: linx
- * @create: 2021-11-17 10:25
+ * @since 2021-11-17 10:25
  */
 @Slf4j
 @RestController

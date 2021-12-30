@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @description: 请求的元数据
+ * 请求的元数据
  * @author: linx
- * @create: 2021-12-01 10:00
+ * @since 2021-12-01 10:00
  */
 @Data
 public class HttpMeta {

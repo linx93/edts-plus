@@ -7,9 +7,9 @@ import lombok.experimental.Accessors;
 import javax.validation.constraints.NotBlank;
 
 /**
- * @description: 包含tdaas和etds的标识
+ * 包含tdaas和etds的标识
  * @author: linx
- * @create: 2021-11-26 10:43
+ * @since 2021-11-26 10:43
  */
 @Accessors(chain = true)
 @Data

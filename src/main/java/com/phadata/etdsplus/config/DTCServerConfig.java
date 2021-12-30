@@ -5,9 +5,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * @description: 凭证服务配置类
+ * 凭证服务配置类
  * @author: linx
- * @create: 2021-11-25 11:22
+ * @since 2021-11-25 11:22
  */
 @Data
 @Component

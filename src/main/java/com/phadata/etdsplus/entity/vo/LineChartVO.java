@@ -7,9 +7,9 @@ import java.util.List;
 
 
 /**
- * @description: 折线图
+ * 折线图
  * @author: linx
- * @create: 2021-12-07 09:24
+ * @since 2021-12-07 09:24
  */
 @Data
 @Accessors(chain = true)

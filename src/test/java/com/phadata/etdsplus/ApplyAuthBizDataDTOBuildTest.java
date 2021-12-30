@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * @description: 构建了授权发送MQ的bizData逻辑测试
+ * 构建了授权发送MQ的bizData逻辑测试
  * @author: linx
- * @create: 2021-11-26 15:17
+ * @since 2021-11-26 15:17
  */
 public class ApplyAuthBizDataDTOBuildTest {
     @Test

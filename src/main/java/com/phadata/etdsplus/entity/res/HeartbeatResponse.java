@@ -5,9 +5,9 @@ import lombok.Data;
 
 
 /**
- * @description: 心跳响应对象
+ * 心跳响应对象
  * @author: linx
- * @create: 2021-11-17 10:37
+ * @since 2021-11-17 10:37
  */
 @Data
 public class HeartbeatResponse {

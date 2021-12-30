@@ -17,9 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
- * @description: 关于调用dtc基础服务的测试
+ * 关于调用dtc基础服务的测试
  * @author: linx
- * @create: 2021-11-25 15:10
+ * @since 2021-11-25 15:10
  */
 @Slf4j
 @SpringBootTest

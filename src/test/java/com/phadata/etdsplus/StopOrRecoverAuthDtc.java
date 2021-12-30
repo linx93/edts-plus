@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
- * @description: 测试tdaas暂停/恢复某个授权凭证的使用
+ * 测试tdaas暂停/恢复某个授权凭证的使用
  * @author: xionglin
- * @create: 2021-11-26 19:08
+ * @since 2021-11-26 19:08
  */
 @SpringBootTest
 public class StopOrRecoverAuthDtc {

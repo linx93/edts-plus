@@ -18,9 +18,9 @@ import java.util.Base64;
 import java.util.List;
 
 /**
- * @description: 通过web api 获取mq相关信息的工具类
+ * 通过web api 获取mq相关信息的工具类
  * @author: xionglin
- * @create: 2021-11-23 09:55
+ * @since 2021-11-23 09:55
  */
 @Component
 public class RabbitMQUtil {

@@ -6,9 +6,9 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 /**
- * @description: etds注册的dto
+ * etds注册的dto
  * @author: linx
- * @create: 2021-11-16 16:30
+ * @since 2021-11-16 16:30
  */
 @Data
 public class ETDSRegisterDTO {

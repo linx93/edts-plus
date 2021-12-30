@@ -1,9 +1,9 @@
 package com.phadata.etdsplus.constant;
 
 /**
- * @description: 系统常量
+ * 系统常量
  * @author: xionglin
- * @create: 2021-12-01 10:59
+ * @since 2021-12-01 10:59
  */
 public class SystemConstant {
     /**

@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 /**
- * @description: 定制层请求的测试
+ * 定制层请求的测试
  * @author: xionglin
- * @create: 2021-11-26 16:53
+ * @since 2021-11-26 16:53
  */
 @SpringBootTest
 public class CustomControllerTest {

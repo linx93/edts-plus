@@ -6,9 +6,9 @@ import lombok.experimental.Accessors;
 import java.util.List;
 
 /**
- * @description: 分页返回数据格式
+ * 分页返回数据格式
  * @author: linx
- * @create: 2021-12-06 18:27
+ * @since 2021-12-06 18:27
  */
 @Data
 @Accessors(chain = true)

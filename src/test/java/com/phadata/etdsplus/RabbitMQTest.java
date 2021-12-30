@@ -21,9 +21,9 @@ import java.net.URL;
 import java.util.Base64;
 
 /**
- * @description: 通过rabbitMQ的管理界面获取队列测试
+ * 通过rabbitMQ的管理界面获取队列测试
  * @author: linx
- * @create: 2021-11-22 17:22
+ * @since 2021-11-22 17:22
  */
 @SpringBootTest
 public class RabbitMQTest {

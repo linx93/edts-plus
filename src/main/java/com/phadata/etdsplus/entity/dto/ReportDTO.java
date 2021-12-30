@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @description: 接收定制层的统计数据dto
+ * 接收定制层的统计数据dto
  * @author: linx
- * @create: 2021-12-07 10:48
+ * @since 2021-12-07 10:48
  */
 @Data
 public class ReportDTO {

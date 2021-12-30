@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 
 
 /**
- * @description: 到鉴权中心获取token测试
+ * 到鉴权中心获取token测试
  * @author: lin
- * @create: 2021-11-17 19:57
+ * @since 2021-11-17 19:57
  */
 public class GetTokenTest {
 

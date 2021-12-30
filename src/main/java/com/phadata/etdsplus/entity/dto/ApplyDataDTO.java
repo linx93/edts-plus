@@ -9,9 +9,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 /**
- * @description: DataRequestBizData 数据请求或者控制的DTC BizData
+ * DataRequestBizData 数据请求或者控制的DTC BizData
  * @author: linx
- * @create: 2021-11-25 09:38
+ * @since 2021-11-25 09:38
  */
 @Data
 @ApiModel(value = "DataRequestBizData 数据请求或者控制的DTC BizData", description = "DataRequestBizData 数据请求或者控制的DTC BizData")

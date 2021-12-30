@@ -133,7 +133,7 @@ public class DataRequestProvideConsumer implements ChannelAwareMessageListener {
             }
             //3. 调用定制层接口：将携带请求数据信息[HttpMate信息]的凭证推给定制层，有定制层去执行真正的请求数据
             HttpResponse execute = HttpRequest.post(dataPush).body(JSON.toJSONString(vc)).execute();
-            log.info("调用定制层接口：将携带请求数据信息[HttpMate信息]的凭证推给定制层的响应:", execute);
+            log.info("调用定制层接口：将携带请求数据信息[HttpMate信息]的凭证推给定制层的响应:{}", execute);
 
             //4. 本地存储业务 表中的凭证id字段加了唯一索引，防止重复消费
             long epochSecond = Instant.now().getEpochSecond();

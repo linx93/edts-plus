@@ -1,9 +1,9 @@
 package com.phadata.etdsplus.mq;
 
 /**
- * @description: 消息消费的类型，标记消费到哪张表
+ * 消息消费的类型，标记消费到哪张表
  * @author: linx
- * @create: 2021-11-17 11:17
+ * @since 2021-11-17 11:17
  */
 public enum MessageConsumerEnum {
     //说明 re:request(请求方)

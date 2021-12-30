@@ -60,7 +60,7 @@ public class DataResultApplyConsumer implements ChannelAwareMessageListener {
                 //处理的是数据凭证
                 //2. 调用定制层接口：将携带数据的凭证推给定制层
                 HttpResponse execute = HttpRequest.post(dataPush).body(JSON.toJSONString(vc)).execute();
-                log.info("调用定制层接口：将携带数据的凭证推给定制层:", execute);
+                log.info("调用定制层接口：将携带数据的凭证推给定制层:{}", execute);
                 //3. 本地存储业务  表中的凭证id字段加了唯一索引，防止重复消费
                 long epochSecond = Instant.now().getEpochSecond();
                 dataResultApply11Service.save(new DataResultApply11()

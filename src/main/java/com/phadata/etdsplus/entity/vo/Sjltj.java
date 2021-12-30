@@ -4,9 +4,9 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
- * @description: 用于mybatis返回
+ * 用于mybatis返回
  * @author: linx
- * @create: 2021-12-07 17:38
+ * @since 2021-12-07 17:38
  */
 @Data
 @Accessors(chain = true)

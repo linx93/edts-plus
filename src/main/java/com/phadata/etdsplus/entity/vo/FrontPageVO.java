@@ -6,9 +6,9 @@ import lombok.experimental.Accessors;
 import java.util.List;
 
 /**
- * @description: 首页vo
+ * 首页vo
  * @author: xionglin
- * @create: 2021-12-08 19:14
+ * @since 2021-12-08 19:14
  */
 @Data
 @Accessors(chain = true)

@@ -1,7 +1,7 @@
 package com.phadata.etdsplus.mq;
 
 import com.phadata.etdsplus.service.EtdsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -13,11 +13,12 @@ import org.springframework.stereotype.Component;
  * @author linx
  */
 @Component
+@AllArgsConstructor
 public class ApplicationRunnerImpl implements ApplicationRunner {
-    @Autowired
-    private InitMQInfo initMQInfo;
-    @Autowired
-    private EtdsService etdsService;
+
+    private final InitMQInfo initMQInfo;
+
+    private final EtdsService etdsService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {

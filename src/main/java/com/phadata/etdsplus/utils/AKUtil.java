@@ -8,9 +8,9 @@ import java.time.Instant;
 import java.util.Objects;
 
 /**
- * @description: AK的相关方法
+ * AK的相关方法
  * @author: linx
- * @create: 2021-11-17 16:01
+ * @since 2021-11-17 16:01
  */
 @Slf4j
 public class AKUtil {

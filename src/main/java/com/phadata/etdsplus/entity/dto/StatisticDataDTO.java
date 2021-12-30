@@ -9,9 +9,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 /**
- * @description: 响应的统计数据
+ * 响应的统计数据
  * @author: linx
- * @create: 2021-11-30 14:37
+ * @since 2021-11-30 14:37
  */
 @Data
 @ApiModel(value = "响应的统计数据", description = "响应的统计数据")

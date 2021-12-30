@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * @description: 数据提供者的授权凭证vo
+ * 数据提供者的授权凭证vo
  * @author: linx
- * @create: 2021-12-06 15:11
+ * @since 2021-12-06 15:11
  */
 @Data
 public class DataProvideAuthVO {

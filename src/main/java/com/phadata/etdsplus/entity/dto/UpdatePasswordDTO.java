@@ -7,9 +7,9 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 /**
- * @description: 修改密码DTO
+ * 修改密码DTO
  * @author: linx
- * @create: 2021-11-15 15:36
+ * @since 2021-11-15 15:36
  */
 @Data
 @ApiModel(value="登陆/修改密码的DTO对象", description="登陆/修改密码的DTO对象")

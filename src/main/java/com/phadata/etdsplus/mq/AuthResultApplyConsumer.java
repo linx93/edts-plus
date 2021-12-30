@@ -8,7 +8,6 @@ import com.phadata.etdsplus.entity.dto.Address;
 import com.phadata.etdsplus.entity.dto.ResponseAuthDTO;
 import com.phadata.etdsplus.entity.po.GrantResultApply4;
 import com.phadata.etdsplus.exception.BussinessException;
-import com.phadata.etdsplus.service.DTCComponent;
 import com.phadata.etdsplus.service.DTIDComponent;
 import com.phadata.etdsplus.service.GrantResultApply4Service;
 import com.rabbitmq.client.Channel;
@@ -20,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
@@ -38,8 +35,6 @@ import java.util.Map;
 public class AuthResultApplyConsumer implements ChannelAwareMessageListener {
     @Autowired
     private GrantResultApply4Service grantResultApply4Service;
-    @Autowired
-    private DTCComponent dtcComponent;
 
     @Autowired
     private DTIDComponent dtidComponent;

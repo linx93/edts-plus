@@ -1,9 +1,9 @@
 package com.phadata.etdsplus.enums;
 
 /**
- * @description: 授权类型
+ * 授权类型
  * @author: linx
- * @create: 2021-11-26 15:45
+ * @since 2021-11-26 15:45
  */
 public enum AuthType {
     /**

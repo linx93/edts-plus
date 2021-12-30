@@ -11,9 +11,9 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * @description: 申请授权的dto
+ * 申请授权的dto
  * @author: linx
- * @create: 2021-11-25 09:38
+ * @since 2021-11-25 09:38
  */
 @Data
 @Accessors(chain = true)

@@ -1,12 +1,15 @@
 package com.phadata.etdsplus.mq;
 
 /**
- * @description: 交换机枚举
+ * 交换机枚举
  * @author: linx
- * @create: 2021-11-17 11:17
+ * @since 2021-11-17 11:17
  */
 public enum ExchangeEnum {
 
+    /**
+     * 全局交换机定义
+     */
     AUTH_DATA_EXCHANGE("auth-data", "整个授权及数据交互的流程共用的交换机");
 
 

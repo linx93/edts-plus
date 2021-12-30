@@ -6,9 +6,9 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 /**
- * @description: 同步私钥的dto
+ * 同步私钥的dto
  * @author: linx
- * @create: 2021-11-17 14:36
+ * @since 2021-11-17 14:36
  */
 @Data
 public class SyncPrivateKeyDTO {

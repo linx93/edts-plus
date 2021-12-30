@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * @description: mq的发送工具
+ * mq的发送工具
  * @author: linx
- * @create: 2021-11-25 17:05
+ * @since 2021-11-25 17:05
  */
 @Slf4j
 @Component

@@ -5,9 +5,9 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
- * @description: 流转日志vo
+ * 流转日志vo
  * @author: linx
- * @create: 2021-12-07 18:46
+ * @since 2021-12-07 18:46
  */
 @Data
 @Accessors(chain = true)

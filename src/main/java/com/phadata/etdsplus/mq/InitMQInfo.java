@@ -17,9 +17,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @description: 动态初始化MQ的queue和binding，exchange在TDaaS上初始化
+ * 动态初始化MQ的queue和binding，exchange在TDaaS上初始化
  * @author: linx
- * @create: 2021-11-22 15:24
+ * @since 2021-11-22 15:24
  */
 @Slf4j
 @Component

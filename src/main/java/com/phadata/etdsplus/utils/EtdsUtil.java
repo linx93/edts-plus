@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * @description: 获取etds信息工具类
+ * 获取etds信息工具类
  * @author: xionglin
- * @create: 2021-11-23 10:31
+ * @since 2021-11-23 10:31
  */
 @Component
 public class EtdsUtil {

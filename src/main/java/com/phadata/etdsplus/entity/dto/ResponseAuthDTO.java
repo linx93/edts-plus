@@ -11,9 +11,9 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * @description: 响应授权的dto
+ * 响应授权的dto
  * @author: linx
- * @create: 2021-11-25 09:38
+ * @since 2021-11-25 09:38
  */
 @Data
 @ApiModel(value = "响应授权的dto/etds回调定制接口时传给定制层的参数", description = "响应授权的dto/etds回调定制接口时传给定制层的参数")

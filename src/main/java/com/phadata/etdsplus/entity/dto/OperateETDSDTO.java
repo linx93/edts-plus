@@ -7,9 +7,9 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 /**
- * @description: 操作etds的dto
+ * 操作etds的dto
  * @author: linx
- * @create: 2021-11-16 14:12
+ * @since 2021-11-16 14:12
  */
 @Data
 @ApiModel(value="操作etds的dto", description="操作etds的dto")

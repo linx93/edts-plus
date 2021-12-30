@@ -61,7 +61,7 @@ public class CodeGenerator {
 
         // 5、策略配置
         StrategyConfig strategy = new StrategyConfig();
-        /*String[] tables = {"re_auth_notice_apply_1"
+        String[] tables1 = {"re_auth_notice_apply_1"
                 , "re_auth_notice_apply_2"
                 , "grant_result_apply_4"
                 , "grant_result_provide_6"
@@ -73,7 +73,7 @@ public class CodeGenerator {
                 , "data_statistics_apply_11"
                 , "data_statistics_provide_11"
                 , "data_statistics_provide_12"
-                , "data_statistics_provide_13"};*/
+                , "data_statistics_provide_13"};
         String[] tables = {"grant_result_provide_6"};
         strategy.setInclude(tables);
 
