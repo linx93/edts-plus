@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * mq的发送工具
+ *
  * @author: linx
  * @since 2021-11-25 17:05
  */
@@ -41,7 +42,7 @@ public class MQSendUtil {
                         .setRoutingKey(routingKey));
         HttpResponse execute = HttpRequest.post(sendMQ).body(JSON.toJSONString(bizMessage)).execute();
         log.info(errorLogInfo);
-        log.info("调用MQ的入参:{}", JSON.toJSONString(bizMessage));
+        log.info("调用MQ的入参:{}", JSON.toJSONString(bizMessage, true));
         log.info("【SEND-MQ-ETDS】发送mq的请求返回:{}", execute.body());
     }
 
@@ -65,7 +66,7 @@ public class MQSendUtil {
 
         HttpResponse execute = HttpRequest.post(sendMQ).body(JSON.toJSONString(bizMessage)).execute();
         log.info(errorLogInfo);
-        log.info("调用MQ的入参:{}", JSON.toJSONString(bizMessage));
+        log.info("调用MQ的入参:{}", JSON.toJSONString(bizMessage, true));
         log.info("【SEND-MQ-TDaaS】发送mq的请求返回:{}", execute.body());
     }
 }

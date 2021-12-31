@@ -112,6 +112,13 @@ public class DataRequestProvideConsumer implements ChannelAwareMessageListener {
                     desc += "【数据提供方ETDS的总开关处于关闭状态】";
                     log.error("数据提供方ETDS的总开关处于关闭状态");
                 }
+                Long licenseExpirationTime = etdsInfo.getLicenseExpirationTime();
+                if (licenseExpirationTime != null) {
+                    if (Instant.now().getEpochSecond() >= licenseExpirationTime) {
+                        desc += "【数据提供方的ETDS已过期，无法提供数据服务】";
+                        log.error("数据提供方的ETDS已过期，无法提供数据服务");
+                    }
+                }
                 responseData.setDtc(new AuthState().setDtc(authDtcId).setDesc(desc).setCode(0));
                 responseData.setTo(applyDataDTO.getFrom());
                 responseData.setFrom(new Address().setTdaas(etdsInfo.getCompanyDtid()).setEtds(etdsInfo.getEtdsCode()));
