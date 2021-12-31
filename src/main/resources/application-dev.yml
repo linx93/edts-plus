@@ -127,8 +127,9 @@ dtc-server:
 
 #关于数字身份相关的配置
 dtid-sever:
+  address: http://192.168.1.106:8761
   #解析数字身份的地址
-  resolve-dtid: http://192.168.1.106:8765/resolve
+  resolve-dtid: ${dtid-sever.address}/resolve
 
 
 
@@ -143,3 +144,9 @@ custom:
   auth-push: ${custom.address}/v1/response/auth
   #推数据凭证给定制层的地址
   data-push: ${custom.address}/v1/response/data
+
+
+#定时任务相关配置
+scheduled-task:
+  cron:
+    check-etds: 0 0 0 * * ?
