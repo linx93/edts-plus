@@ -40,7 +40,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
         registry.addInterceptor(new TdaasInterceptor(etdsService))
                 .addPathPatterns("/api/v1/tdaas/**");
         //针对处理定制层的请求
-        registry.addInterceptor(new CustomInterceptor(dataSwitchService))
+        registry.addInterceptor(new CustomInterceptor(dataSwitchService, etdsService))
                 .addPathPatterns("/api/v1/custom/**");
     }
 
