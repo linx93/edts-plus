@@ -18,6 +18,7 @@ import java.util.List;
 
 /**
  * 动态初始化MQ的queue和binding，exchange在TDaaS上初始化
+ *
  * @author: linx
  * @since 2021-11-22 15:24
  */
@@ -42,13 +43,13 @@ public class InitMQInfo {
     /**
      * 全局交换机名称
      */
-    private String exchangeName = ExchangeEnum.AUTH_DATA_EXCHANGE.getCode();
+    public static final String EXCHANGE_NAME = ExchangeEnum.AUTH_DATA_EXCHANGE.getCode();
 
 
     /**
      * 需要初始化的枚举code值，对应MessageConsumerEnum枚举中的code
      */
-    private List<String> codeList = Arrays.asList("4", "6", "9", "11");
+    public static final List<String> CODE_LIST = Arrays.asList("4", "6", "9", "11");
 
     /**
      * 初始化MQ和bind
@@ -60,11 +61,11 @@ public class InitMQInfo {
         log.info("初始化MQ和bind关系开始：------------------------------------");
         log.info("etds的数字身份：{}", companyDtid);
         log.info("etds的唯一码：{}", etdsCode);
-        for (String value : codeList) {
+        for (String value : CODE_LIST) {
             Queue queue = new Queue(buildQueueName(companyDtid, etdsCode, value));
             log.info("创建队列：{},  详细信息：{}", queue.getName(), queue.toString());
             rabbitAdmin.declareQueue(queue);
-            Binding binding = new Binding(queue.getName(), Binding.DestinationType.QUEUE, exchangeName, buildRoutingKey(companyDtid, etdsCode, value), null);
+            Binding binding = new Binding(queue.getName(), Binding.DestinationType.QUEUE, EXCHANGE_NAME, buildRoutingKey(companyDtid, etdsCode, value), null);
             log.info("创建绑定关系详细信息：{}", binding.toString());
             rabbitAdmin.declareBinding(binding);
         }
@@ -75,14 +76,14 @@ public class InitMQInfo {
     /**
      * 初始化监听
      *
-     * @param etdsService
+     * @param etdsService etds服务
      */
     public void executeListener(EtdsService etdsService) {
         Etds etdsInfo = null;
         try {
             etdsInfo = etdsUtil.EtdsInfo(etdsService);
         } catch (BussinessException bussinessException) {
-            //log.info("初始化时获取etds信息不存在:{}", bussinessException.getMessage());
+            log.error("初始化时获取etds信息不存在:{}", bussinessException.getMessage());
         }
         if (etdsInfo == null) {
             return;
@@ -125,10 +126,10 @@ public class InitMQInfo {
     public void removeBinding(EtdsService etdsService) {
         log.info("移除所有绑定关系开始：------------------------------------");
         Etds etds = etdsUtil.EtdsInfo(etdsService);
-        for (String value : codeList) {
+        for (String value : CODE_LIST) {
             Queue queue = new Queue(buildQueueName(etds.getCompanyDtid(), etds.getEtdsCode(), value));
             rabbitAdmin.declareQueue(queue);
-            Binding binding = new Binding(queue.getName(), Binding.DestinationType.QUEUE, exchangeName, buildRoutingKey(etds.getCompanyDtid(), etds.getEtdsCode(), value), null);
+            Binding binding = new Binding(queue.getName(), Binding.DestinationType.QUEUE, EXCHANGE_NAME, buildRoutingKey(etds.getCompanyDtid(), etds.getEtdsCode(), value), null);
             log.info("移除绑定关系：{}", binding.toString());
             rabbitAdmin.removeBinding(binding);
         }
@@ -142,10 +143,10 @@ public class InitMQInfo {
      * @param companyDtid 公司的dtid
      * @param etdsCode    etds的唯一码
      * @param code        枚举code，标记了流程的唯一，对应一直存储表
-     * @return
+     * @return 路由key
      */
     public static String buildRoutingKey(String companyDtid, String etdsCode, String code) {
-        return new StringBuilder(companyDtid).append("_").append(etdsCode).append("_").append(code).toString();
+        return companyDtid + "_" + etdsCode + "_" + code;
     }
 
     /**
@@ -154,10 +155,10 @@ public class InitMQInfo {
      * @param companyDtid 公司的dtid
      * @param etdsCode    etds的唯一码
      * @param code        枚举code，标记了流程的唯一，对应一直存储表
-     * @return
+     * @return 队列名
      */
     public static String buildQueueName(String companyDtid, String etdsCode, String code) {
-        return new StringBuilder(companyDtid).append("_").append(etdsCode).append("_").append(code).toString();
+        return companyDtid + "_" + etdsCode + "_" + code;
     }
 
 }
