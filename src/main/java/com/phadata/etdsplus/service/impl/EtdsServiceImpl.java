@@ -183,6 +183,7 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
      */
     private Etds convertEtds(JSONObject etdsInfo) {
         String license = etdsInfo.getString("license");
+        Long expirationTime = etdsInfo.getLong("expirationTime");
         String activationCode = etdsInfo.getString("activationCode");
         String appKey = etdsInfo.getString("appKey");
         String appSecret = etdsInfo.getString("appSecret");
@@ -193,6 +194,7 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
         String etdsUrl = etdsInfo.getString("etdsUrl");
         String etdsName = etdsInfo.getString("etdsName");
         Etds build = Etds.builder().license(license)
+                .licenseExpirationTime(expirationTime)
                 .activationCode(activationCode)
                 .appKey(appKey)
                 .appSecret(appSecret)

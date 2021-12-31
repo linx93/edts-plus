@@ -277,7 +277,7 @@ public class CustomServiceImpl implements CustomService {
     }
 
     @Override
-    public Result receiveStatisticData(ReportDTO reportDTO) {
+    public Result<Boolean> receiveStatisticData(ReportDTO reportDTO) {
         Etds etdsInfo = etdsUtil.EtdsInfo(etdsService);
         //获取授权凭证具体信息
         String dtcId = reportDTO.getAuthDtc();

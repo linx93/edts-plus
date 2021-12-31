@@ -27,7 +27,7 @@ public interface CustomService {
      * @param applyData
      * @return
      */
-    Result applyData(ApplyDataDTO applyData);
+    Result<Boolean> applyData(ApplyDataDTO applyData);
 
 
     /**
@@ -36,7 +36,7 @@ public interface CustomService {
      * @param responseData
      * @return
      */
-    Result receiveData(ResponseDataDTO responseData);
+    Result<Boolean> receiveData(ResponseDataDTO responseData);
 
     /**
      * 提供给定制层获取etds的唯一码和数字身份
@@ -48,7 +48,7 @@ public interface CustomService {
     /**
      * 接收统计数据
      * @param reportDTO
-     * @return
+     * @return result true false
      */
-    Result receiveStatisticData(ReportDTO reportDTO);
+    Result<Boolean> receiveStatisticData(ReportDTO reportDTO);
 }

@@ -3,16 +3,20 @@ package com.phadata.etdsplus.controller;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.phadata.etdsplus.converter.EtdsConverter;
 import com.phadata.etdsplus.entity.dto.LoginDTO;
 import com.phadata.etdsplus.entity.dto.UpdatePasswordDTO;
 import com.phadata.etdsplus.entity.po.Account;
 import com.phadata.etdsplus.entity.po.Etds;
+import com.phadata.etdsplus.entity.res.EtdsResponse;
+import com.phadata.etdsplus.entity.vo.EtdsVO;
 import com.phadata.etdsplus.service.AccountService;
 import com.phadata.etdsplus.service.EtdsService;
 import com.phadata.etdsplus.utils.BCryptPasswordEncoder;
 import com.phadata.etdsplus.utils.jwt.JwtUtil;
 import com.phadata.etdsplus.utils.result.Result;
 import io.swagger.annotations.ApiOperation;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,26 +38,23 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @CrossOrigin
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/account")
 public class AccountController {
     private final AccountService accountService;
     private final EtdsService etdsService;
-
-    public AccountController(AccountService accountService, EtdsService etdsService) {
-        this.accountService = accountService;
-        this.etdsService = etdsService;
-    }
+    private final EtdsConverter etdsConverter;
 
     /**
      * 登陆
      *
-     * @param loginDTO
-     * @return
+     * @param loginDTO 登陆参数
+     * @return result
      */
     @PostMapping(value = "login")
     @ApiOperation(value = "登陆")
-    public Result login(@Valid @RequestBody LoginDTO loginDTO) {
+    public Result<EtdsResponse> login(@Valid @RequestBody LoginDTO loginDTO) {
         List<Account> list = accountService.list(new QueryWrapper<Account>().lambda().eq(Account::getAccount, loginDTO.getAccount()));
         if (list.isEmpty()) {
             return Result.failed("用户名或密码错误");
@@ -69,45 +70,24 @@ public class AccountController {
         map.put("iss", loginDTO.getAccount());
         String jwtToken = JwtUtil.createJwtToken(map);
         log.info("{} 登陆成功:{}", loginDTO.getAccount(), jwtToken);
-        HashMap<String, Object> result = new HashMap<>(8);
         //查询etds表的信息
         List<Etds> etdsList = etdsService.list();
-        result.put("token", jwtToken);
-        result.put("account", loginDTO.getAccount());
-        if (etdsList.isEmpty()) {
-            result.put("active", false);
-            result.put("company", null);
-        } else {
-            //倒序
-            List<Etds> collect = etdsList.stream().sorted(Comparator.comparing(Etds::getId).reversed()).collect(Collectors.toList());
-            Etds etds = collect.get(0);
-            HashMap<String, Object> etdsMap = new HashMap<>(8);
-            etdsMap.put("createTime", etds.getCreateTime());
-            etdsMap.put("companyName", etds.getCompanyName());
-            etdsMap.put("companyDtid", etds.getCompanyDtid());
-            etdsMap.put("state", etds.getState());
-            etdsMap.put("etdsUrl", etds.getEtdsUrl());
-            etdsMap.put("description", etds.getDescription());
-            etdsMap.put("etdsCode", etds.getEtdsCode());
-            etdsMap.put("etdsName", etds.getEtdsName());
-            result.put("active", true);
-            result.put("company", etdsMap);
-        }
-        return Result.success(result);
+        EtdsResponse result = new EtdsResponse();
+        result.setToken(jwtToken);
+        result.setAccount(loginDTO.getAccount());
+        return getEtdsResponseResult(etdsList, result);
     }
 
     /**
      * 刷新
      *
-     * @return
+     * @return result
      */
     @GetMapping(value = "refresh")
     @ApiOperation(value = "刷新")
-    public Result refresh(HttpServletRequest httpServletRequest) {
+    public Result<EtdsResponse> refresh(HttpServletRequest httpServletRequest) {
         //查询etds表的信息
         List<Etds> etdsList = etdsService.list();
-        //倒序
-        List<Etds> collect = etdsList.stream().sorted(Comparator.comparing(Etds::getId).reversed()).collect(Collectors.toList());
         String token = httpServletRequest.getHeader("x-token");
         Map<String, Claim> stringClaimMap = JwtUtil.verifyToken(token);
         Claim iss = stringClaimMap.get("iss");
@@ -115,26 +95,25 @@ public class AccountController {
         Map<String, Object> map = new HashMap<>(8);
         map.put("iss", account);
         String jwtToken = JwtUtil.createJwtToken(map);
-        log.info("{} 登陆成功:{}", account, jwtToken);
-        Map<String, Object> result = new HashMap<>(8);
-        result.put("token", jwtToken);
-        result.put("account", account);
+        log.info("{} 刷新成功:{}", account, jwtToken);
+        EtdsResponse result = new EtdsResponse();
+        result.setToken(jwtToken);
+        result.setAccount(account);
+        return getEtdsResponseResult(etdsList, result);
+    }
+
+    private Result<EtdsResponse> getEtdsResponseResult(List<Etds> etdsList, EtdsResponse result) {
         if (etdsList.isEmpty()) {
-            result.put("active", false);
-            result.put("company", null);
+            result.setActive(false);
+            result.setCompany(null);
         } else {
+            //倒序
+            List<Etds> collect = etdsList.stream().sorted(Comparator.comparing(Etds::getId).reversed()).collect(Collectors.toList());
             Etds etds = collect.get(0);
-            HashMap<String, Object> etdsMap = new HashMap<>(8);
-            etdsMap.put("createTime", etds.getCreateTime());
-            etdsMap.put("companyName", etds.getCompanyName());
-            etdsMap.put("companyDtid", etds.getCompanyDtid());
-            etdsMap.put("state", etds.getState());
-            etdsMap.put("etdsUrl", etds.getEtdsUrl());
-            etdsMap.put("description", etds.getDescription());
-            etdsMap.put("etdsCode", etds.getEtdsCode());
-            etdsMap.put("etdsName", etds.getEtdsName());
-            result.put("active", true);
-            result.put("company", etdsMap);
+            //转换实体
+            EtdsVO etdsVO = etdsConverter.etds2EtdsVO(etds);
+            result.setActive(true);
+            result.setCompany(etdsVO);
         }
         return Result.success(result);
     }
@@ -143,12 +122,12 @@ public class AccountController {
     /**
      * 修改密码
      *
-     * @param
-     * @return
+     * @param updatePasswordDTO 更新密码参数
+     * @return result
      */
     @PostMapping(value = "update-pwd")
     @ApiOperation(value = "修改密码")
-    public Result updatePassword(@Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) {
+    public Result<?> updatePassword(@Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) {
         Account one = accountService.getOne(new QueryWrapper<Account>().lambda().eq(Account::getAccount, updatePasswordDTO.getAccount()));
         if (one == null) {
             return Result.failed("用户名不存在");
