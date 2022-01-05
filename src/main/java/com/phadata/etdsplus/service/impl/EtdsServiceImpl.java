@@ -233,21 +233,33 @@ public class EtdsServiceImpl extends ServiceImpl<EtdsMapper, Etds> implements Et
      *
      * @return
      */
-    private String getToken() {
+    public String getToken() {
         long epochSecond = Instant.now().getEpochSecond();
-        log.info("start->请求鉴权中心获取token");
-        HttpResponse getToken = HttpRequest.post(getTokenUrl)
-                .header("x-appKey", appKey)
-                .header("x-timestamp", String.valueOf(epochSecond))
-                .header("x-signature", AKUtil.sign(appKey, secret, String.valueOf(epochSecond))).execute();
-        Result<JSONObject> resultTokenData = JSON.parseObject(getToken.body(), Result.class);
-        log.info("end->请求鉴权中心获取token");
-        if (!ResultCodeMessage.SUCCESS.getCode().equals(resultTokenData.getCode())) {
-            log.info("请求鉴权中心获取token失败");
-            throw new BussinessException("请求鉴权中心获取token失败");
+        String sign = AKUtil.sign(appKey, secret, String.valueOf(epochSecond));
+        //获取缓存
+        String cacheToken = SimpleCache.getCache(sign);
+        String token;
+        if (cacheToken != null && !"".equals(cacheToken.trim())) {
+            token = cacheToken;
+            log.info("获取缓存的鉴权中心提供的token");
+        } else {
+            log.info("start->请求鉴权中心获取token");
+            HttpResponse getToken = HttpRequest.post(getTokenUrl)
+                    .header("x-appKey", appKey)
+                    .header("x-timestamp", String.valueOf(epochSecond))
+                    .header("x-signature", sign).execute();
+            Result<JSONObject> resultTokenData = JSON.parseObject(getToken.body(), Result.class);
+            log.info("请求token的响应:{}", resultTokenData);
+            if (!ResultCodeMessage.SUCCESS.getCode().equals(resultTokenData.getCode())) {
+                log.info("请求鉴权中心获取token失败");
+                throw new BussinessException("请求鉴权中心获取token失败");
+            }
+            token = resultTokenData.getPayload().getString("token");
+            //设置缓存
+            SimpleCache.setCache(sign, token);
+            log.info("end->请求鉴权中心获取token");
+            log.info("请求鉴权中心获得到的token:{}", token);
         }
-        String token = resultTokenData.getPayload().getString("token");
-        log.info("请求鉴权中心获得到的token:{}", token);
         return token;
     }
 }
