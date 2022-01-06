@@ -50,15 +50,20 @@ public class EtdsCheckScheduledTask implements SchedulingConfigurer {
         taskRegistrar.addTriggerTask(
                 //1.添加任务内容(Runnable)
                 () -> {
-                    log.info("执行动态定时任务处理etds的过期检查: {}", LocalDateTime.now().toLocalTime());
+                    log.info("【task start】执行动态定时任务处理etds的过期检查: {}", LocalDateTime.now().toLocalTime());
                     EtdsInfo etdsInfo = queryEtds();
-                    Long expirationTime = etdsInfo.getExpirationTime();
-                    log.info("ETDS的过期时间");
-                    if (Instant.now().getEpochSecond() >= expirationTime) {
-                        //etds过期了
-                        log.error("ETDS过期了，ETDS的信息:{}", etdsInfo);
-                        //处理MQ逻辑
-                        removeBinding(etdsInfo);
+                    if (etdsInfo != null) {
+                        Long expirationTime = etdsInfo.getExpirationTime();
+                        log.info("ETDS的过期时间");
+                        if (Instant.now().getEpochSecond() >= expirationTime) {
+                            //etds过期了
+                            log.error("ETDS过期了，ETDS的信息:{}", etdsInfo);
+                            //处理MQ逻辑
+                            removeBinding(etdsInfo);
+                        }
+                        log.info("【task end】执行动态定时任务处理etds的过期检查: {}", LocalDateTime.now().toLocalTime());
+                    } else {
+                        log.info("【task error】执行动态定时任务处理etds的过期检查: {}", LocalDateTime.now().toLocalTime());
                     }
                 },
                 //2.设置执行周期(Trigger)
@@ -101,10 +106,14 @@ public class EtdsCheckScheduledTask implements SchedulingConfigurer {
         String sql = "select license_expiration_time as expirationTime,etds_code as etdsCode,company_dtid as companyDtid from etds";
         List<Map<String, Object>> maps = jdbcTemplate.queryForList(sql);
         if (maps.isEmpty()) {
-            throw new BussinessException("etds暂未注册");
+            //throw new BussinessException("etds暂未注册");
+            log.error("etds暂未注册");
+            return null;
         }
         if (maps.size() > 1) {
-            throw new BussinessException("存在多个etds错误");
+            //throw new BussinessException("存在多个etds错误");
+            log.error("存在多个etds错误");
+            return null;
         }
         Map<String, Object> etdsMap = maps.get(0);
         String etdsCode = etdsMap.getOrDefault("etdsCode", "").toString();
